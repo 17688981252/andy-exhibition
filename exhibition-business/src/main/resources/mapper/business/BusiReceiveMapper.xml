@@ -4,29 +4,33 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zel.business.mapper.BusiReceiveMapper">
     <resultMap id="BaseReceiveResultMap" type="com.zel.business.domain.BusiReceive">
-        <result property="receiveId"        column="receive_id"/>
-        <result property="receiveNumber"        column="receive_number"/>
-        <result property="sendId"           column="send_id" />
-        <result property="sendNumber"       column="send_number" />
-        <result property="exhibitionId"     column="exhibition_id" />
-        <result property="logisticsName"    column="logistics_name" />
-        <result property="logisticsNumber"  column="logistics_number" />
-        <result property="status"           column="status" />
-        <result property="sendBy"           column="send_by" />
-        <result property="sendTime"         column="send_time" />
-        <result property="createBy"         column="create_by"/>
-        <result property="createTime"       column="create_time"/>
-        <result property="updateBy"         column="update_by"/>
-        <result property="updateTime"       column="update_time"/>
-        <result property="del"              column="del"/>
-        <result property="remark"           column="remark"/>
-        <result property="sendName"         column="sendName"/>
-        <result property="createName"       column="createName"/>
+        <result property="receiveId" column="receive_id"/>
+        <result property="receiveNumber" column="receive_number"/>
+        <result property="sendId" column="send_id"/>
+        <result property="sendNumber" column="send_number"/>
+        <result property="exhibitionId" column="exhibition_id"/>
+        <result property="logisticsName" column="logistics_name"/>
+        <result property="logisticsNumber" column="logistics_number"/>
+        <result property="status" column="status"/>
+        <result property="sendBy" column="send_by"/>
+        <result property="sendTime" column="send_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="del" column="del"/>
+        <result property="remark" column="remark"/>
+        <result property="sendName" column="sendName"/>
+        <result property="createName" column="createName"/>
         <result property="busiExhibitions.exhibitionName" column="exhibition_name"/>
-        <result property="busiExhibitions.organizer"      column="organizer"/>
-        <result property="busiExhibitions.address"        column="address"/>
+        <result property="busiExhibitions.organizer" column="organizer"/>
+        <result property="busiExhibitions.address" column="address"/>
     </resultMap>
 
+   <!--
+    * 查询收货列表
+    * @param receive 收货信息
+    -->
     <select id="selectReceiveList" resultMap="BaseReceiveResultMap">
         SELECT
             br.receive_id,
@@ -56,7 +60,7 @@
         LEFT JOIN sys_user AS sc ON bs.create_by = sc.user_id
 
         WHERE
-            bs.del = 1
+        bs.del = 1
         <if test="logisticsName != null and logisticsName !=''">
             and bs.logistics_name like concat ('%', #{logisticsName} ,'%')
         </if>
@@ -70,7 +74,35 @@
             and br.receive_number like concat ('%', #{receiveNumber} ,'%')
         </if>
     </select>
-    
+
+    <!--
+    * 查询收货物料明细
+    * @param sendId 发货id
+    -->
+    <select id="selectReceiveMaterialDetialList" resultType="com.zel.business.domain.dto.BusiReceiveMaterialDto">
+        SELECT
+            bsmd.material_id AS materialId,
+            bsmd.send_quantity AS sendQuantity,
+            bm.material_name AS  materialName,
+            bm.material_code AS  materialCode,
+            bm.nick_name AS  nickName,
+            bm.specifications AS  specifications,
+            bm.type AS  type,
+            bm.unit AS  unit,
+            bm.package_quantity AS  packageQuantity,
+            bm.create_by AS  createBy,
+            bm.create_time AS  createTime,
+            bm.update_by AS  updateBy,
+            bm.update_time AS  updateTime,
+            bm.remark AS  remark
+        FROM
+            busi_send_material_detail AS bsmd
+        LEFT JOIN
+            busi_material as bm ON bm.material_id = bsmd.material_id
+        WHERE
+            bsmd.send_id = #{sendId}
+    </select>
+
     <select id="selectLogisticsInfo" resultType="com.zel.business.domain.BusiSend">
         SELECT
             logistics_name as logisticsName,
@@ -81,7 +113,7 @@
           `status` = 2
     </select>
 
-    <select id="selectSendInfo"  resultType="com.zel.business.domain.BusiSend">
+    <select id="selectSendInfo" resultType="com.zel.business.domain.BusiSend">
           SELECT
              send_id ,
              send_number ,
@@ -100,9 +132,48 @@
              update_time ,
              remark
           FROM
-            busi_send
+             busi_send
           where
-            logistics_number = #{logisticsNumber}
+             logistics_number = #{logisticsNumber}
     </select>
+
+    <!--
+    * 保存新增收货
+    -->
+    <insert id="addSave" parameterType="com.zel.business.domain.BusiReceive">
+        INSERT INTO  busi_receive
+        (
+           receive_number ,
+           send_id ,
+           status ,
+           receive_by ,
+           receive_time ,
+           create_by ,
+           create_time ,
+           update_by ,
+           update_time ,
+           del ,
+           remark
+        )
+        VALUES
+	    (
+	      #{receiveNumber},
+	      #{sendId},
+	      #{exhibitionId},
+	      2,
+	      #{receiveBY},
+	      now(),
+	      #{createBy},
+	      now(),
+	      1,
+	      <if test = "remark != null and remark !='' ">#{remark}</if>
+	    )
+    </insert>
+
+    <update id="deleteReceive" parameterType="java.lang.Long">
+        update busi_receive
+        set del = 2
+        where receive_id = #{id}
+    </update>
 
 </mapper>

@@ -22,7 +22,7 @@ public class BusiNoticeServiceImpl implements IBusiNoticeService {
     public List<BusiNoticeOutDto> selectNoticeList(BusiSend send) {
         List<BusiNoticeOutDto> noticeList = noticeMapper.selectNoticeList(send);
         for (BusiNoticeOutDto notice : noticeList){
-            if(notice.getStatus()==null){
+            if(notice.getReceiveId() == null){
                 notice.setStatus("发货在途");
             }else{
                 notice.setStatus("到货签收");

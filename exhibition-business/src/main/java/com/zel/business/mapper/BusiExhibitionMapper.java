@@ -70,7 +70,7 @@ public interface BusiExhibitionMapper {
      * 根据 prospectId
      * @param prospectId
      */
-    int deleteProspectUrl(Long prospectId);
+    int deleteProspectUrl(@Param(value = "prospectId") Long prospectId);
 
     /**
      * 更新展会状态
@@ -96,7 +96,7 @@ public interface BusiExhibitionMapper {
 
     /**
      * 查询导出展会列表
-     * @param colums
+     * @param ids
      */
     List<BusiExhibition> selectExportExhibitionList(@Param(value = "ids") Long[] ids);
 

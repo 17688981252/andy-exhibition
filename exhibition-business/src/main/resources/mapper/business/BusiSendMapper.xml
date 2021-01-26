@@ -416,4 +416,25 @@
             send_id = #{sendId}
     </delete>
 
+    <select id="selectUnReceiveList" resultMap="SendResultMap">
+        select
+            bs.send_id,
+            bs.send_number,
+            bs.status,
+            bs.send_by,
+            bs.send_time,
+            bs.logistics_name,
+            bs.logistics_number,
+            be.exhibition_name,
+            be.organizer,
+            be.address,
+            su.user_name as sendName
+        from  busi_send as bs
+        left join busi_exhibition as be on bs.exhibition_id = be.exhibition_id
+        left join sys_user as su on su.user_id = bs.send_by
+        where
+            bs.del = 1
+        and bs.status = 2
+    </select>
+
 </mapper>

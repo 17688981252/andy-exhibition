@@ -59,11 +59,11 @@
             var dataUnit = [[${@dict.getType('busi_material_unit')}]];
 
 			$(function() {
-				var panehHidden = false;
-				if ($(this).width() < 769) {
-					panehHidden = true;
-				}
-				$('body').layout({ initClosed: panehHidden, west__size: 185 });
+				// var panehHidden = false;
+				// if ($(this).width() < 769) {
+				// 	panehHidden = true;
+				// }
+				// $('body').layout({ initClosed: panehHidden, west__size: 185 });
 				querysendList();
 			});
 
@@ -84,6 +84,9 @@
                         initChildTable(index, row, $detail);
                     },
 					columns: [
+                        {
+                            checkbox: true
+                        },
                         {
                             field: 'logisticsName',
                             title: '物流名称'

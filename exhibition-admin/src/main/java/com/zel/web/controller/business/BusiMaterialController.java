@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @description:物料信息
@@ -69,6 +70,21 @@ public class BusiMaterialController extends BaseController {
         material.setCreateBy(ShiroUtils.getUserId());
         return toAjax(materialService.insertMaterial(material));
     }
+
+//    private final AtomicInteger ai = new AtomicInteger(0);
+//
+//    @GetMapping(value = "test/add")
+//    public AjaxResult testAdd() {
+//        int index = ai.incrementAndGet();
+//        BusiMaterial obj = new BusiMaterial();
+//        obj.setMaterialCode("" + index);
+//        obj.setMaterialName("" + index);
+//        obj.setNickName("" + index);
+//        obj.setSpecifications("" + index);
+//        obj.setPackageQuantity(Long.valueOf("" + index));
+//        obj.setDel(1);
+//        return toAjax(materialService.insertMaterial(obj));
+//    }
 
     /**
      * 获取物料列表

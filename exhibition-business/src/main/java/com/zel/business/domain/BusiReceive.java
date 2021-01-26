@@ -45,7 +45,7 @@ public class BusiReceive {
 
     /**
      * 状态
-     * （1：保存  2：已发货 3：已收货）
+     * （1：未收货  2：已收货）
      */
     private Integer status;
 
@@ -58,6 +58,11 @@ public class BusiReceive {
      * 发货时间
      */
     private Date sendTime;
+
+    /**
+     * 收货人
+     */
+    private Long receiveBy;
 
     /**
      * 收货时间
@@ -184,6 +189,14 @@ public class BusiReceive {
 
     public void setSendTime(Date sendTime) {
         this.sendTime = sendTime;
+    }
+
+    public Long getReceiveBy() {
+        return receiveBy;
+    }
+
+    public void setReceiveBy(Long receiveBy) {
+        this.receiveBy = receiveBy;
     }
 
     public Date getReceiveTime() {

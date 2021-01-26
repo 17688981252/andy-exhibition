@@ -19,8 +19,10 @@ public interface IBusiSendService {
     List<BusiSend> selectSendList(BusiSend send);
 
     /**
-     *查询发货物料明细
-     * @param id
+     * 加载发货物料明细
+     * @param id  发货id
+     * @param materialName 物料名称
+     * @param materialCode  物料代码
      */
     List<BusiSendMaterialDto> selectSendMaterialDetail(Long id, String materialName, String materialCode);
 

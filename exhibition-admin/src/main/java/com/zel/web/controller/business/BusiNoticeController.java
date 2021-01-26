@@ -58,7 +58,12 @@ public class BusiNoticeController extends BaseController {
         return getDataTable(list);
     }
 
-
+    /**
+     * 加载发货物料明细
+     * @param id  发货id
+     * @param materialName 物料名称
+     * @param materialCode  物料代码
+     */
     @PostMapping("/selectSendMaterialDetail")
     @ResponseBody
     public TableDataInfo list(@RequestParam(value = "sendId")Long id,

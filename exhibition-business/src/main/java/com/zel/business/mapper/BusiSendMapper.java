@@ -21,12 +21,26 @@ public interface BusiSendMapper {
     List<BusiSend> selectSendList(BusiSend send);
 
     /**
-     *查询发货物料明细
-     * @param id
+     * 加载发货物料明细
+     * @param id  发货id
+     * @param materialName 物料名称
+     * @param materialCode  物料代码
      */
     List<BusiSendMaterialDto> selectSendMaterialDetail(@Param(value = "id") Long id,
                                                        @Param(value = "materialName") String materialName,
                                                        @Param(value = "materialCode") String materialCode);
+
+    /**
+     * 删除发货信息
+     * @param sendId
+     */
+    void deleteSend(@Param(value = "sendId") Long sendId);
+
+    /**
+     * 删除发货明细
+     * @param sendId
+     */
+    void deleteSendMaterialDetial(@Param(value = "sendId") Long sendId);
 
     /**
      * 保存发货信息
@@ -84,7 +98,9 @@ public interface BusiSendMapper {
      */
     BusiSend selectsendInfo(@Param(value = "id") Long id);
 
-    void deleteSend(@Param(value = "sendId") Long sendId);
-
-    void deleteSendMaterialDetial(@Param(value = "sendId") Long sendId);
+    /**
+     * 未收货列表
+     * @param send 发货信息
+     */
+    List<BusiSend> selectUnReceiveList(BusiSend send);
 }
