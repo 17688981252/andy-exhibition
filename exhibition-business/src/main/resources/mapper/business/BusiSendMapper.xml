@@ -432,9 +432,38 @@
         from  busi_send as bs
         left join busi_exhibition as be on bs.exhibition_id = be.exhibition_id
         left join sys_user as su on su.user_id = bs.send_by
+        left join busi_receive as  br on br.send_id = bs.send_id
         where
             bs.del = 1
         and bs.status = 2
+        <if test="logisticsName != null and logisticsName != ''">
+            and bs.logistics_name like concat ('%', #{logisticsName} ,'%')
+        </if>
+        <if test="logisticsNumber != null and logisticsNumber != ''">
+            and bs.logistics_number like concat ('%', #{logisticsNumber} ,'%')
+        </if>
+        <if test="busiExhibitions != null and busiExhibitions.exhibitionName != null and busiExhibitions.exhibitionName !=''">
+            and be.exhibition_name like concat ('%', #{busiExhibitions.exhibitionName} ,'%')
+        </if>
+        <if test="sendNumber != null and sendNumber != ''">
+            and send_number like concat ('%', #{sendNumber} ,'%')
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and DATE_FORMAT( bs.send_time, '%Y-%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(#{startTime}, '%Y-%m-%d')
+        </if>
+        <if test="endTime != null and endTime != ''">
+            and DATE_FORMAT( bs.send_time, '%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+        </if>
+        order by bs.send_time ASC
     </select>
 
+    <!--
+    * 更新发货状态
+    * @param id 发货ID
+    -->
+    <update id="updateSendStatus" parameterType="java.lang.Long">
+        update busi_send
+        set status = 3
+        where send_id = #{id}
+    </update>
 </mapper>

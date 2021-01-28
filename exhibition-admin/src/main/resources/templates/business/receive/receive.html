@@ -34,8 +34,11 @@
 					</div>
 
 					<div class="btn-group-sm" id="toolbar" role="group">
-						<a class="btn btn-success" onclick="$.operate.addFull()" shiro:hasPermission="business:exhibition:add">
+						<a class="btn btn-success" onclick="$.operate.addFull()" shiro:hasPermission="business:receive:add">
 							<i class="fa fa-plus"></i> 新增
+						</a>
+						<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:receive:remove">
+							<i class="fa fa-remove"></i> 删除
 						</a>
 					</div>
 					<div class="col-sm-12 select-table table-striped">
@@ -47,7 +50,6 @@
 
 		<th:block th:include="include :: footer" />
 		<th:block th:include="include :: layout-latest-js" />
-		<!--<th:block th:include="include :: ztree-js" />-->
 		<script th:inline="javascript">
 			var selectSendMaterialDetailFlag = [[${@permission.hasPermi('business:exhibition:selectSendMaterialDetail')}]];
 			var prefix = ctx + "business/receive";
@@ -63,8 +65,9 @@
 				var options = {
                     url: prefix + "/list",
 					createUrl: prefix + "/add",
+					removeUrl: prefix + "/deleteReceive",
                     selectSendMaterialDetailUrl:"send/selectSendMaterial/{id}",
-                    uniqueId: "sendId",
+                    uniqueId: "receiveId",
 					sortName: "sendTime",
 					sortOrder: "desc",
 					modalName: "收货信息",
@@ -122,7 +125,6 @@
 							field: 'status',
 							title: '状态',
 							formatter: function(value, row, index) {
-
 								return $.table.selectDictLabel(dataStatus, row.status);
 							}
 						},
@@ -135,13 +137,13 @@
 							title: '发货时间'
 						},
 						{
-							field: 'createName',
+							field: 'receiveName',
 							title: '收货人'
 						},
                         {
-                            field: 'createTime',
+                            field: 'receiveTime',
                             title: '收货时间'
-                        },
+                        }
 						// {
 						// 	title: '操作',
 						// 	align: 'center',

@@ -2,7 +2,9 @@ package com.zel.business.service.impl;
 
 import com.zel.business.domain.BusiReceive;
 import com.zel.business.domain.BusiSend;
+import com.zel.business.domain.dto.BusiReceiveInDto;
 import com.zel.business.domain.dto.BusiReceiveMaterialDto;
+import com.zel.business.domain.dto.BusiReceiveSerialNumberInfo;
 import com.zel.business.mapper.BusiReceiveMapper;
 import com.zel.business.mapper.BusiSendMapper;
 import com.zel.business.service.IBusiReceiveService;
@@ -10,7 +12,10 @@ import com.zel.framework.util.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BusiReceiveServiceImpl implements IBusiReceiveService {
@@ -35,9 +40,37 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
      * 保存新增收货
      */
     @Override
-    public int addSave(BusiReceive receive) {
-        receive.setCreateBy(ShiroUtils.getUserId());
-        return receiveMapper.addSave(receive);
+    public int addSave(BusiReceiveInDto receiveInDto) {
+        int count = 0;
+        for(Long id : receiveInDto.getIds()){
+            receiveInDto.setSendId(id);
+            String receiveNumber = "";
+            BusiReceiveSerialNumberInfo receiveSerialNumberInfo = receiveMapper.selectReceiveSerialNumberInfo();
+            String pre = receiveSerialNumberInfo.getPrefix();
+            String ver = receiveSerialNumberInfo.getVer().toString();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            String date = sdf.format(new Date());  // 格式化日期 年月日 ：20210126
+            Long num = receiveSerialNumberInfo.getSerialNumber();
+            String number = num.toString();
+            if (number.length()<3) {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < 3 - number.length(); i++) {
+                    sb.append('0');
+                }
+                number = sb.append(number).toString();
+            }
+            receiveNumber = pre + ver + date + number;
+            receiveInDto.setReceiveNumber(receiveNumber);
+            receiveInDto.setCreateBy((ShiroUtils.getUserId()));
+            receiveInDto.setReceiveBy(ShiroUtils.getSysUser().getUserId());
+            receiveMapper.addSave(receiveInDto);
+            count++;
+            sendMapper.updateSendStatus(id);
+            Long newNumber = num +1;
+            receiveMapper.updateReceiveSerialNumber(newNumber);
+        }
+        return count;
+
     }
 
     /**
@@ -80,11 +113,11 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
 
     /**
      * 删除收货
-     * @param id 收货ID
+     * @param ids 收货ID
      */
     @Override
-    public int deleteReceive(Long id) {
-        return receiveMapper.deleteReceive(id);
+    public int deleteReceive(Long[] ids) {
+        return receiveMapper.deleteReceive(ids);
     }
 
 

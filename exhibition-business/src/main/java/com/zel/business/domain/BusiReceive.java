@@ -111,6 +111,16 @@ public class BusiReceive {
     /*创建人*/
     private String createName;
 
+    private String receiveName;
+
+    public String getReceiveName() {
+        return receiveName;
+    }
+
+    public void setReceiveName(String receiveName) {
+        this.receiveName = receiveName;
+    }
+
     public Long getReceiveId() {
         return receiveId;
     }

@@ -15,6 +15,7 @@
         <result property="sendBy"           column="send_by" />
         <result property="sendTime"         column="send_time" />
         <result property="receiveBy"        column="receive_by" />
+        <result property="receiveTime"      column="receive_time"/>
         <result property="receiveAddress"   column="receive_address" />
         <result property="deptId"           column="dept_id" />
         <result property="createBy"         column="create_by"/>
@@ -26,7 +27,7 @@
         <result property="deptName"         column="deptName"/>
         <result property="receiveName"      column="receiveName"/>
         <result property="sendName"         column="sendName"/>
-        <result property="createName"       column="createName"/>
+        <result property="receiveName"       column="receiveName"/>
         <result property="busiExhibitions.exhibitionName" column="exhibition_name"/>
         <result property="busiExhibitions.organizer"      column="organizer"/>
         <result property="busiExhibitions.address"        column="address"/>
@@ -42,15 +43,14 @@
             bs.send_number,
             br.receive_id,
             br.receive_number,
-            br.create_time,
-            br. STATUS,
+            br.receive_by,
+            br.receive_time,
+            br.STATUS,
             bs.exhibition_id,
             bs.logistics_name,
             bs.logistics_number,
             bs.send_by,
             bs.send_time,
-            bs.receive_by,
-            bs.receive_address,
             bs.dept_id,
             bs.create_by,
             bs.create_time,
@@ -59,13 +59,13 @@
             be.address,
             be.organizer,
             ss.user_name AS sendName,
-            sc.user_name AS createName
+            sr.user_name AS receiveName
         FROM
             busi_send AS bs
         LEFT JOIN busi_exhibition AS be ON bs.exhibition_id = be.exhibition_id
         LEFT JOIN busi_receive AS br ON br.send_id = bs.send_id
         LEFT JOIN sys_user AS ss ON bs.send_by = ss.user_id
-        LEFT JOIN sys_user AS sc ON br.create_by = sc.user_id
+        LEFT JOIN sys_user AS sr ON br.receive_by = sr.user_id
 
         WHERE
             bs.del = 1
@@ -92,6 +92,7 @@
         <if test="endTime!=null and endTime!=''">
             and DATE_FORMAT(bs.send_time, '%Y-%m-%d')  <![CDATA[ <= ]]> DATE_FORMAT(#{endTime}, '%Y-%m-%d')
         </if>
+        order by br.receive_time ASC
     </select>
 
 </mapper>

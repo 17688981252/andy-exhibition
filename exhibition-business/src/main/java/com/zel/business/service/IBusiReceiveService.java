@@ -2,6 +2,7 @@ package com.zel.business.service;
 
 import com.zel.business.domain.BusiReceive;
 import com.zel.business.domain.BusiSend;
+import com.zel.business.domain.dto.BusiReceiveInDto;
 import com.zel.business.domain.dto.BusiReceiveMaterialDto;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface IBusiReceiveService {
     /**
      * 保存新增收货
      */
-    int addSave(BusiReceive receive);
+    int addSave(BusiReceiveInDto receiveInDto);
 
     /**
      * 查询收货物料明细
@@ -41,7 +42,7 @@ public interface IBusiReceiveService {
 
     /**
      * 删除收货
-     * @param id 收货ID
+     * @param ids 收货ID
      */
-    int deleteReceive(Long id);
+    int deleteReceive(Long[] ids);
 }

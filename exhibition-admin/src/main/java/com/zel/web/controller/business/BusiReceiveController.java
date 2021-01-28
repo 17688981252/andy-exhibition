@@ -3,6 +3,7 @@ package com.zel.web.controller.business;
 import com.graphbuilder.curve.BSpline;
 import com.zel.business.domain.BusiReceive;
 import com.zel.business.domain.BusiSend;
+import com.zel.business.domain.dto.BusiReceiveInDto;
 import com.zel.business.domain.dto.BusiReceiveMaterialDto;
 import com.zel.business.service.IBusiReceiveService;
 import com.zel.business.service.IBusiSendService;
@@ -68,8 +69,8 @@ public class BusiReceiveController extends BaseController {
      */
     @PostMapping("/addSave")
     @ResponseBody
-    public AjaxResult addSave(BusiReceive receive){
-        return toAjax(receiveService.addSave(receive));
+    public AjaxResult addSave(BusiReceiveInDto receiveInDto){
+        return toAjax(receiveService.addSave(receiveInDto));
     }
 
 
@@ -109,11 +110,11 @@ public class BusiReceiveController extends BaseController {
 
     /**
      * 删除收货
-     * @param id 收货ID
+     * @param ids 收货ID
      */
-    @PostMapping
+    @PostMapping("/deleteReceive")
     @ResponseBody
-    public AjaxResult deleteReceive(Long id){
-        return toAjax(receiveService.deleteReceive(id));
+    public AjaxResult deleteReceive(Long[] ids){
+        return toAjax(receiveService.deleteReceive(ids));
     }
 }

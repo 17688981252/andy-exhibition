@@ -103,4 +103,10 @@ public interface BusiSendMapper {
      * @param send 发货信息
      */
     List<BusiSend> selectUnReceiveList(BusiSend send);
+
+    /**
+     * 更新发货状态
+     * @param id 发货ID
+     */
+    void updateSendStatus(Long id);
 }

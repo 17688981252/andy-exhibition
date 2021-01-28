@@ -106,7 +106,7 @@
                 selectSendMaterialDetailUrl:"send/selectSendMaterial/{id}",
                 uniqueId: "sendId",
                 sortName: "sendTime",
-                sortOrder: "desc",
+                sortOrder: "ASC",
                 modalName: "到货通知信息",
                 showSearch: false,
                 showRefresh: false,
@@ -238,43 +238,47 @@
         };
 
 
-        //确定保存
-        // function submitHandler() {
-        //     if ($.validate.form()) {
-        //         var data = $('#form-send-add').serialize();
-        //         var allTableData = $("#bootstrap-table1").bootstrapTable('getData');
-        //         var listMap = [];
-        //         $.each(allTableData, function (index, evevt) {
-        //             var map = {};
-        //             console.log("index=" + index)
-        //             map["materialId"] = allTableData[index].materialId;
-        //             var quantity = allTableData[index].sendQuantity;
-        //             if(quantity == 0){
-        //                 $.modal.alertWarning("发货数量不能为0");
-        //                 throw Error;
-        //             }else{
-        //                 map["sendQuantity"] = quantity;
-			// 		}
-        //             listMap[index] = map;
-        //
-        //         });
-        //         console.log(listMap)
-        //
-        //         $.operate.save(prefix + "/saveSend",
-        //             {
-        //                 "deptId": $("#deptId").val(),
-        //                 "exhibitionId": $("#exhibitionId").val(),
-        //                 "sendNumber": $("#sendNumber").val(),
-        //                 "logisticsName": $("#logisticsName").val(),
-        //                 "logisticsNumber": $("#logisticsNumber").val(),
-        //                 "receiveAddress": $("#receiveAddress").val(),
-        //                 "remark": $("#remark").val(),
-        //                 "receiveBy": $("#treeId").val(),
-        //                 "listMap": listMap
-        //             }
-        //         );
-        //     }
-        // }
+        // 确定保存
+        function submitHandler() {
+            table.set();
+            var rows = $.table.selectColumns("sendId");
+            if (rows.length == 0) {
+                $.modal.alertWarning("请至少选择一条记录");
+                return;
+            }
+            $.modal.confirm("确认收货选中的" + rows.length + "条数据吗?", function() {
+                var url = prefix + "/addSave";
+                var data = { "ids": rows.join() };
+                $.operate.submit(url, "post", "json", data);
+            });
+        }
+            // if ($.validate.form()) {
+            //     var data = $('#form-receive-add').serialize();
+            //     var allTableData = $("#bootstrap-table").bootstrapTable('getData');
+            //     var listMap = [];
+            //     $.each(allTableData, function (index, evevt) {
+            //         var map = {};
+            //         console.log("index=" + index)
+            //         map["sendId"] = allTableData[index].sendId;
+            //         // var quantity = allTableData[index].sendQuantity;
+            //         // if(quantity == 0){
+            //          //    $.modal.alertWarning("发货数量不能为0");
+            //          //    throw Error;
+            //         // }else{
+            //          //    map["sendQuantity"] = quantity;
+				// 	// }
+            //         listMap[index] = map;
+            //
+            //     });
+            //     console.log(listMap)
+            //
+            //     $.operate.save(prefix + "/saveSend",
+            //         {
+            //             "listMap": listMap
+            //         }
+            //     );
+            // }
+
 	</script>
 </body>
 </html>
