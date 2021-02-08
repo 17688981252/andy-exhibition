@@ -291,6 +291,7 @@
             FROM
                 busi_send
             )
+        and status = 2
     </select>
 
 
@@ -339,6 +340,12 @@
                 WHERE
                         send_id = #{id}
             )
+    </select>
+
+    <!--根据ID查询展会信息-->
+    <select id="selectExhibitionInfoById" resultMap="BusiExhibitionResult">
+        <include refid="selectExhibitionVo"/>
+        where exhibition_id = #{exhibitionId}
     </select>
 
 </mapper>

@@ -108,5 +108,7 @@ public interface BusiSendMapper {
      * 更新发货状态
      * @param id 发货ID
      */
-    void updateSendStatus(Long id);
+    void updateSendStatus(@Param(value = "id") Long id);
+
+
 }

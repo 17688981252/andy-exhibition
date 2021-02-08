@@ -159,7 +159,7 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
         BusiExhibition exhibition = exhibitionMapper.selectExhibition(id);
 
         for(BusiExhibition  se : sendExhibition){
-            if(se.getExhibitionId() == exhibition.getExhibitionId() ){
+            if(se.getExhibitionId().equals(exhibition.getExhibitionId()) ){
                 se.setFlag(true);
                 break;
             }

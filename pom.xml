@@ -224,6 +224,7 @@
         <module>exhibition-quartz</module>
         <module>exhibition-generator</module>
         <module>exhibition-common</module>
+        <module>exhibition-business</module>
     </modules>
     <packaging>pom</packaging>
 

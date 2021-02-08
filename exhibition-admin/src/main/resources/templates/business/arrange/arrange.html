@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('布展列表')" />
+	<th:block th:include="include :: layout-latest-css" />
+	<th:block th:include="include :: ztree-css" />
+</head>
+<body class="gray-bg">
+
+	<div class="ui-layout-center">
+		<div class="container-div">
+			<div class="row">
+				<div class="col-sm-12 search-collapse">
+					<form id="exhibition-form">
+						<input type="hidden" id="exhibitionId" name="exhibitionId">
+		                <input type="hidden" id="parentId" name="parentId">
+						<div class="select-list">
+							<ul>
+								<li>
+									展会名称：<input type="text" name="exhibitionName"/>
+								</li>
+								<li>
+									展会地址：<input type="text" name="address"/>
+								</li>
+								<li>
+									办展方：<input type="text" name="organizer"/>
+								</li>
+
+								<li>
+									<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+								    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+								</li>
+							</ul>
+						</div>
+					</form>
+				</div>
+
+		        <div class="btn-group-sm" id="toolbar" role="group">
+					<a class="btn btn-primary single disabled" onclick="$.operate.uploadArrange()" shiro:hasPermission="business:exhibition:arrange">
+						<i class="fa fa-upload"></i> 上传图片
+					</a>
+<!--					<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:exhibition:remove">-->
+<!--						<i class="fa fa-remove"></i> 查看布展-->
+<!--					</a>-->
+		        </div>
+
+		        <div class="col-sm-12 select-table table-striped">
+				    <table id="bootstrap-table"></table>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: layout-latest-js" />
+	<th:block th:include="include :: ztree-js" />
+	<script th:inline="javascript">
+        var prefix = ctx + "business/arrange";
+
+        var dataStatus = [[${@dict.getType('busi_exhibition_status')}]];
+
+        $(function() {
+
+            queryArrangeList();
+
+        });
+
+        function queryArrangeList() {
+            var options = {
+                url: prefix + "/list",
+				uploadArrangeUrl:prefix + "/arrangeUrl/{id}",
+                prospectUrl: prefix + "/prospect/{id}",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+				statusUrl: prefix + "/updateStatus",
+                sortName: "createTime",
+                uniqueId: "exhibitionId",
+                sortOrder: "desc",
+                modalName: "展会",
+                columns: [{
+                    checkbox: true
+                },
+                    {
+                        field: 'exhibitionId',
+                        title: '展会ID',
+                        visible: false
+                    },
+                    {
+                        field: 'exhibitionName',
+                        title: '展会名称'
+                    },
+                    {
+                        field: 'organizer',
+                        title: '办展方'
+                        // sortable: true
+                    },
+                    {
+                        field: 'address',
+                        title: '展会地址'
+                    },
+                    {
+                        field: 'status',
+                        title: '展会状态',
+                        formatter: function(value, row, index) {
+
+                            return $.table.selectDictLabel(dataStatus, row.status);
+                        }
+                    },
+                    {
+                        field: 'startTime',
+                        title: '开始时间',
+                        //获取日期列的值进行转换
+                        formatter: function (value, row, index) {
+                            return changeDateFormat(value)
+                        }
+					},
+                    {
+                        field: 'endTime',
+                        title: '结束时间',
+                        //获取日期列的值进行转换
+                        formatter: function (value, row, index) {
+                            return changeDateFormat(value)
+                        }
+                    }
+                   ]
+            };
+            $.table.init(options);
+        }
+
+        /*格式化日期格式*/
+        function changeDateFormat(cellval) {
+            console.log(cellval);
+            if (cellval != null){
+                var date = new Date(cellval);
+                var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+                var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+                return date.getFullYear() + "-" + month + "-" + currentDate;
+            }
+        }
+
+
+        /* 删除指定表格行 */
+        function removeRow(){
+            var ids = $.table.selectColumns("exhibitionId");
+            alert(ids)
+            if (ids.length == 0) {
+                $.modal.alertWarning("请至少选择一条记录");
+                return;
+            }
+            alert(table.options.id)
+            $("#" + table.options.id).bootstrapTable('remove', {
+                field: 'exhibitionId',
+                values: ids
+            })
+        }
+
+	</script>
+</body>
+</html>

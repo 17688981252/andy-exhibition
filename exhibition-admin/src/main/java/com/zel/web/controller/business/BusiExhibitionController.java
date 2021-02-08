@@ -20,12 +20,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Generated;
 import java.util.List;
 
 /**
@@ -157,7 +154,6 @@ public class BusiExhibitionController extends BaseController
     @GetMapping(value = "/prospect/{exhibitionId}")
     public String prospect(@PathVariable("exhibitionId")Long exhibitionId,ModelMap map){
         map.put("prospect",exhibitionService.selectProspect(exhibitionId));
-//        map.put("prospectUrlList",exhibitionService.selectProspect(exhibitionId).getProspectUrlList());
         return prefix + "/prospect";
     }
 
@@ -196,7 +192,7 @@ public class BusiExhibitionController extends BaseController
     @Log(title = "删除勘展图片", businessType = BusinessType.DELETE)
     @PostMapping("/deleteProspectUrl")
     @ResponseBody
-    public AjaxResult saveProspectUrl(@RequestParam(value = "key") Long prospectId,@RequestParam(value = "exhibitionId") Long exhibitionId)
+    public AjaxResult deleteProspectUrl (@RequestParam(value = "key") Long prospectId,@RequestParam(value = "exhibitionId") Long exhibitionId)
     {
         boolean result = false;
         try{

@@ -101,10 +101,12 @@ public interface BusiExhibitionMapper {
     List<BusiExhibition> selectExportExhibitionList(@Param(value = "ids") Long[] ids);
 
     /**
-     * 加载可修改展会信息
+     * 加载可修改展会信息列表
      * @param id
      */
-    List<BusiExhibition> selectEditExhibitionInfo(Long id);
+    List<BusiExhibition> selectEditExhibitionInfo(@Param(value = "id") Long id);
 
     BusiExhibition selectExhibition(@Param(value = "id")Long id);
+
+    BusiExhibition selectExhibitionInfoById(@Param(value = "exhibitionId") Long exhibitionId);
 }

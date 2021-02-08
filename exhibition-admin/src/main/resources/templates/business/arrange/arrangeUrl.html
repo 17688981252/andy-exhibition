@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
-	<th:block th:include="include :: header('勘展')" />
+	<th:block th:include="include :: header('布展图片')" />
 	<th:block th:include="include :: bootstrap-fileinput-css" />
 </head>
 <body class="white-bg">
 <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-	<form class="form-horizontal" id="form-exhibition-prospect" th:object="${prospect}">
+	<form class="form-horizontal" id="form-exhibition-arrange" th:object="${arrange}">
 		<input id="exhibitionId" name="exhibitionId" type="hidden" th:field="*{exhibitionId}"/>
 		<div class="form-group">
 			<label class="col-sm-3 control-label is-required">展会名称：</label>
@@ -28,7 +28,7 @@
 						<div class="ibox-content">
 
 							<div class="form-group">
-								<label class="font-noraml">勘展图片上传</label>
+								<label class="font-noraml">布展图片上传</label>
 								<div class="file-loading">
 									<input id="fileinput-demo-1" type="file" multiple>
 								</div>
@@ -46,23 +46,23 @@
 <th:block th:include="include :: footer" />
 <th:block th:include="include :: bootstrap-fileinput-js" />
 <script type="text/javascript" th:inline="javascript">
-	var prefix = ctx + "business/exhibition";
+	var prefix = ctx + "business/arrange";
 
 	$(document).ready(function () {
 
-        var obj = [[${prospect.prospectUrlList}]];
+        var obj = [[${arrange.arrangeUrlList}]];
 		var arrayObj = new Array();　//创建一个数组
 		var arrayDetail = new Array();
 		for (var i = 0; i < obj.length; i++) {
 
 			var map = obj[i];
-            console.log(i+"//prospectId="+map['prospectId']+
-                "&&prospectUrl="+map['prospectUrl']);
-			arrayObj. push("/exhibition"+map['prospectUrl']);
+            console.log(i+"//arrangeId="+map['arrangeId']+
+                "&&arrangeUrl="+map['arrangeUrl']);
+			arrayObj. push("/exhibition"+map['arrangeUrl']);
 			var detail = {
 				caption: map['fileName'], // 文件名
-				url: prefix + '/deleteProspectUrl', // 删除url
-				key: map['prospectId'], // 删除是Ajax向后台传递的参数post请求
+				url: prefix + '/deleteArrangeUrl', // 删除url
+				key: map['arrangeId'], // 删除是Ajax向后台传递的参数post请求
                 // previewAsData: true,
 				extra: function() { //删除时向后台传递参数，可以是json对象
 					return {
@@ -75,7 +75,7 @@
 
         $("#fileinput-demo-1").fileinput({
             language: 'zh',
-            uploadUrl: prefix + '/saveProspectUrl', //上传的地址
+            // uploadUrl: prefix + '/saveProspectUrl', //上传的地址
             uploadExtraData:{"exhibitionId":$("#exhibitionId").val()},
             showPreview: true,              //展前预览
             showUpload: true,              //显示上传按钮
@@ -138,6 +138,7 @@
 
             var totalFilesCount = $('#fileinput-demo-1').fileinput('getFilesCount',true); //返回文件数（待上传的文件以及已经上传并通过初始预览设置的文件）
             console.info("fileuploaded  --->  上传的文件总数"+totalFilesCount)
+
         });
 
 	});
@@ -150,8 +151,8 @@
         alert(totalFilesCount)
 
         if (totalFilesCount > 0 && filesCount == 0) {
-            $.modal.confirm("勘展图片保存后不可修改，是否确定保存？", function(){
-                $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
+            $.modal.confirm("布展图片保存后不可修改，是否确定保存？", function(){
+                $.operate.save(prefix + "/updateExhibitionStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
             })
         }
         else if ( filesCount > 0) {

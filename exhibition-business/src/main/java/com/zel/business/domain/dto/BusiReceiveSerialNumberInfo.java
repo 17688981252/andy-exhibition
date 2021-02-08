@@ -1,17 +1,17 @@
-package com.zel.business.domain;
+package com.zel.business.domain.dto;
 
 import java.util.Date;
 
 /**
- * busi_serial_number_info
+ * busi_receive_serial_number_info
  */
-public class BusiSerialNumberInfo {
+public class BusiReceiveSerialNumberInfo {
 
 
     /**
      * id
      */
-     private Long serialNumberInfoId;
+     private Long receiveSerialNumberInfoId;
 
     /**
      * 前缀
@@ -47,12 +47,12 @@ public class BusiSerialNumberInfo {
      */
     private Date updateTime;
 
-    public Long getSerialNumberInfoId() {
-        return serialNumberInfoId;
+    public Long getReceiveSerialNumberInfoId() {
+        return receiveSerialNumberInfoId;
     }
 
-    public void setSerialNumberInfoId(Long serialNumberInfoId) {
-        this.serialNumberInfoId = serialNumberInfoId;
+    public void setReceiveSerialNumberInfoId(Long receiveSerialNumberInfoId) {
+        this.receiveSerialNumberInfoId = receiveSerialNumberInfoId;
     }
 
     public String getPrefix() {

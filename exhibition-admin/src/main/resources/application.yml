@@ -70,6 +70,9 @@ spring:
       # 热部署开关
       enabled: true
 
+  # author  andy
+spring:thymeleaf:cache: false
+
 # MyBatis
 mybatis:
     # 搜索指定包别名
