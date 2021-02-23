@@ -16,9 +16,9 @@ public class BusiMaterial {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 物料序号
+     * ID
      */
-    @Excel(name = "物料序号", cellType = Excel.ColumnType.NUMERIC)
+//    @Excel(name = "物料ID", cellType = Excel.ColumnType.NUMERIC)
     private Long materialId;
 
     /** 物料名称 */
@@ -76,6 +76,17 @@ public class BusiMaterial {
 
    /* 发货数量*/
     private Integer sendQuantity;
+
+    /*退还数量*/
+    private Integer returnQuantity;
+
+    public Integer getReturnQuantity() {
+        return returnQuantity;
+    }
+
+    public void setReturnQuantity(Integer returnQuantity) {
+        this.returnQuantity = returnQuantity;
+    }
 
     public Integer getSendQuantity() {
         return sendQuantity;

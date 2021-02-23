@@ -1096,6 +1096,11 @@ var table = {
                     $.modal.alertWarning("请至少选择一条记录");
                     return;
                 }
+                let status = $.table.selectColumns("status")
+				if (status != 1){
+					$.modal.alertWarning("当前状态不可发货");
+					return;
+				}
                 $.modal.confirm("确认发货选中的" + rows.length + "条数据吗?", function() {
                     var url = table.options.sendUrl;
                     var data = { "ids": rows.join() };
@@ -1103,8 +1108,43 @@ var table = {
                 });
             },
 
+			// 收货
+			receiveMaterial: function() {
+				table.set();
+				var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+				if (rows.length == 0) {
+					$.modal.alertWarning("请至少选择一条记录");
+					return;
+				}
+				$.modal.confirm("确认收货选中的" + rows.length + "条数据吗?", function() {
+					var url = table.options.addSaveUrl;
+					var data = { "ids": rows.join() };
+					$.operate.submit(url, "post", "json", data);
+				});
+			},
 
-            // 批量移除信息
+			// 退还
+			returnMaterial: function() {
+				table.set();
+				var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+				if (rows.length == 0) {
+					$.modal.alertWarning("请至少选择一条记录");
+					return;
+				}
+				let status = $.table.selectColumns("status")
+				if (status != 1){
+					$.modal.alertWarning("当前状态不可退还");
+					return;
+				}
+				$.modal.confirm("确认退还选中的" + rows.length + "条数据吗?", function() {
+					var url = table.options.returnUrl;
+					var data = { "ids": rows.join() };
+					$.operate.submit(url, "post", "json", data);
+				});
+			},
+
+
+			// 批量移除信息
             // deleteAll: function() {
             //     table.set();
             //     // var subColumn = $.common.isEmpty(column) ? "index" : column;
@@ -1143,7 +1183,7 @@ var table = {
             	table.set();
             	$.modal.openFull("添加" + table.options.modalName, $.operate.addUrl(id));
             },
-            // 添加发货物料  andy
+            // 添加物料  andy
             addMaterial: function(id) {
         		var tableId = table.options.id;
 				alert(tableId);
@@ -1159,11 +1199,6 @@ var table = {
                     ids.push(allTableData[index].materialId)
                 });
                 $.modal.open("添加" + table.options.modalName, table.options.addMaterialUrl.replace("{ids}", ids));
-
-                //获取表格的所有内容行
-                // var allTableData = datagrid.bootstrapTable('getData');
-                // $.each(allTableData,function(i,e){
-                 // })
             },
 
             // 修改发货物料  andy
@@ -1278,7 +1313,7 @@ var table = {
 					var url = table.options.uploadUrl.replace("{id}", row[table.options.uniqueId]);
 					$.modal.open("勘展" + table.options.modalName, url);
 				} else {
-					$.modal.openTab("布展" + table.options.modalName, $.operate.uploadArrangeUrl(id));
+					$.modal.openFull("布展" + table.options.modalName, $.operate.uploadArrangeUrl(id));
 				}
 			},
 
@@ -1298,16 +1333,21 @@ var table = {
 				return url;
 			},
 
-			// 确认布展
-			removeAll: function() {
+			// 撤展
+			revoke: function() {
 
 				var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
 				if (rows.length == 0) {
 					$.modal.alertWarning("请至少选择一条记录");
 					return;
 				}
-				$.modal.confirm("确认要删除选中的" + rows.length + "条数据吗?", function() {
-					var url = table.options.removeUrl;
+				let status = $.table.selectColumns("status")
+				if (status != 3){
+					$.modal.alertWarning("当前状态不可撤展");
+					return;
+				}
+				$.modal.confirm("确认要撤展选中的" + rows.length + "条数据吗?", function() {
+					var url = table.options.revokeUrl;
 					var data = { "ids": rows.join() };
 					$.operate.submit(url, "post", "json", data);
 				});

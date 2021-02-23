@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zel.business.mapper.BusiRevokeMapper">
+    <resultMap id="BaseRevokeResult" type="com.zel.business.domain.dto.BusiRevokeDto">
+        <id property="exhibitionId"         column="exhibition_id"/>
+        <result property="exhibitionName"   column="exhibition_name"/>
+        <result property="status"           column="status"/>
+        <result property="startTime"        column="start_time"/>
+        <result property="endTime"          column="end_time"/>
+        <result property="address"          column="address"/>
+        <result property="organizer"        column="organizer"/>
+    </resultMap>
+    <select id="selectRevokeList" resultMap="BaseRevokeResult">
+        select
+            exhibition_id ,
+            exhibition_name ,
+            status ,
+            start_time ,
+            end_time ,
+            address ,
+            organizer
+        from busi_exhibition
+        where status = 3
+        and  del = 1
+        <if test="exhibitionName != null and exhibitionName !=''">
+            and exhibition_name like concat ('%', #{exhibitonName},'%')
+        </if>
+        <if test="organizer != null and organizer != ''">
+            and organizer like concat ('%', #{organizer},'%')
+        </if>
+        <if test="address != null and address != ''">
+            and address like concat ('%', #{address},'%')
+        </if>
+    </select>
+
+    <update id="updateExhibitionStatus">
+        update busi_exhibition
+        set
+            status = 4,
+            update_time = now(),
+            update_by = #{updateBy}
+        where exhibition_id in
+        <foreach collection="ids" index="index" item="id" open="(" separator="," close=")">
+              #{id}
+        </foreach>
+    </update>
+
+    <select id="selectSendId"  resultType="java.lang.Long">
+        select send_id
+        from busi_send
+        where exhibition_id = #{exhibitionId}
+    </select>
+
+</mapper>

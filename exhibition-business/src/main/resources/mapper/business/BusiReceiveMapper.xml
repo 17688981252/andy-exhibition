@@ -147,8 +147,6 @@
            receive_number ,
            send_id ,
            status ,
-           receive_by ,
-           receive_time ,
            create_by ,
            create_time ,
            del
@@ -157,9 +155,7 @@
 	    (
 	      #{receiveNumber},
 	      #{sendId},
-	      2,
-	      #{receiveBy},
-	      now(),
+	      1,
 	      #{createBy},
 	      now(),
 	      1

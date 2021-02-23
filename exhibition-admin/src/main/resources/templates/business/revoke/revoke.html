@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-	<th:block th:include="include :: header('展会列表')" />
+	<th:block th:include="include :: header('撤展列表')" />
 	<th:block th:include="include :: layout-latest-css" />
 	<th:block th:include="include :: ztree-css" />
 </head>
@@ -11,7 +11,7 @@
 		<div class="container-div">
 			<div class="row">
 				<div class="col-sm-12 search-collapse">
-					<form id="exhibition-form">
+					<form id="revoke-form">
 						<input type="hidden" id="exhibitionId" name="exhibitionId">
 		                <input type="hidden" id="parentId" name="parentId">
 						<div class="select-list">
@@ -34,23 +34,14 @@
 						</div>
 					</form>
 				</div>
-				
+
 		        <div class="btn-group-sm" id="toolbar" role="group">
-		        	<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="business:exhibition:add">
-		                <i class="fa fa-plus"></i> 新增
-		            </a>
-		             <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="business:exhibition:edit">
-			            <i class="fa fa-edit"></i> 修改
-			        </a>
-		            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:exhibition:remove">
-		                <i class="fa fa-remove"></i> 删除
-		            </a>
-		            <a class="btn btn-warning multiple disabled" onclick="$.table.exportExcel()" shiro:hasPermission="business:exhibition:export">
-			            <i class="fa fa-download"></i> 导出
-			        </a>
-					<a class="btn btn-primary single disabled" onclick="$.operate.prospect()" shiro:hasPermission="business:exhibition:prospect">
-						<i class="fa fa-upload"></i> 勘展
+					<a class="btn btn-primary " onclick="$.operate.revoke()" shiro:hasPermission="business:exhibition:arrange">
+						<i class="fa fa-remove"></i> 撤展
 					</a>
+<!--					<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:exhibition:remove">-->
+<!--						<i class="fa fa-remove"></i> 查看布展-->
+<!--					</a>-->
 		        </div>
 
 		        <div class="col-sm-12 select-table table-striped">
@@ -64,35 +55,35 @@
 	<th:block th:include="include :: layout-latest-js" />
 	<th:block th:include="include :: ztree-js" />
 	<script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('business:exhibition:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('business:exhibition:remove')}]];
-        var prefix = ctx + "business/exhibition";
+        var prefix = ctx + "business/revoke";
 
         var dataStatus = [[${@dict.getType('busi_exhibition_status')}]];
+		var dataType = [[${@dict.getType('busi_material_type')}]];
+		var dataUnit = [[${@dict.getType('busi_material_unit')}]];
 
         $(function() {
-            var panehHidden = false;
-            if ($(this).width() < 769) {
-                panehHidden = true;
-            }
-            $('body').layout({ initClosed: panehHidden, west__size: 185 });
-            queryExhibitionList();
+
+            queryRevokeList();
 
         });
 
-        function queryExhibitionList() {
+        function queryRevokeList() {
             var options = {
                 url: prefix + "/list",
-                prospectUrl: prefix + "/prospect/{id}",
-                createUrl: prefix + "/add",
-                updateUrl: prefix + "/edit/{id}",
-                removeUrl: prefix + "/remove",
-                exportUrl: prefix + "/export",
+				revokeUrl: prefix +"/revokeUrl",
 				statusUrl: prefix + "/updateStatus",
                 sortName: "createTime",
                 uniqueId: "exhibitionId",
                 sortOrder: "desc",
                 modalName: "展会",
+				showSearch: false,
+				showRefresh: false,
+				showToggle: false,
+				showColumns: false,
+				detailView: false,
+				onExpandRow : function(index, row, $detail) {
+					initChildTable(index, row, $detail);
+				},
                 columns: [{
                     checkbox: true
                 },
@@ -137,27 +128,71 @@
                         formatter: function (value, row, index) {
                             return changeDateFormat(value)
                         }
-                    },
-                    {
-                        field: 'remark',
-                        title: '备注'
                     }
-                    // ,
-                    // {
-                    //     title: '操作',
-                    //     align: 'center',
-                    //     formatter: function(value, row, index) {
-					//
-                    //         var actions = [];
-                    //         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.exhibitionId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
-                    //         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.exhibitionId + '\')"><i class="fa fa-remove"></i>删除</a> ');
-                    //         return actions.join('');
-                    //     }
-                    // }
-                    ]
+                   ]
             };
             $.table.init(options);
         }
+		initChildTable = function(index, row, $detail) {
+			var childTable = $detail.html('<table style="table-layout:fixed"></table>').find('table');
+			$(childTable).bootstrapTable({
+				url: prefix + "/selectReceiveMaterialDetial",
+				method: 'post',
+				sidePagination: "server",
+				// contentType: "application/json;charset=UTF-8",
+				contentType: "application/x-www-form-urlencoded",
+				queryParams : {exhibitionId:row.exhibitionId},
+				columns: [
+					// {
+					// 	checkbox: true
+					// },
+					{
+					field: 'materialId',
+					title: '物料ID',
+					visible: false
+				    },
+					{
+						field: 'materialName',
+						title: '物料名称'
+					},
+					{
+						field: 'materialCode',
+						title: '物料代码'
+					},
+					{
+						field: 'nickName',
+						title: '物料简称'
+					},  {
+						field: 'specifications',
+						title: '规格型号'
+					},
+
+					{
+						field: 'type',
+						title: '类型',
+						formatter: function(value, row, index) {
+
+							return $.table.selectDictLabel(dataType, row.type);
+						}
+					},{
+						field: 'unit',
+						title: '计量单位',
+						formatter: function(value, row, index) {
+
+							return $.table.selectDictLabel(dataUnit, row.unit);
+						}
+					},
+					{
+						field: 'packageQuantity',
+						title: '标包数量'
+						// visible: false
+					},
+					{
+						field: 'sendQuantity',
+						title: '收货数量'
+					}]
+			});
+		};
 
         /*格式化日期格式*/
         function changeDateFormat(cellval) {

@@ -79,7 +79,7 @@ public class BusiSendController extends BaseController {
      *查询发货物料
      * @param id
      */
-     @GetMapping("/selectSendMaterial/{id}")
+    @GetMapping("/selectSendMaterial/{id}")
     public String selectSendMaterial(@PathVariable("id") Long id, ModelMap map) {
          map.put("id",id);
         return prefix + "/sendMaterialDetail";

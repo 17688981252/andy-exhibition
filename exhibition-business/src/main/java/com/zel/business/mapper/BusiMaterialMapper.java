@@ -78,5 +78,10 @@ public interface BusiMaterialMapper {
                                       @Param(value = "materialCode")String materialCode);
 
 
-
+    /**
+     * 查询退还物料明细
+     * @param returnId 退还ID
+     * @return 退还物料列表
+     */
+    List<BusiMaterial> selectRerurnMaterialDetial(@Param(value = "returnId") Long returnId);
 }

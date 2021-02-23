@@ -4,6 +4,7 @@ import java.util.Date;
 
 /**
  * busi_serial_number_info
+ * @author andy
  */
 public class BusiSerialNumberInfo {
 

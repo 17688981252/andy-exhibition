@@ -107,6 +107,14 @@ public class Global
     }
 
     /**
+     * 获取布展图片上传路径
+     */
+    public static String getArrangeUrlPath()
+    {
+        return getProfile() + "/arrangeUrl";
+    }
+
+    /**
      * 获取下载路径
      */
     public static String getDownloadPath()

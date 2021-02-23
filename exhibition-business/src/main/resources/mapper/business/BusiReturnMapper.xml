@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zel.business.mapper.BusiReturnMapper">
+    <resultMap id="ReturnResultMap" type="com.zel.business.domain.BusiReturn">
+        <id     property="returnId"           column="return_id" />
+        <result property="returnNumber"       column="return_number" />
+        <result property="exhibitionId"       column="exhibition_id" />
+        <result property="logisticsName"      column="logistics_name" />
+        <result property="logisticsNumber"    column="logistics_number" />
+        <result property="status"             column="status" />
+        <result property="returnBy"           column="return_by" />
+        <result property="returnTime"         column="return_time" />
+        <result property="receiveBy"          column="receive_by" />
+        <result property="receiveAddress"     column="receive_address" />
+        <result property="deptId"             column="dept_id" />
+        <result property="createBy"           column="create_by"/>
+        <result property="createTime"         column="create_time"/>
+        <result property="updateBy"           column="update_by"/>
+        <result property="updateTime"         column="update_time"/>
+        <result property="del"                column="del"/>
+        <result property="remark"             column="remark"/>
+        <result property="exhibitionName"     column="exhibitionName"/>
+        <result property="organizer"          column="organizer"/>
+        <result property="address"            column="address"/>
+        <result property="deptName"           column="deptName"/>
+        <result property="receiveName"        column="receiveName"/>
+        <result property="returnName"         column="returnName"/>
+        <result property="createName"         column="createName"/>
+    </resultMap>
+
+    <!--查询退还信息-->
+    <select id="selectReturnList" resultMap="ReturnResultMap">
+        select
+            br.return_id ,
+            br.return_number ,
+            br.exhibition_id ,
+            br.logistics_name ,
+            br.logistics_number ,
+            br.status ,
+            br.return_by ,
+            br.return_time ,
+            br.receive_by ,
+            br.receive_address ,
+            br.dept_id ,
+            br.create_by ,
+            br.create_time ,
+            br.update_by ,
+            br.update_time ,
+            br.remark,
+            be.exhibition_name as exhibitionName,
+            be.address as address,
+            be.organizer as organizer,
+            ret.user_name as returnName,
+            rec.user_name as receiveName
+        from busi_return as br
+        left join busi_exhibition as be on br.exhibition_id = be.exhibition_id
+        left join sys_user as ret on br.return_by = ret.user_id
+        left join sys_user as rec on br.receive_by = rec.user_id
+        where br.del = 1
+        order by br.create_time DESC
+    </select>
+
+    <!--查询退还展会信息 -->
+    <select id="selectReturnExhibitionInfo" resultType="com.zel.business.domain.BusiExhibition">
+        select
+            exhibition_id as exhibitionId,
+            exhibition_name as exhibitionName
+        from busi_exhibition
+        where exhibition_id NOT IN
+              (select exhibition_id from busi_return where del = 1)
+        and  status = 4
+        and  del = 1
+    </select>
+
+    <!--查询退还流水号信息-->
+    <select id="selectSerialNumberInFo" resultType="com.zel.business.domain.BusiSerialNumberInfo">
+        select
+            prefix as prefix,
+            ver as ver,
+            serial_number as serialNumber
+        from Busi_serial_number_info
+        where serial_number_info_id = 3
+    </select>
+
+    <!--插入退还信息-->
+    <insert id="insertReturn" useGeneratedKeys="true" keyProperty="returnId">
+        INSERT INTO   busi_return
+        (
+            return_number ,
+            exhibition_id ,
+            logistics_name ,
+            logistics_number ,
+            status ,
+            receive_by ,
+            receive_address ,
+            dept_id ,
+            create_by ,
+            create_time ,
+            del ,
+            remark
+        )
+        values
+        (
+         #{returnNumber},
+         #{exhibitionId},
+         #{logisticsName},
+         #{logisticsNumber},
+         1,
+         #{receiveBy},
+         #{receiveAddress},
+         #{deptId},
+         #{createBy},
+         now(),
+         1,
+         #{remark}
+        )
+    </insert>
+
+    <!--插入退还物料明细-->
+    <insert id="insertReturnMaterialDetails" parameterType="com.zel.business.domain.BusiReturn">
+        INSERT INTO busi_return_material_detail
+            (
+             return_id  ,
+             material_id  ,
+             return_quantity  ,
+             create_by  ,
+             create_time
+             )
+        VALUES
+        <foreach collection="listMap" item="detail" index="insex" open="" separator="," close="">
+            (
+             #{returnId},
+             #{detail.materialId},
+             #{detail.returnQuantity},
+             #{createBy},
+             now()
+             )
+        </foreach>
+    </insert>
+
+    <!--更新退还流水号-->
+    <update id="updateReturnSerialNumber">
+        update busi_serial_number_info
+        set serial_number = serial_number + 1
+        where serial_number_info_id = 3
+    </update>
+
+    <!--删除退还信息-->
+    <update id="removeReturn">
+        update busi_return
+        set del = 2
+        where return_id in
+        <foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="updateReturnStatus">
+        update busi_return
+        set
+            return_by = #{returnBy},
+            return_time = now(),
+            status = 2
+        where return_id IN
+        <foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+
+
+</mapper>

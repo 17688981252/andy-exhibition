@@ -29,6 +29,7 @@ public class BusiArrangeServiceImpl implements IBusiArrangeService {
 
     /**
      * 查询布展列表
+     *
      * @param arrangeDto 布展信息
      * @return
      */
@@ -39,6 +40,7 @@ public class BusiArrangeServiceImpl implements IBusiArrangeService {
 
     /**
      * 插入布展图片信息
+     *
      * @param busiArrange 布展实体
      */
     @Override
@@ -48,6 +50,7 @@ public class BusiArrangeServiceImpl implements IBusiArrangeService {
 
     /**
      * 查询布展信息
+     *
      * @param arrangeId 布展ID
      */
     @Override
@@ -57,6 +60,7 @@ public class BusiArrangeServiceImpl implements IBusiArrangeService {
 
     /**
      * 查询展会信息
+     *
      * @param exhibitionId 展会ID
      * @return 展会实体
      */
@@ -67,6 +71,7 @@ public class BusiArrangeServiceImpl implements IBusiArrangeService {
 
     /**
      * 删除布展图片
+     *
      * @param arrangeId 布展ID
      * @return 是否删除成功
      */
@@ -77,11 +82,11 @@ public class BusiArrangeServiceImpl implements IBusiArrangeService {
             BusiArrange arrange = arrangeMapper.findArrangeUrl(arrangeId);
             String url = arrange.getArrangeUrl();
             if (StringUtils.isNotBlank(url)) {
-                result = FileUploadUtils.deleteFile(url.replace("/prefile/arrangeUrl", Global.getArrangeUrlPath()));
+                result = FileUploadUtils.deleteFile(url.replace("/profile/arrangeUrl", Global.getArrangeUrlPath()));
             }
-            if (result = false) {
+            if (result == false) {
                 new RuntimeException("删除布展图片失败");
-            }else{
+            } else {
                 arrangeMapper.deleteArrangeUrl(arrangeId);
             }
         } catch (Exception e) {
@@ -92,25 +97,22 @@ public class BusiArrangeServiceImpl implements IBusiArrangeService {
 
     /**
      * 保存布展图片
-     * @param files 图片文件
+     *
+     * @param files        图片文件
      * @param exhibitionId 展会ID
      * @return
      */
     @Override
     public boolean saveArrangeUrl(MultipartFile[] files, Long exhibitionId) {
         boolean result = true;
-        try
-        {
-            for(MultipartFile file:files)
-            {
+        try {
+            for (MultipartFile file : files) {
                 String arrangeUrl = FileUploadUtils.upload(Global.getArrangeUrlPath(), file);
-                BusiArrange busiArrange = new BusiArrange(exhibitionId,file.getOriginalFilename(),arrangeUrl);
+                BusiArrange busiArrange = new BusiArrange(exhibitionId, file.getOriginalFilename(), arrangeUrl);
                 busiArrange.setCreateBy(ShiroUtils.getSysUser().getUserId());
                 arrangeMapper.insertArrangeUrl(busiArrange);
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("保存勘布图片失败！");
             result = false;
         }
@@ -119,6 +121,7 @@ public class BusiArrangeServiceImpl implements IBusiArrangeService {
 
     /**
      * 更新展会状态为布展
+     *
      * @param exhibitionId 展会ID
      * @return 受影响的条数
      */

@@ -1,22 +1,20 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-	<th:block th:include="include :: header('发货列表')" />
+	<th:block th:include="include :: header('退还列表')" />
 	<th:block th:include="include :: layout-latest-css" />
-	<!--<th:block th:include="include :: ztree-css" />-->
 </head>
 	<body class="gray-bg">
 		<div class="ui-layout-center">
 			<div class="container-div">
 				<div class="row">
 					<div class="col-sm-12 search-collapse">
-						<form id="send-form">
-							<input type="hidden" id="sendId" name="sendId">
-							<input type="hidden" id="parentId" name="parentId">
+						<form id="return-form">
+							<input type="hidden" id="returnId" name="returnId">
 							<div class="select-list">
 								<ul>
 									<li>
-										发货单号：<input type="text" name="sendNumber"/>
+										退还单号：<input type="text" name="returnNumber"/>
 									</li>
 									<li>
 										展会名称：<input type="text" name="busiExhibitions.exhibitionName"/>
@@ -24,7 +22,6 @@
 									<li>
 										物流单号：<input type="text" name="logisticsNumber"/>
 									</li>
-
 									<li>
 										<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
 										<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
@@ -44,8 +41,8 @@
 						<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:exhibition:remove">
 							<i class="fa fa-remove"></i> 删除
 						</a>
-						<a class="btn btn-info" onclick="$.operate.sendMaterial()" shiro:hasPermission="business:send:send">
-							<i class="fa "></i> 发货
+						<a class="btn btn-info" onclick="$.operate.returnMaterial()" shiro:hasPermission="business:send:send">
+							<i class="fa "></i> 退还
 						</a>
 					</div>
 					<div class="col-sm-12 select-table table-striped">
@@ -57,58 +54,56 @@
 
 		<th:block th:include="include :: footer" />
 		<th:block th:include="include :: layout-latest-js" />
-		<!--<th:block th:include="include :: ztree-js" />-->
 		<script th:inline="javascript">
 			var editFlag = [[${@permission.hasPermi('business:exhibition:edit')}]];
-			var selectSendMaterialDetailFlag = [[${@permission.hasPermi('business:exhibition:selectSendMaterialDetail')}]];
-			var prefix = ctx + "business/send";
-			var dataStatus = [[${@dict.getType('busi_send_status')}]];
+			var prefix = ctx + "business/return";
+			var dataStatus = [[${@dict.getType('busi_return_status')}]];
+			var dataType = [[${@dict.getType('busi_material_type')}]];
+			var dataUnit = [[${@dict.getType('busi_material_unit')}]];
 
 			$(function() {
-				var panehHidden = false;
-				if ($(this).width() < 769) {
-					panehHidden = true;
-				}
-				$('body').layout({ initClosed: panehHidden, west__size: 185 });
-				querysendList();
-
+				queryReturnList();
 			});
 
-			function querysendList() {
+			function queryReturnList() {
 				var options = {
                     url: prefix + "/list",
                     createUrl: prefix + "/add",
                     removeUrl: prefix + "/remove",
-                    sendUrl: prefix + "/send",
+					returnUrl: prefix + "/returnMaterial",
                     updateUrl: prefix + "/edit/{id}",
                     // exportUrl: prefix + "/export",
 					selectSendMaterialDetailUrl: prefix + "/selectSendMaterial/{id}",
-                    uniqueId: "sendId",
-					sortName: "sendTime",
-					sortOrder: "desc",
-					modalName: "发货信息",
+                    uniqueId: "returnId",
+					sortName: "returnTime",
+					sortOrder: "asc",
+					modalName: "退还信息",
+					detailView: true,
+					onExpandRow : function(index, row, $detail) {
+						initChildTable(index, row, $detail);
+					},
 					columns: [{
 						checkbox: true
 					},
                         {
-                            field: 'sendId',
-                            title: '发货ID',
+                            field: 'returnId',
+                            title: '退还ID',
                             visible: false
                         },
 						{
-							field: 'sendNumber',
-							title: '发货单号'
+							field: 'returnNumber',
+							title: '退还单号'
 						},
 						{
-							field: 'busiExhibitions.exhibitionName',
+							field: 'exhibitionName',
 							title: '展会名称'
 						},
 						{
-							field: 'busiExhibitions.address',
+							field: 'address',
 							title: '展会地址'
 						},
 						{
-							field: 'busiExhibitions.organizer',
+							field: 'organizer',
 							title: '办展方'
 						},
 						{
@@ -128,12 +123,12 @@
 							}
 						},
 						{
-							field: 'sendName',
-							title: '发货人'
+							field: 'returnName',
+							title: '退还人'
 						},
 						{
-							field: 'sendTime',
-							title: '发货时间'
+							field: 'returnTime',
+							title: '退还时间'
 						},
 						{
 							field: 'receiveName',
@@ -142,24 +137,67 @@
 						{
 							field: 'receiveAddress',
 							title: '收货地址'
-						},
-						{
-							field: 'deptName',
-							title: '收货公司'
-						},
-						{
-							title: '操作',
-							align: 'center',
-							formatter: function(value, row, index) {
-								var actions = [];
-								actions.push('<a class="btn btn-success btn-xs ' + selectSendMaterialDetailFlag + '" href="javascript:void(0)" onclick="$.operate.selectSendMaterialDetail(\'' + row.sendId + '\')"><i class="fa fa-edit"></i>物料明细</a> ');
-								return actions.join('');
-							}
 						}
 						]
 				};
 				$.table.init(options);
 			}
+			initChildTable = function(index, row, $detail) {
+				var childTable = $detail.html('<table style="table-layout:fixed"></table>').find('table');
+				$(childTable).bootstrapTable({
+					url: prefix + "/selectReturnMaterialDetails",
+					method: 'post',
+					sidePagination: "server",
+					// contentType: "application/json;charset=UTF-8",
+					contentType: "application/x-www-form-urlencoded",
+					queryParams : {returnId:row.returnId},
+					columns: [{
+						field: 'materialId',
+						title: '物料ID',
+						visible: false
+					},
+						{
+							field: 'materialName',
+							title: '物料名称'
+						},
+						{
+							field: 'materialCode',
+							title: '物料代码'
+						},
+						{
+							field: 'nickName',
+							title: '物料简称'
+						},  {
+							field: 'specifications',
+							title: '规格型号'
+						},
+
+						{
+							field: 'type',
+							title: '类型',
+							formatter: function(value, row, index) {
+
+								return $.table.selectDictLabel(dataType, row.type);
+							}
+						},{
+							field: 'unit',
+							title: '计量单位',
+							formatter: function(value, row, index) {
+
+								return $.table.selectDictLabel(dataUnit, row.unit);
+							}
+						},
+						{
+							field: 'packageQuantity',
+							title: '标包数量'
+							// visible: false
+						},
+						{
+							field: 'returnQuantity',
+							title: '退还数量'
+						}]
+				});
+			};
 		</script>
 	</body>
 </html>

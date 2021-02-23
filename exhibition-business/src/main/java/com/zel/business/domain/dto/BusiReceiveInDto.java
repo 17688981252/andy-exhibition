@@ -86,7 +86,7 @@ public class BusiReceiveInDto {
     private String remark;
 
     /**
-     * 收货信息
+     * 收货id
      */
     private Long[] ids;
 

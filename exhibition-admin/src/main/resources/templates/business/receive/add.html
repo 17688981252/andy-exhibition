@@ -29,9 +29,9 @@
 				<!--</div>-->
 				<div class="row">
 					<div class="col-sm-12 search-collapse">
-						<form id="send-form">
-							<input type="hidden" id="sendId" name="sendId">
-							<input type="hidden" id="parentId" name="parentId">
+						<form id="receive-add-form">
+<!--							<input type="hidden" id="sendId" name="sendId">-->
+<!--							<input type="hidden" id="parentId" name="parentId">-->
 							<div class="select-list">
 								<ul>
 									<li>
@@ -64,14 +64,11 @@
 				</div>
 
 				<h4 class="form-header h4">待收货列表</h4>
-				<!--<div class="row">
-					<div class="col-sm-12">
-						<div class="col-sm-12 select-table table-striped">
-							<table id="bootstrap-table"></table>
-						</div>
-					</div>
-				</div>-->
-
+				<div class="btn-group-sm" id="toolbar" role="group">
+					<a class="btn btn-info" onclick="$.operate.receiveMaterial()" shiro:hasPermission="business:send:send">
+						<i class="fa "></i> 收货
+					</a>
+				</div>
 				<div class="col-sm-12 select-table table-striped">
 					<table id="bootstrap-table"></table>
 				</div>
@@ -85,7 +82,7 @@
 	<script th:inline="javascript">
 
         var prefix = ctx + "business/receive";
-        var dataStatus = [[${@dict.getType('busi_receive_status')}]];
+        var dataStatus = [[${@dict.getType('busi_send_status')}]];
         var dataType = [[${@dict.getType('busi_material_type')}]];
         var dataUnit = [[${@dict.getType('busi_material_unit')}]];
 
@@ -104,6 +101,7 @@
             var options = {
                 url: prefix + "/unReceiveList",
                 selectSendMaterialDetailUrl:"send/selectSendMaterial/{id}",
+				addSaveUrl:prefix + "/addSave",
                 uniqueId: "sendId",
                 sortName: "sendTime",
                 sortOrder: "ASC",
@@ -189,11 +187,16 @@
                 // contentType: "application/json;charset=UTF-8",
                 contentType: "application/x-www-form-urlencoded",
                 queryParams : {sendId:row.sendId},
-                columns: [{
+				clickEdit: true,
+                columns: [
+					{
+						checkbox: true
+					},
+					{
                     field: 'materialId',
                     title: '物料ID',
                     visible: false
-                },
+                    },
                     {
                         field: 'materialName',
                         title: '物料名称'
@@ -232,8 +235,23 @@
                     },
                     {
                         field: 'sendQuantity',
-                        title: '发货数量'
-                    }]
+                        title: '发货数量',
+						formatter: function(value, row, index) {
+							return $.common.isEmpty(value) ? 0 : value;;
+						}
+                    }],
+
+				onClickCell: function(field, value, row, $element) {
+					if(field == "returnQuantity"){
+						$element.attr('contenteditable', true);
+						$element.blur(function() {
+							var index = $element.parent().data('index');
+							var tdValue = $element.html();
+
+							saveData(index, field, tdValue);
+						})
+					}
+				}
             });
         };
 
@@ -252,33 +270,6 @@
                 $.operate.submit(url, "post", "json", data);
             });
         }
-            // if ($.validate.form()) {
-            //     var data = $('#form-receive-add').serialize();
-            //     var allTableData = $("#bootstrap-table").bootstrapTable('getData');
-            //     var listMap = [];
-            //     $.each(allTableData, function (index, evevt) {
-            //         var map = {};
-            //         console.log("index=" + index)
-            //         map["sendId"] = allTableData[index].sendId;
-            //         // var quantity = allTableData[index].sendQuantity;
-            //         // if(quantity == 0){
-            //          //    $.modal.alertWarning("发货数量不能为0");
-            //          //    throw Error;
-            //         // }else{
-            //          //    map["sendQuantity"] = quantity;
-				// 	// }
-            //         listMap[index] = map;
-            //
-            //     });
-            //     console.log(listMap)
-            //
-            //     $.operate.save(prefix + "/saveSend",
-            //         {
-            //             "listMap": listMap
-            //         }
-            //     );
-            // }
-
 	</script>
 </body>
 </html>

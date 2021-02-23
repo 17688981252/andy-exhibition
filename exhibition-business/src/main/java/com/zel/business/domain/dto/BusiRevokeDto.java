@@ -1,22 +1,19 @@
 package com.zel.business.domain.dto;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zel.common.annotation.Excel;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 /**
- * 布展返回dto
+ * 撤展dto
  * @author andy
  */
 @Data
-public class BusiArrangeDto {
+public class BusiRevokeDto {
 
-//    private static final long serialVersionUID = 1L;
+    /**
+     * 退还ID
+     */
+    private Long revokeId;
 
     /**
      * 展会ID
@@ -55,11 +52,5 @@ public class BusiArrangeDto {
      * 办展方
      */
     private String organizer;
-
-    /**
-     * 勘展图片
-     */
-    private List<Map> arrangeUrlList;
-
 
 }

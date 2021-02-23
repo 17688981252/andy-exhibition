@@ -268,4 +268,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         and del = 1
     </select>
 
+    <!--
+    * 查询退还物料明细
+    * @param returnId 退还ID
+    -->
+    <select id="selectRerurnMaterialDetial" resultMap="BusiMaterialResult">
+        SELECT
+        bm.material_id ,
+        bm.material_name ,
+        bm.material_code ,
+        bm.nick_name ,
+        bm.specifications ,
+        bm.type ,
+        bm.unit ,
+        bm.package_quantity ,
+        bm.create_by ,
+        bm.create_time ,
+        bm.update_by ,
+        bm.update_time ,
+        bm.remark ,
+        brmd.return_quantity as returnQuantity
+        FROM
+        busi_return_material_detail AS brmd
+        LEFT JOIN
+        busi_material as bm ON bm.material_id = brmd.material_id
+        WHERE
+        brmd.return_id = #{returnId}
+        and bm.del = 1
+    </select>
+
 </mapper>

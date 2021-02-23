@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-	<th:block th:include="include :: header('发货列表')" />
+	<th:block th:include="include :: header('退还列表')" />
 	<th:block th:include="include :: layout-latest-css" />
 	<th:block th:include="include :: ztree-css" />
 	<th:block th:include="include :: select2-css" />
@@ -16,16 +16,16 @@
 <body class="gray-bg">
 	<div class="ui-layout-center">
 		<div class="main-content">
-			<form id="form-send-add" class="form-horizontal" th:object="${exhibitionInfo}">
+			<form id="form-return-add" class="form-horizontal" th:object="${exhibitionInfo}">
 				<input id="deptId" name="deptId" type="hidden"/>
 				<input id="treeId"   name="treeId"    type="hidden"/>
-				<h4 class="form-header h4">发货单</h4>
+				<h4 class="form-header h4">退还单</h4>
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="col-sm-4 control-label is-required">发货单号：</label>
+							<label class="col-sm-4 control-label is-required">退还单号：</label>
 							<div class="col-sm-8">
-								<input class="form-control" type="text" disabled="disabled" name="sendNumber" id="sendNumber" th:value="${sendNumber}" required>
+								<input class="form-control" type="text" disabled="disabled" name="returnNumber" id="returnNumber" th:value="${returnNumber}" required>
 							</div>
 						</div>
 					</div>
@@ -72,7 +72,7 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="col-sm-4 control-label is-required">收货公司：</label>
+							<label class="col-sm-4 control-label is-required">收货部门：</label>
 							<div class="col-sm-8">
 								<input class="form-control" type="text" id="deptName" name="deptName" required/>
 							</div>
@@ -97,7 +97,7 @@
 						</div>
 					</div>
 				</div>
-				<h4 class="form-header h4">发货明细</h4>
+				<h4 class="form-header h4">物料明细</h4>
 				<div class="btn-group-sm" id="toolbar" role="group">
 					<a class="btn btn-success" onclick="$.operate.addMaterial()" shiro:hasPermission="business:exhibition:add">
 						<i class="fa fa-plus"></i> 新增物料
@@ -125,7 +125,7 @@
 	<script th:src="@{/js/jquery.tmpl.js}"></script>
 	<script th:inline="javascript">
 
-        var prefix = ctx + "business/send";
+        var prefix = ctx + "business/return";
         var dataType = [[${@dict.getType('busi_material_type')}]];
         var dataUnit = [[${@dict.getType('busi_material_unit')}]];
         $(function() {
@@ -140,12 +140,12 @@
                 allowClear: true
             });
 
-            querysendList();
+            queryReturnList();
 
         });
 
 
-        function querysendList() {
+        function queryReturnList() {
             var options = {
                 // url: ctx +"/business/material/list",
                 // prospectUrl: prefix + "/prospect/{id}",
@@ -154,7 +154,8 @@
                 // removeUrl: prefix + "/remove",
                 // exportUrl: prefix + "/export",
 				// statusUrl: prefix + "/updateStatus",
-                addMaterialUrl: prefix + "/addMaterial/{ids}",
+                // addMaterialUrl: prefix + "/addMaterial/{ids}",
+				addMaterialUrl:"/exhibition/business/send/addMaterial/{ids}",
 				id:"bootstrap-table1",
                 // sortName: "sendQuantity",
                 sortOrder: "desc",
@@ -212,12 +213,12 @@
                         // visible: false
                     },
                     {
-                        field: 'sendQuantity',
-                        title: '发货数量'
-                        // ,
-                        // formatter: function(value, row, index) {
-                        //     return $.common.isEmpty(value) ? 0 : value;;
-                        // }
+                        field: 'returnQuantity',
+                        title: '退还数量'
+                        ,
+                        formatter: function(value, row, index) {
+                            return $.common.isEmpty(value) ? 0 : value;;
+                        }
                     }],
 
                 /**点击输入
@@ -227,7 +228,7 @@
                  * @param {td 元素} $element
                  */
                 onClickCell: function(field, value, row, $element) {
-					if(field == "sendQuantity"){
+					if(field == "returnQuantity"){
                         $element.attr('contenteditable', true);
                         $element.blur(function() {
                             var index = $element.parent().data('index');
@@ -254,31 +255,30 @@
         //确定保存
         function submitHandler() {
             if ($.validate.form()) {
-                var data = $('#form-send-add').serialize();
+                var data = $('#form-return-add').serialize();
                 var allTableData = $("#bootstrap-table1").bootstrapTable('getData');
                 var listMap = [];
                 $.each(allTableData, function (index, evevt) {
                     var map = {};
                     console.log("index=" + index)
                     map["materialId"] = allTableData[index].materialId;
-                    var quantity = allTableData[index].sendQuantity;
+                    var quantity = allTableData[index].returnQuantity;
                     if(quantity == 0){
-                        $.modal.alertWarning("发货数量不能为0");
+                        $.modal.alertWarning("退还数量不能为0");
                         throw Error;
                     }else{
-                        map["sendQuantity"] = quantity;
+                        map["returnQuantity"] = quantity;
 					}
-                    // map["sendQuantity"] = allTableData[index].sendQuantity;
                     listMap[index] = map;
 
                 });
                 console.log(listMap)
 
-                $.operate.save(prefix + "/saveSend",
+                $.operate.save(prefix + "/saveReturn",
                     {
                         "deptId": $("#deptId").val(),
                         "exhibitionId": $("#exhibitionId").val(),
-                        "sendNumber": $("#sendNumber").val(),
+                        "returnNumber": $("#returnNumber").val(),
                         "logisticsName": $("#logisticsName").val(),
                         "logisticsNumber": $("#logisticsNumber").val(),
                         "receiveAddress": $("#receiveAddress").val(),
@@ -294,7 +294,7 @@
        function selectDeptTree() {
             var treeId = $("#treeId").val();
             var deptId = $.common.isEmpty(treeId) ? "100" : $("#treeId").val();
-            var url = prefix + "/selectUserTree/";
+            var url =  "/exhibition/business/send/selectUserTree/";
 		   var options = {
                 title: '选择收货人信息',
                 width: "380",
@@ -325,20 +325,6 @@
             $('#bootstrap-table1').bootstrapTable('remove', {field: 'materialId', values: ids});
 	   }
 
-
-        //  function removeRow() {
-        //     var ids = getIdSelections() //获取所需删除行的ID，也可为其他字段，属性，只需对应该字段columns的field即可
-			// 	alert(ids)
-			//  $('#bootstrap-table1').bootstrapTable('remove', {
-        //         field: 'materialId', //对应该字段ID的columns的field
-        //         values: ids, //字段ID的值
-        //     })
-        // }
-        //  function getIdSelections (){//获取表格选择行字段ID
-        //     return $.map($('#bootstrap-table1').bootstrapTable('getSelections'), function (row) {
-        //         return row.materialId
-        //     })
-        // }
 
 	</script>
 </body>

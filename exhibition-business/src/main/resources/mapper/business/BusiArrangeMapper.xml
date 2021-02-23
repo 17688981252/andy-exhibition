@@ -30,10 +30,17 @@
               (
                   select exhibition_id
                   from busi_send
-                  where status = 3
-                  and  del = 1
+                  where send_id IN
+                        (
+                        select send_id from busi_receive
+                        where status = 2 and del = 1
+                        group by send_id
+                        )
+                  and status = 3
+                  and del = 1
               )
         and del = 1
+        and status = 2
         <if test="exhibitionName != null and exhibitionName !=''">
             and exhibition_name like concat ('%', #{exhibitonName},'%')
         </if>
@@ -53,8 +60,8 @@
     </insert>
 
     <!--查询布展信息-->
-    <select id="findArrangeUrl" resultMap="BusiArrangResult">
-        select arrange_id ,  exhibition_id ,  arrange_url ,  file_name ,  create_by ,  create_time
+    <select id="findArrangeUrl" resultType="com.zel.business.domain.BusiArrange">
+        select arrange_id as arrangeId ,  exhibition_id  as exhibitionId,  arrange_url  as arrangeUrl,  file_name  as fileName,  create_by  as createBy,  create_time as createTime
         from busi_arrange
         where arrange_id = #{arrangeId}
     </select>

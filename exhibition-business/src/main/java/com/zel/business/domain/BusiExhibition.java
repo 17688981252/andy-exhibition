@@ -20,7 +20,7 @@ public class BusiExhibition {
     /**
      * 展会ID
      */
-    @Excel(name = "展会ID", cellType = Excel.ColumnType.NUMERIC)
+//    @Excel(name = "展会ID", cellType = Excel.ColumnType.NUMERIC)
     private Long exhibitionId;
 
     /**
@@ -101,6 +101,23 @@ public class BusiExhibition {
      * 勘展图片
      */
     private List<Map> prospectUrlList;
+
+    /**
+     * 布展图片
+     */
+    private List<Map> arrangeUrlList;
+
+    public void setUpdateBy(Long updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public List<Map> getArrangeUrlList() {
+        return arrangeUrlList;
+    }
+
+    public void setArrangeUrlList(List<Map> arrangeUrlList) {
+        this.arrangeUrlList = arrangeUrlList;
+    }
 
     /** 是否为发货展会标识 默认不是 */
     private boolean flag = false;
