@@ -203,4 +203,15 @@ public class BusiSendController extends BaseController {
         return toAjax(sendService.saveEdit(busiSend));
     }
 
+    /**
+     * 更新发货物料明细
+     * @param send 发货实体
+     * @return 更新数量
+     */
+    @PostMapping("/updateSendMaterialDetail")
+    @ResponseBody
+    public AjaxResult updateSendMaterialDetail(BusiSend send){
+        return toAjax(sendService.updateSendMaterialDetail(send));
+    }
+
 }

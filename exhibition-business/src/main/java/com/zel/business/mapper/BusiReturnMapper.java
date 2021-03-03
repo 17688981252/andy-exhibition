@@ -2,7 +2,9 @@ package com.zel.business.mapper;
 
 import com.zel.business.domain.BusiExhibition;
 import com.zel.business.domain.BusiReturn;
+import com.zel.business.domain.BusiSend;
 import com.zel.business.domain.BusiSerialNumberInfo;
+import com.zel.business.domain.dto.BusiReturnMaterialDto;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -21,8 +23,9 @@ public interface BusiReturnMapper {
     /**
      * 查询退还展会信息
      * @return 退还展会列表
+     * @param exhibitionId
      */
-    List<BusiExhibition> selectReturnExhibitionInfo();
+    BusiExhibition selectReturnExhibitionInfo(@Param(value = "exhibitionId")Long exhibitionId);
 
     /**
      * 查询退还流水号信息
@@ -38,11 +41,16 @@ public interface BusiReturnMapper {
     int insertReturn(BusiReturn returnEntity);
 
     /**
-     * 新增退还物料明细
-     * @param returnEntity 退还实体
-     * @return 新增数量
+     * 插入退还物料明细
+     *
+     * @param returnId
+     * @param receiveList 物料List
+     * @param createBy 创建人
+     * @return 返回插入数量
      */
-    int insertReturnMaterialDetails(BusiReturn returnEntity);
+    int insertReturnMaterialDetails(@Param(value = "returnId")Long returnId,
+                                    @Param(value = "receiveList") List<BusiSend> receiveList,
+                                    @Param(value = "createBy") Long createBy);
 
     /**
      * 更新退还序列号
@@ -59,4 +67,41 @@ public interface BusiReturnMapper {
 
     int updateReturnStatus(@Param(value = "ids") Long[] ids,
                            @Param(value = "returnBy")Long returnBy);
+
+    /**
+     * 查询未退还展会列表
+     */
+    List<BusiExhibition> selectUnreturnList();
+
+    /**
+     * 查询退还物料明细
+     * @param returnId 退还ID
+     * @param materialName 物料名称
+     * @param materialCode 物料代码
+     * @return 物料列表
+     */
+    List<BusiReturnMaterialDto> selectReturnMaterialDetail(@Param(value = "returnId") Long returnId,
+                                                           @Param(value = "materialName") String materialName,
+                                                           @Param(value = "materialCode") String materialCode);
+
+    /**
+     * 更新收货物料明细
+     * @param busiReturn 收货实体
+     * @return 更新数量
+     */
+    int updateReturnMaterialDetail(BusiReturn busiReturn);
+
+    /**
+     * 确认退还
+     * @param returnId 退还ID
+     * @param returnBy 退还人
+     */
+    int confirmReturn(@Param(value = "returnId") Long returnId,
+                      @Param(value = "returnBy")Long returnBy);
+
+    /**
+     * 查看退还状态
+     * @param returnId 退还ID
+     */
+    Object selectReturnStatus(@Param(value = "returnId") Long returnId);
 }

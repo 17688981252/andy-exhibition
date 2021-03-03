@@ -1,10 +1,13 @@
 package com.zel.business.domain;
 
+import lombok.Data;
+
 import java.util.Date;
 
 /**
  * busi_receive
  */
+@Data
 public class BusiReceive {
 
 
@@ -105,6 +108,15 @@ public class BusiReceive {
      */
     private BusiExhibition busiExhibitions;
 
+    /*展会名称*/
+    private String exhibitionName;
+
+    /*办展地点*/
+    private String address;
+
+    /*办展方*/
+    private String organizer;
+
     /*发货人*/
     private String sendName;
 
@@ -113,179 +125,5 @@ public class BusiReceive {
 
     private String receiveName;
 
-    public String getReceiveName() {
-        return receiveName;
-    }
 
-    public void setReceiveName(String receiveName) {
-        this.receiveName = receiveName;
-    }
-
-    public Long getReceiveId() {
-        return receiveId;
-    }
-
-    public void setReceiveId(Long receiveId) {
-        this.receiveId = receiveId;
-    }
-
-    public String getReceiveNumber() {
-        return receiveNumber;
-    }
-
-    public void setReceiveNumber(String receiveNumber) {
-        this.receiveNumber = receiveNumber;
-    }
-
-    public Long getSendId() {
-        return sendId;
-    }
-
-    public void setSendId(Long sendId) {
-        this.sendId = sendId;
-    }
-
-    public String getSendNumber() {
-        return sendNumber;
-    }
-
-    public void setSendNumber(String sendNumber) {
-        this.sendNumber = sendNumber;
-    }
-
-    public Long getExhibitionId() {
-        return exhibitionId;
-    }
-
-    public void setExhibitionId(Long exhibitionId) {
-        this.exhibitionId = exhibitionId;
-    }
-
-    public String getLogisticsName() {
-        return logisticsName;
-    }
-
-    public void setLogisticsName(String logisticsName) {
-        this.logisticsName = logisticsName;
-    }
-
-    public String getLogisticsNumber() {
-        return logisticsNumber;
-    }
-
-    public void setLogisticsNumber(String logisticsNumber) {
-        this.logisticsNumber = logisticsNumber;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getSendBy() {
-        return sendBy;
-    }
-
-    public void setSendBy(String sendBy) {
-        this.sendBy = sendBy;
-    }
-
-    public Date getSendTime() {
-        return sendTime;
-    }
-
-    public void setSendTime(Date sendTime) {
-        this.sendTime = sendTime;
-    }
-
-    public Long getReceiveBy() {
-        return receiveBy;
-    }
-
-    public void setReceiveBy(Long receiveBy) {
-        this.receiveBy = receiveBy;
-    }
-
-    public Date getReceiveTime() {
-        return receiveTime;
-    }
-
-    public void setReceiveTime(Date receiveTime) {
-        this.receiveTime = receiveTime;
-    }
-
-    public Long getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(Long createBy) {
-        this.createBy = createBy;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Integer getDel() {
-        return del;
-    }
-
-    public void setDel(Integer del) {
-        this.del = del;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public BusiExhibition getBusiExhibitions() {
-        return busiExhibitions;
-    }
-
-    public void setBusiExhibitions(BusiExhibition busiExhibitions) {
-        this.busiExhibitions = busiExhibitions;
-    }
-
-    public String getSendName() {
-        return sendName;
-    }
-
-    public void setSendName(String sendName) {
-        this.sendName = sendName;
-    }
-
-    public String getCreateName() {
-        return createName;
-    }
-
-    public void setCreateName(String createName) {
-        this.createName = createName;
-    }
 }

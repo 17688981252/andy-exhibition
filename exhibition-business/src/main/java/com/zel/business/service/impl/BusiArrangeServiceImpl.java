@@ -85,8 +85,9 @@ public class BusiArrangeServiceImpl implements IBusiArrangeService {
                 result = FileUploadUtils.deleteFile(url.replace("/profile/arrangeUrl", Global.getArrangeUrlPath()));
             }
             if (result == false) {
-                new RuntimeException("删除布展图片失败");
-            } else {
+                new RuntimeException("删除图片失败");
+            }
+            if (result) {
                 arrangeMapper.deleteArrangeUrl(arrangeId);
             }
         } catch (Exception e) {

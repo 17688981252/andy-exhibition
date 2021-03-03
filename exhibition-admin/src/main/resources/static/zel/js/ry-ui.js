@@ -1108,6 +1108,22 @@ var table = {
                 });
             },
 
+			// 退还信息
+			returnInfo:function (){
+				table.set();
+				var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+				if (rows.length == 0) {
+					$.modal.alertWarning("请至少选择一条记录");
+					return;
+				}
+				$.modal.confirm("确认收货选中的" + rows.length + "条数据吗?", function() {
+					var url = table.options.returnInfoUrl;
+					var data = { "ids": rows.join() };
+					$.operate.submit(url, "post", "json", data);
+				});
+
+			},
+
 			// 收货
 			receiveMaterial: function() {
 				table.set();
@@ -1123,25 +1139,25 @@ var table = {
 				});
 			},
 
-			// 退还
-			returnMaterial: function() {
-				table.set();
-				var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
-				if (rows.length == 0) {
-					$.modal.alertWarning("请至少选择一条记录");
-					return;
-				}
-				let status = $.table.selectColumns("status")
-				if (status != 1){
-					$.modal.alertWarning("当前状态不可退还");
-					return;
-				}
-				$.modal.confirm("确认退还选中的" + rows.length + "条数据吗?", function() {
-					var url = table.options.returnUrl;
-					var data = { "ids": rows.join() };
-					$.operate.submit(url, "post", "json", data);
-				});
-			},
+			// // 退还
+			// returnMaterial: function() {
+			// 	table.set();
+			// 	var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+			// 	if (rows.length == 0) {
+			// 		$.modal.alertWarning("请至少选择一条记录");
+			// 		return;
+			// 	}
+			// 	let status = $.table.selectColumns("status")
+			// 	if (status != 1){
+			// 		$.modal.alertWarning("当前状态不可退还");
+			// 		return;
+			// 	}
+			// 	$.modal.confirm("确认退还选中的" + rows.length + "条数据吗?", function() {
+			// 		var url = table.options.returnUrl;
+			// 		var data = { "ids": rows.join() };
+			// 		$.operate.submit(url, "post", "json", data);
+			// 	});
+			// },
 
 
 			// 批量移除信息
@@ -1205,7 +1221,7 @@ var table = {
             editAddMaterial: function(id) {
                 table.set("bootstrap-table2");
                 var url = table.options.addMaterialUrl;
-                console.log(url);
+                // console.log(url);
                 var allTableData = $("#bootstrap-table2").bootstrapTable('getData');
                 console.log(JSON.stringify(allTableData));
                 var ids = [];
@@ -1220,8 +1236,14 @@ var table = {
             // 查询发货物料明细 andy
             selectSendMaterialDetail: function(id) {
                  table.set("bootstrap-table2");
-                $.modal.open("查看" + table.options.modalName,  table.options.selectSendMaterialDetailUrl.replace("{id}", id));
+                $.modal.openFull("查看" + table.options.modalName,  table.options.selectSendMaterialDetailUrl.replace("{id}", id));
             },
+
+			// 查询发货物料明细 andy
+			selectReturnMaterialDetail: function(id) {
+				table.set("bootstrap-table2");
+				$.modal.openFull("查看" + table.options.modalName,  table.options.selectReturnMaterialDetailUrl.replace("{id}", id));
+			},
 
             // 添加信息，以tab页展现
             addTab: function (id) {
@@ -1234,6 +1256,13 @@ var table = {
             	var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
                 $.modal.openFull("添加" + table.options.modalName, url);
             },
+			// 新增退还
+			addReturn: function(id) {
+				table.set();
+				var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
+				var exhibitionId = $.table.selectColumns("exhibitionId");
+				$.modal.openFull("添加" + table.options.modalName, table.options.createUrl.replace("{exhibitionId}", exhibitionId));
+			},
             // 添加访问地址
             addUrl: function(id) {
             	var url = $.common.isEmpty(id) ? table.options.createUrl.replace("{id}", "") : table.options.createUrl.replace("{id}", id);
@@ -1311,7 +1340,7 @@ var table = {
 						return;
 					}
 					var url = table.options.uploadUrl.replace("{id}", row[table.options.uniqueId]);
-					$.modal.open("勘展" + table.options.modalName, url);
+					$.modal.open("布展" + table.options.modalName, url);
 				} else {
 					$.modal.openFull("布展" + table.options.modalName, $.operate.uploadArrangeUrl(id));
 				}
@@ -1332,6 +1361,32 @@ var table = {
 				}
 				return url;
 			},
+
+			// 撤展
+			uploadRevoke: function(id) {
+				table.set();
+				var url = $.common.isEmpty(id) ? table.options.uploadRevokeUrl : table.options.uploadRevokeUrl.replace("{id}", id);
+				var exhibitionId = $.table.selectColumns("exhibitionId");
+				$.modal.openFull("撤展" + table.options.modalName, table.options.uploadRevokeUrl.replace("{exhibitionId}", exhibitionId));
+			},
+
+			//布展访问地址
+			uploadArrangeUrl: function(id) {
+				var url = "/404.html";
+				if ($.common.isNotEmpty(id)) {
+					url = table.options.uploadArrangeUrl.replace("{id}", id);
+				} else {
+					var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+					if (id.length == 0) {
+						$.modal.alertWarning("请至少选择一条记录");
+						return;
+					}
+					url = table.options.uploadArrangeUrl.replace("{id}", id);
+				}
+				return url;
+			},
+
+
 
 			// 撤展
 			revoke: function() {
@@ -1421,6 +1476,25 @@ var table = {
             	}
                 return url;
             },
+			// 发货
+			confirmReturn: function() {
+				table.set();
+				var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+				if (rows.length == 0) {
+					$.modal.alertWarning("请至少选择一条记录");
+					return;
+				}
+				let status = $.table.selectColumns("status")
+				if (status != 1){
+					$.modal.alertWarning("当前展会物料已退还");
+					return;
+				}
+				$.modal.confirm("确认退还选中的" + rows.length + "条数据吗?", function() {
+					var url = table.options.confirmReturnUrl;
+					var data = { "returnId": rows.join() };
+					$.operate.submit(url, "post", "json", data);
+				});
+			},
 
 
 

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('退还信息')" />
+	<th:block th:include="include :: layout-latest-css" />
+	<th:block th:include="include :: ztree-css" />
+	<th:block th:include="include :: select2-css" />
+</head>
+<body class="gray-bg">
+	<div class="ui-layout-center">
+		<div class="main-content">
+			<form id="form-returnInfo" class="form-horizontal" th:object="${exhibitionInfo}">
+				<input id="deptId" name="deptId" type="show"/>
+				<input id="treeId"   name="treeId" type="show"/>
+				<input id="exhibitionId"   name="exhibitionId" type="show" th:field="${exhibitionInfo}" th:value="${exhibitionId}"/>
+				<h4 class="form-header h4">退还单</h4>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="col-sm-4 control-label is-required">退还单号：</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" disabled="disabled" name="returnNumber" id="returnNumber" th:value="${returnNumber}" required>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="col-sm-4 control-label is-required">展会名称：</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" disabled="disabled" id="exhibitionName" name="exhibitionName" th:value="*{exhibitionName}" required>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="col-sm-4 control-label is-required">物流名称：</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" id="logisticsName" name="logisticsName"  required>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="col-sm-4 control-label is-required">物流单号：</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" id="logisticsNumber" name="logisticsNumber" required>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="col-sm-4 control-label is-required">收货人：</label>
+							<div class="col-sm-8">
+								<div class="input-group search">
+									<input name="receiveBy" onclick="selectDeptTree()" id="receiveBy" type="text" placeholder="请选择收货人信息" class="form-control" required>
+									<span class="input-group-addon"><i class="fa fa-search"></i></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="col-sm-4 control-label is-required">收货部门：</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" id="deptName" name="deptName" required/>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label class="col-sm-4 control-label is-required">收货地址：</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" id="receiveAddress" name="receiveAddress" required/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label class="col-xs-2 control-label">备注：</label>
+							<div class="col-xs-10">
+								<textarea name="remark" id="remark" maxlength="500" class="form-control" rows="3"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="col-sm-12 select-table table-striped">
+							<table id="bootstrap-table1"></table>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: layout-latest-js" />
+	<th:block th:include="include :: ztree-js" />
+	<th:block th:include="include :: select2-js" />
+	<script th:src="@{/js/jquery.tmpl.js}"></script>
+	<script th:inline="javascript">
+
+        var prefix = ctx + "business/return";
+        var dataType = [[${@dict.getType('busi_material_type')}]];
+        var dataUnit = [[${@dict.getType('busi_material_unit')}]];
+        $(function() {
+            var panehHidden = false;
+            if ($(this).width() < 769) {
+                panehHidden = true;
+            }
+            $('body').layout({ initClosed: panehHidden, west__size: 185 });
+
+            queryReturnInfo();
+
+        });
+
+		function queryReturnInfo() {
+			var options = {
+				url: prefix + "/selectReturnInfo",
+				addSaveUrl:prefix + "/addSave",
+				createUrl:prefix + "/returnInfo",
+				uniqueId: "sendId",
+				sortName: "sendTime",
+				sortOrder: "ASC",
+				modalName: "退还信息",
+				queryParams: queryParams,
+				showSearch: false,
+				showRefresh: false,
+				showToggle: false,
+				showColumns: false,
+				detailView: false,
+			};
+			$.table.init(options);
+		}
+		function queryParams(params) {
+			// alert("fasdfasd");
+			var search = $.table.queryParams(params);
+			var id = $("#returnId").val();
+			// alert(id)
+			search.id =  id;
+			return search;
+		}
+
+        /*  选择收货人信息 */
+       function selectDeptTree() {
+            var treeId = $("#treeId").val();
+            var deptId = $.common.isEmpty(treeId) ? "100" : $("#treeId").val();
+            var url =  "/exhibition/business/send/selectUserTree/";
+		   var options = {
+                title: '选择收货人信息',
+                width: "380",
+                url: url,
+                callBack: doSubmit
+            };
+            $.modal.openOptions(options);
+	   }
+
+        /*Tree回显*/
+	   function doSubmit(index, layero){
+			var tree = layero.find("iframe")[0].contentWindow.$._tree;
+			var body = layer.getChildFrame('body', index);
+			$("#treeId").val(body.find('#treeId').val());
+			$("#receiveBy").val(body.find('#treeName').val());
+			$("#deptId").val(body.find('#deptId').val());
+            $("#deptName").val(body.find('#deptName').val());
+			layer.close(index);
+	   }
+		//确定保存退还
+		function submitHandler() {
+				$.operate.save(prefix + "/saveReturn",
+						{
+							"returnNumber": $("#returnNumber").val(),
+							"exhibitionId": $("#exhibitionId").val(),
+							"logisticsName": $("#logisticsName").val(),
+							"logisticsNumber": $("#logisticsNumber").val(),
+							"receiveAddress": $("#receiveAddress").val(),
+							"deptId": $("#deptId").val(),
+							"receiveBy": $("#treeId").val(),
+							"remark": $("#remark").val()
+						}
+				);
+		}
+	</script>
+</body>
+</html>

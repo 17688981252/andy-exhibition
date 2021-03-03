@@ -29,6 +29,7 @@
         <result property="receiveName" column="receiveName"/>
         <result property="sendName" column="sendName"/>
         <result property="createName" column="createName"/>
+        <result property="receiveQuantity" column="receive_quantity"/>
 
     </resultMap>
 
@@ -185,7 +186,8 @@
             bm.update_by AS  updateBy,
             bm.update_time AS  updateTime,
             bm.remark AS  remark,
-            bsmd.send_quantity AS sendQuantity
+            bsmd.send_quantity AS sendQuantity,
+            IFNULL (bsmd.receive_quantity,bsmd.send_quantity) as receiveQuantity
         FROM
             busi_send_material_detail AS bsmd
         LEFT JOIN
@@ -466,5 +468,28 @@
         set status = 3
         where send_id = #{id}
     </update>
+
+    <!--更新发货物料明细-->
+    <update id="updateSendMaterialDetail" parameterType="com.zel.business.domain.BusiSend">
+        UPDATE busi_send_material_detail
+        SET receive_quantity = #{receiveQuantity},
+            update_by = #{updateBy}
+        WHERE
+            send_id = #{sendId}
+          AND material_id = #{materialId};
+    </update>
+
+
+    <select id="selectReceiveMaterialDetial" resultType="com.zel.business.domain.BusiSend">
+        SELECT
+            material_id as materialId,
+            receive_quantity as receiveQuantity
+        FROM
+            busi_send_material_detail
+        WHERE
+            send_id IN ( SELECT send_id FROM busi_send WHERE exhibition_id = #{exhibitionId} )
+        GROUP BY
+            material_id
+    </select>
 
 </mapper>

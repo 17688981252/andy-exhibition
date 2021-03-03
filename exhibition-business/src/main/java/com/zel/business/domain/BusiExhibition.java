@@ -2,6 +2,7 @@ package com.zel.business.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.zel.common.annotation.Excel;
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.Map;
  *
  * @author andy
  */
+@Data
 public class BusiExhibition {
 
     private static final long serialVersionUID = 1L;
@@ -107,142 +109,17 @@ public class BusiExhibition {
      */
     private List<Map> arrangeUrlList;
 
-    public void setUpdateBy(Long updateBy) {
-        this.updateBy = updateBy;
-    }
+    /**
+     * 撤展图片
+     */
+    private List<Map> revokeUrlList;
 
-    public List<Map> getArrangeUrlList() {
-        return arrangeUrlList;
-    }
-
-    public void setArrangeUrlList(List<Map> arrangeUrlList) {
-        this.arrangeUrlList = arrangeUrlList;
-    }
 
     /** 是否为发货展会标识 默认不是 */
     private boolean flag = false;
 
-    public boolean isFlag() {
-        return flag;
-    }
 
-    public void setFlag(boolean flag) {
-        this.flag = flag;
-    }
 
-    public List<Map> getProspectUrlList() {
-        return prospectUrlList;
-    }
 
-    public void setProspectUrlList(List<Map> prospectUrlList) {
-        this.prospectUrlList = prospectUrlList;
-    }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    public Long getExhibitionId() {
-        return exhibitionId;
-    }
-
-    public void setExhibitionId(Long exhibitionId) {
-        this.exhibitionId = exhibitionId;
-    }
-
-    public String getExhibitionName() {
-        return exhibitionName;
-    }
-
-    public void setExhibitionName(String exhibitionName) {
-        this.exhibitionName = exhibitionName;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public Date getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getOrganizer() {
-        return organizer;
-    }
-
-    public void setOrganizer(String organizer) {
-        this.organizer = organizer;
-    }
-
-    public Long getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(Long createBy) {
-        this.createBy = createBy;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Long getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(long updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Integer getDel() {
-        return del;
-    }
-
-    public void setDel(Integer del) {
-        this.del = del;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
 }

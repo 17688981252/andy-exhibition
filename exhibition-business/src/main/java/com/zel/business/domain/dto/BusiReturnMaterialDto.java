@@ -5,8 +5,9 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
 @Data
-public class BusiSendMaterialDto {
+public class BusiReturnMaterialDto {
     /**
      * 物料序号
      */
@@ -70,5 +71,8 @@ public class BusiSendMaterialDto {
 
     /*收货数量*/
     private Integer receiveQuantity;
+
+    /*退还数量*/
+    private Integer returnQuantity;
 
 }

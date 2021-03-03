@@ -70,4 +70,11 @@ public interface IBusiSendService {
      * 保存修改发货信息
      */
     int saveEdit(BusiSend busiSend);
+
+    /**
+     * 更新发货物料明细
+     * @param send 发货实体
+     * @return 更新数量
+     */
+    int updateSendMaterialDetail(BusiSend send);
 }

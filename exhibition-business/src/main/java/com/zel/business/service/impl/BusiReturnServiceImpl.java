@@ -1,11 +1,10 @@
 package com.zel.business.service.impl;
 
-import com.zel.business.domain.BusiExhibition;
-import com.zel.business.domain.BusiMaterial;
-import com.zel.business.domain.BusiReturn;
-import com.zel.business.domain.BusiSerialNumberInfo;
+import com.zel.business.domain.*;
+import com.zel.business.domain.dto.BusiReturnMaterialDto;
 import com.zel.business.mapper.BusiMaterialMapper;
 import com.zel.business.mapper.BusiReturnMapper;
+import com.zel.business.mapper.BusiSendMapper;
 import com.zel.business.service.IBusiReturnService;
 import com.zel.framework.util.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BusiReturnServiceImpl implements IBusiReturnService {
@@ -23,6 +23,9 @@ public class BusiReturnServiceImpl implements IBusiReturnService {
 
     @Autowired
     BusiMaterialMapper materialMapper;
+
+    @Autowired
+    BusiSendMapper sendMapper;
 
     /**
      * 查询退还列表
@@ -39,8 +42,8 @@ public class BusiReturnServiceImpl implements IBusiReturnService {
      * @return 退还列表
      */
     @Override
-    public List<BusiExhibition> selectReturnExhibitionInfo() {
-        return returnMapper.selectReturnExhibitionInfo();
+    public BusiExhibition selectReturnExhibitionInfo(Long exhibitionId) {
+        return returnMapper.selectReturnExhibitionInfo(exhibitionId);
     }
 
     /**
@@ -74,14 +77,20 @@ public class BusiReturnServiceImpl implements IBusiReturnService {
      */
     @Override
     public int saveReturn(BusiReturn returnEntity) {
+        //插入退还信息，返回退还ID
         returnEntity.setCreateBy(ShiroUtils.getUserId());
-        int count1 = returnMapper.insertReturn(returnEntity);
-        returnEntity.getReturnId();
-        int count2 = returnMapper.insertReturnMaterialDetails(returnEntity);
-        if (count2>0) {
+        returnMapper.insertReturn(returnEntity);
+        Long returnId = returnEntity.getReturnId();
+
+        //查询收货物料 并插入退还物料明细表
+        Long exhibitionId = returnEntity.getExhibitionId();
+        Long createBy = ShiroUtils.getUserId();
+        List<BusiSend> receiveList = sendMapper.selectReceiveMaterialDetial(exhibitionId);
+        int count = returnMapper.insertReturnMaterialDetails(returnId,receiveList,createBy);
+        if (count>0) {
             returnMapper.updateReturnSerialNumber();
         }
-        return count2;
+        return count;
     }
 
     /**
@@ -110,4 +119,63 @@ public class BusiReturnServiceImpl implements IBusiReturnService {
         Long returnBy = ShiroUtils.getUserId();
         return returnMapper.updateReturnStatus(ids,returnBy);
     }
+
+    /**
+     * 查询未退还展会列表
+     * @return
+     */
+    @Override
+    public List<BusiExhibition> selectUnreturnList() {
+        return returnMapper.selectUnreturnList();
+    }
+
+    /**
+     * 查询退还物料明细
+     * @param returnId 退还ID
+     * @param materialName 物料名称
+     * @param materialCode 物料代码
+     * @return 物料列表
+     */
+    @Override
+    public List<BusiReturnMaterialDto> selectReturnMaterialDetail(Long returnId, String materialName, String materialCode) {
+        return returnMapper.selectReturnMaterialDetail(returnId, materialName, materialCode);
+    }
+
+    /**
+     * 更新收货物料明细
+     * @param busiReturn 收货实体
+     * @return 更新数量
+     */
+    @Override
+    public int updateReturnMaterialDetail(BusiReturn busiReturn) {
+        int count = 0;
+        busiReturn.setUpdateBy(ShiroUtils.getUserId());
+        for (Map map: busiReturn.getListMap()){
+            busiReturn.setMaterialId(Long.parseLong(map.get("materialId").toString()));
+            busiReturn.setReturnQuantity(Integer.parseInt(map.get("returnQuantity").toString()));
+            returnMapper.updateReturnMaterialDetail(busiReturn);
+            count++;
+        }
+        return count;
+    }
+
+    /**
+     * 确认退还
+     * @param returnId 退还ID
+     */
+    @Override
+    public int confirmReturn(Long returnId) {
+        Long returnBy = ShiroUtils.getUserId();
+        return returnMapper.confirmReturn(returnId,returnBy);
+    }
+
+    /**
+     * 查看退还状态
+     * @param returnId 退还ID
+     */
+    @Override
+    public Object selectReturnStatus(Long returnId) {
+        return returnMapper.selectReturnStatus(returnId);
+    }
+
 }

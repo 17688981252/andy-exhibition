@@ -41,10 +41,7 @@
             status = 4,
             update_time = now(),
             update_by = #{updateBy}
-        where exhibition_id in
-        <foreach collection="ids" index="index" item="id" open="(" separator="," close=")">
-              #{id}
-        </foreach>
+        where exhibition_id = #{exhibitionId}
     </update>
 
     <select id="selectSendId"  resultType="java.lang.Long">
@@ -52,5 +49,25 @@
         from busi_send
         where exhibition_id = #{exhibitionId}
     </select>
+
+    <!--插入撤展图片信息-->
+    <insert id="insertRevokeUrl" parameterType="com.zel.business.domain.BusiRevoke" useGeneratedKeys="true" keyProperty="revokeId" keyColumn="revoke_id">
+        INSERT INTO  busi_revoke  (  revoke_id ,  exhibition_id ,  revoke_url ,  file_name ,  create_by ,  create_time )
+        VALUES
+        ( #{revokeId}, #{exhibitionId}, #{revokeUrl}, #{fileName}, #{createBy}, now() );
+    </insert>
+
+    <select id="findRevokeUrl" resultMap="BaseRevokeResult">
+        select revoke_url
+        from busi_revoke
+        where revoke_id = #{revokeId}
+    </select>
+
+    <delete id="deleteRevokeUrl">
+        delete from busi_revoke
+        where  revoke_id = #{revokeId}
+    </delete>
+
+
 
 </mapper>

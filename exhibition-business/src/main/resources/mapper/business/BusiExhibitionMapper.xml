@@ -59,6 +59,25 @@
         </collection>
     </resultMap>
 
+    <resultMap id="BusiRevokeResult" type="com.zel.business.domain.BusiExhibition">
+        <id property="exhibitionId"         column="exhibition_id"/>
+        <result property="exhibitionName"   column="exhibition_name"/>
+        <result property="status"           column="status"/>
+        <result property="startTime"        column="start_time"/>
+        <result property="endTime"          column="end_time"/>
+        <result property="address"          column="address"/>
+        <result property="organizer"        column="organizer"/>
+        <result property="createBy"         column="create_by"/>
+        <result property="createTime"       column="create_time"/>
+        <result property="updateBy"         column="update_by"/>
+        <result property="updateTime"       column="update_time"/>
+        <result property="del"              column="del"/>
+        <result property="remark"           column="remark"/>
+        <collection property="revokeUrlList" select="selectRevokeUrl" column="{exhibitionId = exhibition_id}"
+                    ofType="java.util.List">
+        </collection>
+    </resultMap>
+
     <sql id="selectExhibitionVo">
                 select `exhibition_id`, `exhibition_name`, `status`, `start_time`, `end_time`, `address`, `organizer`, `create_by`, `create_time`, `update_by`, `update_time`, `del`, `remark`
                 from  busi_exhibition
@@ -303,14 +322,14 @@
         exhibition_name
       FROM
         busi_exhibition
-      WHERE
-        exhibition_id NOT IN
-           (SELECT
-                exhibition_id
-            FROM
-                busi_send
-            )
-        and status = 2
+      WHERE del = 1
+--         exhibition_id NOT IN
+--            (SELECT
+--                 exhibition_id
+--             FROM
+--                 busi_send
+--             )
+--         and status = 2
     </select>
 
 
@@ -378,6 +397,27 @@
             arrange_id as arrangeId
         from
             busi_arrange
+        where
+            exhibition_id = #{exhibitionId}
+    </select>
+
+    <!--根据ID查询撤展信息-->
+    <select id="selectRevokeExhibitionInfo" resultMap="BusiRevokeResult">
+        <include refid="selectExhibitionVo"/>
+        where exhibition_id = #{exhibitionId}
+    </select>
+
+    <!--
+    * 查询撤展图片
+    * @param exhibitionId 展会ID
+    -->
+    <select id="selectRevokeUrl" resultType="java.util.Map">
+        select
+            revoke_url as revokeUrl,
+            file_name as fileName,
+            revoke_id as revokeId
+        from
+            busi_revoke
         where
             exhibition_id = #{exhibitionId}
     </select>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('物料列表')" />
+	<th:block th:include="include :: layout-latest-css" />
+</head>
+	<body class="gray-bg">
+
+		<div class="ui-layout-center">
+			<div class="container-div">
+				<div class="row">
+					<div class="col-sm-12 search-collapse">
+						<form class="form-horizontal" id="form-material-send" >
+							<input type="show" id="id" name="id" th:field="${id}" th:value="${id}">
+							<input type="hidden" id="parentId" name="parentId">
+							<div class="select-list">
+								<ul>
+									<li>
+										物料名称：<input type="text" name="materialName"/>
+									</li>
+									<li>
+										物料代码：<input type="text" name="materialCode"/>
+									</li>
+									<li>
+										<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+										<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+									</li>
+								</ul>
+							</div>
+						</form>
+					</div>
+
+					<div class="col-sm-12 select-table table-striped">
+						<table id="bootstrap-table"></table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<th:block th:include="include :: footer" />
+		<th:block th:include="include :: layout-latest-js" />
+		<th:block th:include="include :: ztree-js" />
+		<script th:inline="javascript">
+		var prefix = ctx + "business/receive";
+		var dataType = [[${@dict.getType('busi_material_type')}]];
+		var dataUnit = [[${@dict.getType('busi_material_unit')}]];
+
+		$(function() {
+			var panehHidden = false;
+			if ($(this).width() < 769) {
+				panehHidden = true;
+			}
+			$('body').layout({ initClosed: panehHidden, west__size: 185 });
+			queryMaterialList();
+
+		});
+
+
+		function queryMaterialList() {
+			var options = {
+				url: prefix + "/selectSendMaterialDetail",
+                queryParams: queryParams,
+				// createUrl: prefix + "/add",
+				// sortName: "createTime",
+				// sortOrder: "desc",
+				// modalName: "物料",
+				// data: [[${sendMaterialDetail}]],//接收后端查询返回数据
+				columns: [
+					// {
+					// checkbox: true
+					// },
+					{
+						field: 'materialId',
+						title: '物料ID',
+						visible: false
+					},
+					{
+						field: 'materialName',
+						title: '物料名称'
+					},
+					{
+						field: 'materialCode',
+						title: '物料代码'
+					},
+					{
+						field: 'nickName',
+						title: '物料简称'
+					},  {
+						field: 'specifications',
+						title: '规格型号'
+					},
+
+					{
+						field: 'type',
+						title: '类型',
+						formatter: function(value, row, index) {
+
+							return $.table.selectDictLabel(dataType, row.type);
+						}
+					},{
+						field: 'unit',
+						title: '计量单位',
+						formatter: function(value, row, index) {
+
+							return $.table.selectDictLabel(dataUnit, row.unit);
+						}
+					},
+					{
+						field: 'packageQuantity',
+						title: '标包数量'
+						// visible: false
+					},
+                    {
+                        field: 'sendQuantity',
+                        title: '发货数量'
+                    },
+					{
+						field: 'receiveQuantity',
+						title: '收货数量'
+						,
+						formatter: function(value, row, index) {
+						    return Number.parseInt($.common.isEmpty(value) ? 0 : value);
+						}
+					}
+                    ],
+				onClickCell: function(field, value, row, $element) {
+					if(field == "receiveQuantity"){
+						$element.attr('contenteditable', true);
+						$element.blur(function() {
+							var index = $element.parent().data('index');
+							var tdValue = Number.parseInt($element.html());
+
+							saveData(index, field, tdValue);
+						})
+					}
+				}
+			};
+			$.table.init(options);
+		}
+
+		//保存输入
+		function saveData(index, field, value) {
+
+			$("#bootstrap-table").bootstrapTable('updateCell', {
+				index: index,       //行索引
+				field: field,       //列名
+				value: value        //cell值
+			})
+		}
+
+        function queryParams(params) {
+            var search = $.table.queryParams(params);
+            var id =  [[${id}]];
+            search.id = id;
+            return search;
+        }
+
+		//确定保存
+		function submitHandler() {
+			if ($.validate.form()) {
+				var data = $('#form-material-send').serialize();
+				var allTableData = $("#bootstrap-table").bootstrapTable('getData');
+				var listMap = [];
+				$.each(allTableData, function (index, evevt) {
+					var map = {};
+					console.log("index=" + index)
+					map["materialId"] = allTableData[index].materialId;
+					map["receiveQuantity"] = Number.parseInt(allTableData[index].receiveQuantity);
+					// var quantity = allTableData[index].receiveQuantity;
+					// map["receiveQuantity"] = quantity;
+					/*if(quantity == 0){
+						$.modal.alertWarning("发货数量不能为0");
+						throw Error;
+					}else{
+					}*/
+					listMap[index] = map;
+
+				});
+				console.log(listMap)
+
+				$.operate.save("/exhibition/business/send/updateSendMaterialDetail",
+						{
+							"sendId": $("#id").val(),
+							// "exhibitionId": $("#exhibitionId").val(),
+							// "sendNumber": $("#sendNumber").val(),
+							// "logisticsName": $("#logisticsName").val(),
+							// "logisticsNumber": $("#logisticsNumber").val(),
+							// "receiveAddress": $("#receiveAddress").val(),
+							// "remark": $("#remark").val(),
+							// "receiveBy": $("#treeId").val(),
+							"listMap": listMap
+						}
+				);
+			}
+		}
+		</script>
+	</body>
+
+</html>

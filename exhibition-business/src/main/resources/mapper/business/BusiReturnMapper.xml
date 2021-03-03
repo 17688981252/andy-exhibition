@@ -28,6 +28,7 @@
         <result property="receiveName"        column="receiveName"/>
         <result property="returnName"         column="returnName"/>
         <result property="createName"         column="createName"/>
+        <result property="deptName"           column="deptName"/>
     </resultMap>
 
     <!--查询退还信息-->
@@ -53,11 +54,13 @@
             be.address as address,
             be.organizer as organizer,
             ret.user_name as returnName,
-            rec.user_name as receiveName
+            rec.user_name as receiveName,
+            dep.dept_name as deptName
         from busi_return as br
         left join busi_exhibition as be on br.exhibition_id = be.exhibition_id
         left join sys_user as ret on br.return_by = ret.user_id
         left join sys_user as rec on br.receive_by = rec.user_id
+        left join sys_dept as dep on br.dept_id = dep.dept_id
         where br.del = 1
         order by br.create_time DESC
     </select>
@@ -68,10 +71,7 @@
             exhibition_id as exhibitionId,
             exhibition_name as exhibitionName
         from busi_exhibition
-        where exhibition_id NOT IN
-              (select exhibition_id from busi_return where del = 1)
-        and  status = 4
-        and  del = 1
+        where exhibition_id = #{exhibitionId}
     </select>
 
     <!--查询退还流水号信息-->
@@ -119,7 +119,7 @@
     </insert>
 
     <!--插入退还物料明细-->
-    <insert id="insertReturnMaterialDetails" parameterType="com.zel.business.domain.BusiReturn">
+    <insert id="insertReturnMaterialDetails" >
         INSERT INTO busi_return_material_detail
             (
              return_id  ,
@@ -129,11 +129,11 @@
              create_time
              )
         VALUES
-        <foreach collection="listMap" item="detail" index="insex" open="" separator="," close="">
+        <foreach collection="receiveList" item="detail" index="insex" open="" separator="," close="">
             (
              #{returnId},
              #{detail.materialId},
-             #{detail.returnQuantity},
+             #{detail.receiveQuantity},
              #{createBy},
              now()
              )
@@ -169,6 +169,120 @@
         </foreach>
     </update>
 
+    <!--查询未退还展会列表-->
+    <select id="selectUnreturnList" resultType="com.zel.business.domain.BusiExhibition">
+        SELECT
+            exhibition_id AS exhibitionId,
+            exhibition_name AS exhibitionName,
+            STATUS AS STATUS,
+            address AS address,
+            organizer AS organizer,
+            start_time AS startTime,
+            end_time AS endTime,
+            remark AS remark
+        FROM
+            busi_exhibition
+        WHERE
+            exhibition_id NOT IN ( SELECT exhibition_id FROM busi_return WHERE del = 1 )
+          AND `status` = 4
+          AND del = 1
+    </select>
 
+    <select id="selectUnreturnList2" resultType="com.zel.business.domain.BusiSend">
+        SELECT
+            br.receive_id as receiveId,
+            br.receive_number as receiveNumber,
+            br.send_id as sendId,
+            br.receive_time as receiveTime,
+            br.receive_by as receiveBy,
+            bs.send_number as sendNumber,
+            bs.send_by as sendBy,
+            bs.send_time as sendTime,
+            bs.logistics_name as logisticsName,
+            bs.logistics_number as logisticsNumber,
+            bs.exhibition_id as exhibitionId,
+            be.exhibition_name as exhibitionName,
+            be.STATUS as status,
+            be.address as address,
+            be.organizer as organizer,
+            ss.user_name AS sendName,
+            sr.user_name AS receiveName
+        FROM
+            busi_receive AS br
+                LEFT JOIN busi_send AS bs ON bs.send_id = br.send_id
+                LEFT JOIN busi_exhibition AS be ON bs.exhibition_id = be.exhibition_id
+                LEFT JOIN sys_user AS ss ON bs.send_by = ss.user_id
+                LEFT JOIN sys_user AS sr ON br.receive_by = sr.user_id
+        WHERE
+                bs.exhibition_id IN ( SELECT exhibition_id FROM busi_exhibition WHERE `status` = 4 AND del = 1 )
+          AND br.del = 1
+        <if test="logisticsName != null and logisticsName !=''">
+            and bs.logistics_name like concat ('%', #{logisticsName} ,'%')
+        </if>
+        <if test="logisticsNumber != null and logisticsNumber !=''">
+            and bs.logistics_number like concat ('%', #{logisticsNumber} ,'%')
+        </if>
+        <if test="exhibitionName != null and exhibitionName !=''">
+            and be.exhibition_name like concat ('%', #{exhibitionName} ,'%')
+        </if>
+        <if test="receiveNumber != null and receiveNumber !=''">
+            and br.receive_number like concat ('%', #{receiveNumber} ,'%')
+        </if>
+    </select>
+
+    <select id="selectReturnMaterialDetail" resultType="com.zel.business.domain.dto.BusiReturnMaterialDto">
+        SELECT
+        bm.material_id AS   materialId,
+        bm.material_name AS  materialName,
+        bm.material_code AS  materialCode,
+        bm.nick_name AS  nickName,
+        bm.specifications AS  specifications,
+        bm.type AS  type,
+        bm.unit AS  unit,
+        bm.package_quantity AS  packageQuantity,
+        bm.create_by AS  createBy,
+        bm.create_time AS  createTime,
+        bm.update_by AS  updateBy,
+        bm.update_time AS  updateTime,
+        bm.remark AS  remark,
+        brmd.return_quantity AS returnQuantity
+        FROM
+        busi_return_material_detail AS brmd
+        LEFT JOIN
+        busi_material as bm ON bm.material_id = brmd.material_id
+        WHERE
+        brmd.return_id = #{returnId}
+        <if test="materialName != null and materialName != ''">
+            AND bm.material_name like concat('%', #{materialName}, '%')
+        </if>
+        <if test="materialCode != null and materialCode != ''">
+            AND bm.material_code like concat('%', #{materialCode}, '%')
+        </if>
+        and bm.del = 1
+    </select>
+
+    <update id="updateReturnMaterialDetail" parameterType="com.zel.business.domain.BusiReturn">
+        UPDATE busi_return_material_detail
+        SET update_by = #{updateBy},
+            update_time = now( ),
+            return_quantity = #{returnQuantity}
+        WHERE
+            material_id = #{materialId}
+          AND return_id = #{returnId}
+    </update>
+
+    <update id="confirmReturn" parameterType="java.lang.Long">
+        UPDATE busi_return
+        SET return_by = #{returnBy},
+            return_time = NOW( ),
+            status = 2
+        WHERE
+            return_id = #{returnId}
+    </update>
+
+    <select id="selectReturnStatus" parameterType="java.lang.Long" resultType="object">
+        select status from busi_return
+        where return_id = #{returnId}
+    </select>
 
 </mapper>

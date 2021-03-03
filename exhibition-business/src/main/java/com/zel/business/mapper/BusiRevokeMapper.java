@@ -1,5 +1,7 @@
 package com.zel.business.mapper;
 
+import com.zel.business.domain.BusiExhibition;
+import com.zel.business.domain.BusiRevoke;
 import com.zel.business.domain.dto.BusiRevokeDto;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -11,14 +13,34 @@ public interface BusiRevokeMapper {
 
     List<BusiRevokeDto> selectRevokeList(BusiRevokeDto revokeDto);
 
-    /**
-     * 撤展
-     * @param ids 展会IDs
-     * @param updateBy
-     * @return 撤展数
-     */
-    int updateExhibitionStatus(@Param(value = "ids") Long[] ids,
-                               @Param(value = "updateBy") Long updateBy);
+
 
     Long selectSendId(@Param(value = "exhibitionId") Long exhibitionId);
+
+
+    /**
+     * 插入撤展图片
+     * @param busiRevoke
+     * @return
+     */
+    int insertRevokeUrl(BusiRevoke busiRevoke);
+
+    /**
+     * 查询撤展Url
+     * @param revokeId
+     * @return
+     */
+    BusiRevoke findRevokeUrl(@Param(value = "revokeId") Long revokeId);
+
+    void deleteRevokeUrl(@Param(value = "revokeId") Long revokeId);
+
+
+
+    /**
+     * 更新展会状态为撤展
+     * @param exhibitionId 展会ID
+     * @Param updateBy 更新人
+     */
+    int updateExhibitionStatus(@Param(value = "exhibitionId") Long exhibitionId,
+                               @Param(value = "updateBy") Long updateBy);
 }

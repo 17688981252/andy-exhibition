@@ -2,6 +2,7 @@ package com.zel.business.domain;
 
 import com.zel.system.domain.SysDept;
 import com.zel.system.domain.SysUser;
+import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Map;
  * 发货信息 busi_send
  * @author andy
  */
+@Data
 public class BusiSend {
 
     /**
@@ -82,7 +84,7 @@ public class BusiSend {
     /**
      * 更新人
      */
-    private String updateBy;
+    private Long updateBy;
 
     /**
      * 更新时间
@@ -105,6 +107,15 @@ public class BusiSend {
      */
     private BusiExhibition busiExhibitions;
 
+     /*展会名称*/
+    private String exhibitionName;
+
+    /*办展地点*/
+    private String address;
+
+    /*办展方*/
+    private String organizer;
+
     /*收货部门*/
     private String deptName;
 
@@ -126,223 +137,15 @@ public class BusiSend {
    /* 收货单号*/
     private String receiveNumber;
 
-    public String getReceiveNumber() {
-        return receiveNumber;
-    }
-
-    public void setReceiveNumber(String receiveNumber) {
-        this.receiveNumber = receiveNumber;
-    }
-
-    public String getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
-    public String getDeptName() {
-        return deptName;
-    }
-
-    public void setDeptName(String deptName) {
-        this.deptName = deptName;
-    }
-
-    public String getReceiveName() {
-        return receiveName;
-    }
-
-    public void setReceiveName(String receiveName) {
-        this.receiveName = receiveName;
-    }
-
-    public String getSendName() {
-        return sendName;
-    }
-
-    public void setSendName(String sendName) {
-        this.sendName = sendName;
-    }
-
-    public String getCreateName() {
-        return createName;
-    }
-
-    public void setCreateName(String createName) {
-        this.createName = createName;
-    }
-
+    /*物料ID及数量*/
     private List<Map> listMap;
 
+    /*发货数量*/
     private Integer sendQuantity;
 
-    public Integer getSendQuantity() {
-        return sendQuantity;
-    }
+    /*收货数量*/
+    private Integer receiveQuantity;
 
-    public void setSendQuantity(Integer sendQuantity) {
-        this.sendQuantity = sendQuantity;
-    }
-
-    public List<Map> getListMap() {
-        return listMap;
-    }
-
-    public void setListMap(List<Map> listMap) {
-        this.listMap = listMap;
-    }
-
-    public Long getSendId() {
-        return sendId;
-    }
-
-    public void setSendId(Long sendId) {
-        this.sendId = sendId;
-    }
-
-    public String getSendNumber() {
-        return sendNumber;
-    }
-
-    public Long getExhibitionId() {
-        return exhibitionId;
-    }
-
-    public void setExhibitionId(Long exhibitionId) {
-        this.exhibitionId = exhibitionId;
-    }
-
-    public void setSendNumber(String sendNumber) {
-        this.sendNumber = sendNumber;
-    }
-
-    public String getLogisticsName() {
-        return logisticsName;
-    }
-
-    public void setLogisticsName(String logisticsName) {
-        this.logisticsName = logisticsName;
-    }
-
-    public String getLogisticsNumber() {
-        return logisticsNumber;
-    }
-
-    public void setLogisticsNumber(String logisticsNumber) {
-        this.logisticsNumber = logisticsNumber;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Long getSendBy() {
-        return sendBy;
-    }
-
-    public void setSendBy(Long sendBy) {
-        this.sendBy = sendBy;
-    }
-
-    public Date getSendTime() {
-        return sendTime;
-    }
-
-    public void setSendTime(Date sendTime) {
-        this.sendTime = sendTime;
-    }
-
-    public Long getReceiveBy() {
-        return receiveBy;
-    }
-
-    public void setReceiveBy(Long receiveBy) {
-        this.receiveBy = receiveBy;
-    }
-
-    public String getReceiveAddress() {
-        return receiveAddress;
-    }
-
-    public void setReceiveAddress(String receiveAddress) {
-        this.receiveAddress = receiveAddress;
-    }
-
-    public Long getDeptId() {
-        return deptId;
-    }
-
-    public void setDeptId(Long deptId) {
-        this.deptId = deptId;
-    }
-
-    public Long getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(Long createBy) {
-        this.createBy = createBy;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Integer getDel() {
-        return del;
-    }
-
-    public void setDel(Integer del) {
-        this.del = del;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public BusiExhibition getBusiExhibitions() {
-        return busiExhibitions;
-    }
-
-    public void setBusiExhibitions(BusiExhibition busiExhibitions) {
-        this.busiExhibitions = busiExhibitions;
-    }
+    /*物料ID*/
+    private Long materialId;
 }

@@ -115,6 +115,14 @@ public class Global
     }
 
     /**
+     * 获取撤展图片上传路径
+     */
+    public static String getRevokeUrlPath()
+    {
+        return getProfile() + "/revokeUrl";
+    }
+
+    /**
      * 获取下载路径
      */
     public static String getDownloadPath()

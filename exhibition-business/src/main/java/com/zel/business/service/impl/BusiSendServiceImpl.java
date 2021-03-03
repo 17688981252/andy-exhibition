@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BusiSendServiceImpl implements IBusiSendService {
@@ -153,6 +154,24 @@ public class BusiSendServiceImpl implements IBusiSendService {
         busiSend.getSendId();
         int count2 = sendMapper.insertSendMaterialDetail(busiSend);
         return count2;
+    }
+
+    /**
+     * 更新发货物料明细
+     * @param send 发货实体
+     * @return 更新数量
+     */
+    @Override
+    public int updateSendMaterialDetail(BusiSend send) {
+        send.setUpdateBy(ShiroUtils.getUserId());
+        int count = 0;
+        for(Map map: send.getListMap()){
+            send.setMaterialId(Long.parseLong(map.get("materialId").toString()));
+            send.setReceiveQuantity(Integer.parseInt(map.get("receiveQuantity").toString()));
+            sendMapper.updateSendMaterialDetail(send);
+            count++;
+        }
+        return count;
     }
 
 

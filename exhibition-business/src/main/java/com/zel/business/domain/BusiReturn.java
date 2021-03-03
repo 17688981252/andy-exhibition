@@ -83,7 +83,7 @@ public class BusiReturn {
     /**
      * 更新人
      */
-    private String updateBy;
+    private Long updateBy;
 
     /**
      * 更新时间
@@ -148,8 +148,13 @@ public class BusiReturn {
    /* 收货单号*/
     private String receiveNumber;
 
-    /*传入参数*/
+    /*物料ID及数量*/
     private List<Map> listMap;
 
+    /*物料ID*/
+    private Long materialId;
+
+    /*退还数量*/
+    private Integer returnQuantity;
 
 }

@@ -80,7 +80,7 @@
 	<!--<th:block th:include="include :: select2-js" />-->
 	<script th:src="@{/js/jquery.tmpl.js}"></script>
 	<script th:inline="javascript">
-
+		var selectSendMaterialDetailFlag = [[${@permission.hasPermi('business:exhibition:selectSendMaterialDetail')}]];
         var prefix = ctx + "business/receive";
         var dataStatus = [[${@dict.getType('busi_send_status')}]];
         var dataType = [[${@dict.getType('busi_material_type')}]];
@@ -100,7 +100,7 @@
         function queryUnReceiveList() {
             var options = {
                 url: prefix + "/unReceiveList",
-                selectSendMaterialDetailUrl:"send/selectSendMaterial/{id}",
+                selectSendMaterialDetailUrl: prefix + "/selectSendMaterial/{id}",
 				addSaveUrl:prefix + "/addSave",
                 uniqueId: "sendId",
                 sortName: "sendTime",
@@ -110,10 +110,10 @@
                 showRefresh: false,
                 showToggle: false,
                 showColumns: false,
-                detailView: true,
-                onExpandRow : function(index, row, $detail) {
-                    initChildTable(index, row, $detail);
-                },
+                // detailView: true,
+                // onExpandRow : function(index, row, $detail) {
+                //     initChildTable(index, row, $detail);
+                // },
                 columns: [
                     {
                         checkbox: true
@@ -163,18 +163,16 @@
                         field: 'sendTime',
                         title: '发货时间'
                     },
-                    {
-                        field: 'receiveNumber',
-                        title: '收货单号'
-                    },
-                    {
-                        field: 'createName',
-                        title: '收货人'
-                    },
-                    {
-                        field: 'createTime',
-                        title: '收货时间'
-                    }]
+					{
+						title: '查看',
+						align: 'center',
+						formatter: function(value, row, index) {
+							var actions = [];
+							actions.push('<a class="btn btn-success btn-xs ' + selectSendMaterialDetailFlag + '" href="javascript:void(0)" onclick="$.operate.selectSendMaterialDetail(\'' + row.sendId + '\',\'' + row.sendNumber + '\')"><i class="fa fa-edit"></i>物料明细</a> ');
+							return actions.join('');
+						}
+					}
+                    ]
             };
             $.table.init(options);
         }

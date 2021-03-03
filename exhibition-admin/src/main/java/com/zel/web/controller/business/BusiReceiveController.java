@@ -5,6 +5,7 @@ import com.zel.business.domain.BusiReceive;
 import com.zel.business.domain.BusiSend;
 import com.zel.business.domain.dto.BusiReceiveInDto;
 import com.zel.business.domain.dto.BusiReceiveMaterialDto;
+import com.zel.business.domain.dto.BusiSendMaterialDto;
 import com.zel.business.service.IBusiReceiveService;
 import com.zel.business.service.IBusiSendService;
 import com.zel.common.core.controller.BaseController;
@@ -116,5 +117,29 @@ public class BusiReceiveController extends BaseController {
     @ResponseBody
     public AjaxResult deleteReceive(Long[] ids){
         return toAjax(receiveService.deleteReceive(ids));
+    }
+
+    /**
+     *查询发货物料
+     * @param id
+     */
+    @GetMapping("/selectSendMaterial/{id}")
+    public String selectSendMaterial(@PathVariable("id") Long id, ModelMap map) {
+        map.put("id",id);
+        return prefix + "/sendMaterialDetail";
+    }
+
+    /**
+     *查询发货物料明细
+     * @param id
+     */
+    @PostMapping("/selectSendMaterialDetail")
+    @ResponseBody
+    public TableDataInfo selectSendMaterialDetail(@RequestParam(value = "id")Long id,
+                                                  @RequestParam(value = "materialName",required = false) String materialName,
+                                                  @RequestParam(value = "materialCode",required = false) String materialCode){
+        startPage();
+        List<BusiSendMaterialDto> list = sendService.selectSendMaterialDetail(id,materialName,materialCode);
+        return getDataTable(list);
     }
 }

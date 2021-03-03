@@ -111,4 +111,16 @@ public interface BusiSendMapper {
     void updateSendStatus(@Param(value = "id") Long id);
 
 
+    /**
+     * 更新发货物料明细
+     * @param send 发货实体
+     * @return 更新数量
+     */
+    int updateSendMaterialDetail(BusiSend send);
+
+    /**
+     * 查询收货物料明细
+     * @param exhibitionId 展会ID
+     */
+    List<BusiSend> selectReceiveMaterialDetial(@Param(value = "exhibitionId") Long exhibitionId);
 }

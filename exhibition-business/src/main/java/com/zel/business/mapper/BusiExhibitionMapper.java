@@ -109,4 +109,10 @@ public interface BusiExhibitionMapper {
     BusiExhibition selectExhibition(@Param(value = "id")Long id);
 
     BusiExhibition selectExhibitionInfoById(@Param(value = "exhibitionId") Long exhibitionId);
+
+    /**
+     * 查询撤展展会信息
+     * @param exhibitionId 展会ID
+     */
+    BusiExhibition selectRevokeExhibitionInfo(Long exhibitionId);
 }

@@ -149,14 +149,18 @@
            status ,
            create_by ,
            create_time ,
+           receive_by,
+           receive_time,
            del
         )
         VALUES
 	    (
 	      #{receiveNumber},
 	      #{sendId},
-	      1,
+	      2,
 	      #{createBy},
+	      now(),
+	      #{receiveBy},
 	      now(),
 	      1
 	    )

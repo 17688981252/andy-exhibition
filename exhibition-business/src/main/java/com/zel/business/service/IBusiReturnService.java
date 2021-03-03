@@ -3,6 +3,7 @@ package com.zel.business.service;
 import com.zel.business.domain.BusiExhibition;
 import com.zel.business.domain.BusiMaterial;
 import com.zel.business.domain.BusiReturn;
+import com.zel.business.domain.dto.BusiReturnMaterialDto;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public interface IBusiReturnService
      * 查询退还展会信息
      * @return 退还列表
      */
-    List<BusiExhibition> selectReturnExhibitionInfo();
+    BusiExhibition selectReturnExhibitionInfo(Long exhibitionid);
 
     /**
      * 创建退还流水号
@@ -50,4 +51,38 @@ public interface IBusiReturnService
     List<BusiMaterial> selectRerurnMaterialDetial(Long returnId);
 
     int returnMaterial(Long[] ids);
+
+    /**
+     * 查询未退还展会列表
+     * @return
+     */
+    List<BusiExhibition> selectUnreturnList();
+
+    /**
+     * 查询退还物料明细
+     * @param returnId 退还ID
+     * @param materialName 物料名称
+     * @param materialCode 物料代码
+     * @return 物料列表
+     */
+    List<BusiReturnMaterialDto> selectReturnMaterialDetail(Long returnId,String materialName, String materialCode);
+
+    /**
+     * 更新收货物料明细
+     * @param busiReturn 收货实体
+     * @return 更新数量
+     */
+    int updateReturnMaterialDetail(BusiReturn busiReturn);
+
+    /**
+     * 确认退还
+     * @param returnId 退还ID
+     */
+    int confirmReturn(Long returnId);
+
+    /**
+     * 查看退还状态
+     * @param returnId 退还ID
+     */
+    Object selectReturnStatus(Long returnId);
 }

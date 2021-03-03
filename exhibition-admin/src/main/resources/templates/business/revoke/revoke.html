@@ -36,8 +36,8 @@
 				</div>
 
 		        <div class="btn-group-sm" id="toolbar" role="group">
-					<a class="btn btn-primary " onclick="$.operate.revoke()" shiro:hasPermission="business:exhibition:arrange">
-						<i class="fa fa-remove"></i> 撤展
+					<a class="btn btn-primary single disabled" onclick="$.operate.uploadRevoke()" shiro:hasPermission="business:exhibition:arrange">
+						<i class="fa fa-upload"></i> 撤展图片
 					</a>
 <!--					<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:exhibition:remove">-->
 <!--						<i class="fa fa-remove"></i> 查看布展-->
@@ -72,6 +72,7 @@
                 url: prefix + "/list",
 				revokeUrl: prefix +"/revokeUrl",
 				statusUrl: prefix + "/updateStatus",
+				uploadRevokeUrl:prefix + "/revokeUrl/{exhibitionId}",
                 sortName: "createTime",
                 uniqueId: "exhibitionId",
                 sortOrder: "desc",
