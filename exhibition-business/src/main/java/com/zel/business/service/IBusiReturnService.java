@@ -85,4 +85,10 @@ public interface IBusiReturnService
      * @param returnId 退还ID
      */
     Object selectReturnStatus(Long returnId);
+
+    /**
+     * 查看未退还展会信息
+     * @return 展会LIST
+     */
+    List<BusiExhibition> selectUnReturnExhibitionInfo();
 }

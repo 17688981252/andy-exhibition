@@ -1260,8 +1260,9 @@ var table = {
 			addReturn: function(id) {
 				table.set();
 				var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
-				var exhibitionId = $.table.selectColumns("exhibitionId");
-				$.modal.openFull("添加" + table.options.modalName, table.options.createUrl.replace("{exhibitionId}", exhibitionId));
+				// var exhibitionId = $.table.selectColumns("exhibitionId");
+				// $.modal.openFull("添加" + table.options.modalName, table.options.createUrl.replace("{exhibitionId}", exhibitionId));
+				$.modal.openFull("添加" + table.options.modalName, table.options.createUrl);
 			},
             // 添加访问地址
             addUrl: function(id) {
@@ -1489,7 +1490,7 @@ var table = {
 					$.modal.alertWarning("当前展会物料已退还");
 					return;
 				}
-				$.modal.confirm("确认退还选中的" + rows.length + "条数据吗?", function() {
+				$.modal.confirm("请确认选中展会物料明细是否正确", function() {
 					var url = table.options.confirmReturnUrl;
 					var data = { "returnId": rows.join() };
 					$.operate.submit(url, "post", "json", data);

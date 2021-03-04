@@ -75,7 +75,7 @@
                     showRefresh: false,
                     showToggle: false,
                     showColumns: false,
-                    detailView: false,
+                    detailView: true,
                     onExpandRow : function(index, row, $detail) {
                         initChildTable(index, row, $detail);
                     },
@@ -201,8 +201,8 @@
                             // visible: false
                         },
                         {
-                            field: 'sendQuantity',
-                            title: '发货数量'
+                            field: 'receiveQuantity',
+                            title: '收货数量'
                         }]
                 });
             };

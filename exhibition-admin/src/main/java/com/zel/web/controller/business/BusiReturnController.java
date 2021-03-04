@@ -118,9 +118,10 @@ public class BusiReturnController extends BaseController {
      * @return
      */
     @GetMapping("/addReturn/{exhibitionId}")
-    public String addReturn(@PathVariable("exhibitionId") Long exhibitionId,ModelMap mmp){
+    public String addReturn(ModelMap mmp){
         mmp.put("returnNumber",returnService.createReturnNumber());
-        mmp.put("exhibitionInfo",returnService.selectReturnExhibitionInfo(exhibitionId));
+//        mmp.put("exhibitionInfo",returnService.selectReturnExhibitionInfo(exhibitionId));
+        mmp.put("exhibitionInfo",returnService.selectUnReturnExhibitionInfo());
         return prefix + "/returnInfo";
     }
 

@@ -33,6 +33,52 @@
         <result property="busiExhibitions.address"        column="address"/>
     </resultMap>
 
+    <!--退还resultMap-->
+    <resultMap id="BaseReturnNoticeResultMap" type="com.zel.business.domain.dto.BusiReturnNoticeOutDto">
+        <result property="returnId"           column="return_id" />
+        <result property="returnNumber"       column="return_number" />
+        <result property="exhibitionId"     column="exhibition_id" />
+        <result property="logisticsName"    column="logistics_name" />
+        <result property="logisticsNumber"  column="logistics_number" />
+        <result property="status"           column="status" />
+        <result property="receiveId"           column="receive_id" />
+        <result property="receiveBy"        column="receive_by" />
+        <result property="returnTime"      column="return_time"/>
+        <result property="receiveAddress"   column="receive_address" />
+        <result property="deptId"           column="dept_id" />
+        <result property="exhibitionName" column="exhibition_name"/>
+        <result property="organizer"      column="organizer"/>
+        <result property="address"        column="address"/>
+        <result property="createBy"         column="create_by"/>
+        <result property="createTime"       column="create_time"/>
+        <result property="updateBy"         column="update_by"/>
+        <result property="updateTime"       column="update_time"/>
+        <result property="del"              column="del"/>
+        <result property="remark"           column="remark"/>
+        <result property="deptName"         column="deptName"/>
+        <result property="receiveName"      column="receiveName"/>
+        <result property="returnName"         column="returnName"/>
+        <result property="receiveName"       column="receiveName"/>
+    </resultMap>
+
+    <!--退还物料resultMap-->
+    <resultMap  id="BusiReturnMaterialResult"  type="com.zel.business.domain.dto.BusiReturnMaterialDto">
+        <id     property="materialId"       column="material_id"    />
+        <result property="materialName"     column="material_name"    />
+        <result property="materialCode"     column="material_code"     />
+        <result property="nickName"         column="nick_name"   />
+        <result property="specifications"   column="specifications"   />
+        <result property="type"             column="type"    />
+        <result property="unit"             column="unit"    />
+        <result property="packageQuantity"  column="package_quantity"    />
+        <result property="createBy"         column="create_by"      />
+        <result property="createTime"       column="create_time"    />
+        <result property="updateBy"         column="update_by"      />
+        <result property="updateTime"       column="update_time"    />
+        <result property="del"              column="del"    />
+        <result property="remark"           column="remark"    />
+        <result property="returnQuantity"   column="return_quantity"/>
+    </resultMap>
 
     <!--
     * 加载到货通知列列表
@@ -93,6 +139,74 @@
             and DATE_FORMAT(bs.send_time, '%Y-%m-%d')  <![CDATA[ <= ]]> DATE_FORMAT(#{endTime}, '%Y-%m-%d')
         </if>
         order by br.receive_time ASC
+    </select>
+    
+    
+    <select id="findReturnNoticeList"  resultMap="BaseReturnNoticeResultMap">
+        SELECT
+            br.return_id  ,
+            br.return_number  ,
+            br.exhibition_id  ,
+            br.logistics_name,
+            br.logistics_number,
+            br.STATUS,
+            br.return_by,
+            br.return_time,
+            br.receive_by,
+            br.receive_address,
+            br.dept_id,
+            ret.user_name as returnName,
+            rec.user_name as receiveName,
+            dep.dept_name as deptName,
+            be.exhibition_name,
+            be.address,
+            be.organizer
+        FROM
+            busi_return AS br
+                LEFT JOIN sys_user AS ret ON br.return_by = ret.user_id
+                LEFT JOIN sys_user AS rec ON br.receive_by = rec.user_id
+                LEFT JOIN sys_dept AS dep ON br.dept_id = dep.dept_id
+                LEFT JOIN busi_exhibition AS be ON br.exhibition_id = be.exhibition_id
+        WHERE
+            br.del = 1
+        and br.status != 1
+        <if test="logisticsName != null and logisticsName !=''">
+            and  br.logistics_name like concat ('%', #{logisticsName} ,'%')
+        </if>
+        <if test="logisticsNumber != null and logisticsNumber !=''">
+            and  br.logistics_number like concat ('%', #{logisticsNumber} ,'%')
+        </if>
+        <if test="exhibitionName != null and exhibitionName !=''">
+            and   be.exhibition_name like concat ('%', #{exhibitionName} ,'%')
+        </if>
+        <if test="returnNumber != null and returnNumber !=''">
+            and  br.return_number like concat ('%', #{returnNumber} ,'%')
+        </if>
+        <if test="startTime!=null and startTime!=''">
+            and DATE_FORMAT(br.return_time, '%Y-%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(#{startTime}, '%Y-%m-%d')
+        </if>
+        <if test="endTime!=null and endTime!=''">
+            and DATE_FORMAT(br.return_time, '%Y-%m-%d')  <![CDATA[ <= ]]> DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+        </if>
+
+    </select>
+
+    <select id="selectReturnMaterialDetail" resultMap="BusiReturnMaterialResult">
+        SELECT
+            bm.material_id,
+            bm.material_name,
+            bm.material_code,
+            bm.nick_name,
+            bm.specifications,
+            bm.type,
+            bm.unit,
+            bm.package_quantity,
+            brmd.return_quantity
+        FROM
+            busi_return_material_detail AS brmd
+                LEFT JOIN busi_material AS bm ON bm.material_id = brmd.material_id
+        WHERE
+            brmd.return_id = #{returnId}
     </select>
 
 </mapper>

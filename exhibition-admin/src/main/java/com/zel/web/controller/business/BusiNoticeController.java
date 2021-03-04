@@ -1,7 +1,11 @@
 package com.zel.web.controller.business;
 
+import com.zel.business.domain.BusiExhibition;
+import com.zel.business.domain.BusiReturn;
 import com.zel.business.domain.BusiSend;
 import com.zel.business.domain.dto.BusiNoticeOutDto;
+import com.zel.business.domain.dto.BusiReturnMaterialDto;
+import com.zel.business.domain.dto.BusiReturnNoticeOutDto;
 import com.zel.business.domain.dto.BusiSendMaterialDto;
 import com.zel.business.service.IBusiNoticeService;
 import com.zel.business.service.IBusiSendService;
@@ -38,7 +42,7 @@ public class BusiNoticeController extends BaseController {
     /**
      * 查询到货通知
      */
-    @GetMapping()
+    @GetMapping("/notice")
     public String notice(){return prefix + "/notice";}
 
     /**
@@ -71,6 +75,29 @@ public class BusiNoticeController extends BaseController {
                               @RequestParam(value = "materialCode",required = false) String materialCode){
         startPage();
         List<BusiSendMaterialDto> list = sendService.selectSendMaterialDetail(id,materialName,materialCode);
+        return getDataTable(list);
+    }
+
+    /**
+     * 退还通知
+     * @return
+     */
+    @GetMapping("/returnNotice")
+    public String returnNotice(){return prefix +"/returnNotice";}
+
+    @PostMapping("/returnNoticeList")
+    @ResponseBody
+    public TableDataInfo findReturnNoticeList(BusiReturn busiReturn){
+        startPage();
+        List<BusiReturnNoticeOutDto> list = noticeService.findReturnNoticeList(busiReturn);
+        return getDataTable(list);
+    }
+
+    @PostMapping("/selectReturnMaterialDetail")
+    @ResponseBody
+    public TableDataInfo selectReturnMaterialDetail(@RequestParam(value = "returnId")Long returnId){
+        startPage();
+        List<BusiReturnMaterialDto> list = noticeService.selectReturnMaterialDetail(returnId);
         return getDataTable(list);
     }
 

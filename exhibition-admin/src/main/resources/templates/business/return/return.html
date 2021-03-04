@@ -32,7 +32,7 @@
 					</div>
 
 					<div class="btn-group-sm" id="toolbar" role="group">
-						<a class="btn btn-success" onclick="$.operate.addTab()" shiro:hasPermission="business:exhibition:add">
+						<a class="btn btn-success" onclick="$.operate.addReturn()" shiro:hasPermission="business:exhibition:add">
 							<i class="fa fa-plus"></i> 新增
 						</a>
 <!--						 <a class="btn btn-primary single disabled" onclick="$.operate.sendEditFull()" shiro:hasPermission="business:exhibition:edit">-->
@@ -69,7 +69,7 @@
 			function queryReturnList() {
 				var options = {
                     url: prefix + "/list",
-                    createUrl: prefix + "/add",
+                    createUrl: prefix + "/addReturn/{exhibitionId}",
                     removeUrl: prefix + "/remove",
 					returnUrl: prefix + "/returnMaterial",
                     updateUrl: prefix + "/edit/{id}",

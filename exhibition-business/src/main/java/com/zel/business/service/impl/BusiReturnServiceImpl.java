@@ -178,4 +178,13 @@ public class BusiReturnServiceImpl implements IBusiReturnService {
         return returnMapper.selectReturnStatus(returnId);
     }
 
+    /**
+     * 查看未退还展会信息
+     * @return 展会LIST
+     */
+    @Override
+    public List<BusiExhibition> selectUnReturnExhibitionInfo() {
+        return returnMapper.selectUnReturnExhibitionInfo();
+    }
+
 }

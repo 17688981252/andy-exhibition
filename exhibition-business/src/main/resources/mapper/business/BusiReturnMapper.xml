@@ -285,4 +285,14 @@
         where return_id = #{returnId}
     </select>
 
+    <select id="selectUnReturnExhibitionInfo" resultType="com.zel.business.domain.BusiExhibition">
+        select
+            exhibition_id as exhibitionId,
+            exhibition_name as exhibitionName
+        from
+            busi_exhibition
+        where
+            status = 4
+    </select>
+
 </mapper>

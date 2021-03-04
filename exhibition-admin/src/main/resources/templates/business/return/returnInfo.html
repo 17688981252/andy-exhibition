@@ -6,13 +6,18 @@
 	<th:block th:include="include :: ztree-css" />
 	<th:block th:include="include :: select2-css" />
 </head>
+<style>
+	.select2-container--bootstrap .select2-selection--single .select2-selection__rendered {
+		color: #555;
+		padding: 1px 7px;
+	}
+</style>
 <body class="gray-bg">
 	<div class="ui-layout-center">
 		<div class="main-content">
 			<form id="form-returnInfo" class="form-horizontal" th:object="${exhibitionInfo}">
-				<input id="deptId" name="deptId" type="show"/>
-				<input id="treeId"   name="treeId" type="show"/>
-				<input id="exhibitionId"   name="exhibitionId" type="show" th:field="${exhibitionInfo}" th:value="${exhibitionId}"/>
+				<input id="deptId" name="deptId" type="hidden"/>
+				<input id="treeId"   name="treeId" type="hidden"/>
 				<h4 class="form-header h4">退还单</h4>
 				<div class="row">
 					<div class="col-sm-6">
@@ -25,9 +30,11 @@
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
-							<label class="col-sm-4 control-label is-required">展会名称：</label>
+							<label class="col-sm-4 control-label is-required">展会信息：</label>
 							<div class="col-sm-8">
-								<input class="form-control" type="text" disabled="disabled" id="exhibitionName" name="exhibitionName" th:value="*{exhibitionName}" required>
+								<select id="exhibitionId" name="exhibitionId" class="form-control " >
+									<option th:each="name:${exhibitionInfo}" th:value="${name.exhibitionId}" th:text="${name.exhibitionName}"></option>
+								</select>
 							</div>
 						</div>
 					</div>
@@ -115,6 +122,11 @@
                 panehHidden = true;
             }
             $('body').layout({ initClosed: panehHidden, west__size: 185 });
+
+			$('#exhibitionId').select2({
+				placeholder: "---请选择展会信息---",
+				allowClear: true
+			});
 
             queryReturnInfo();
 

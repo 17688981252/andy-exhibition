@@ -83,7 +83,7 @@
     <select id="selectReceiveMaterialDetialList" resultType="com.zel.business.domain.dto.BusiReceiveMaterialDto">
         SELECT
             bsmd.material_id AS materialId,
-            bsmd.send_quantity AS sendQuantity,
+            bsmd.receive_quantity AS receiveQuantity,
             bm.material_name AS  materialName,
             bm.material_code AS  materialCode,
             bm.nick_name AS  nickName,

@@ -11,8 +11,8 @@
 				<div class="row">
 					<div class="col-sm-12 search-collapse">
 						<form class="form-horizontal" id="form-material-return" >
-							<input type="show" id="returnId" name="returnId" th:field="${returnId}" th:value="${returnId}">
-							<input type="show" id="status" name="status" th:field="${status}" th:value="${status}">
+							<input type="hidden" id="returnId" name="returnId" th:field="${returnId}" th:value="${returnId}">
+							<input type="hidden" id="status" name="status" th:field="${status}" th:value="${status}">
 							<input type="hidden" id="parentId" name="parentId">
 							<div class="select-list">
 								<ul>
@@ -160,8 +160,8 @@
 		function submitHandler() {
 			if ($.validate.form()) {
 				var data = $('#form-material-return').serialize();
-				var status = $("#status").val();
-				alert(status)
+				var status = [[${status}]];
+				alert([[${status}]])
 				if(status == 2){
 					$.modal.alertWarning("当前展会物料已退还");
 					return;
@@ -187,14 +187,7 @@
 
 				$.operate.save("/exhibition/business/return/updateReturnMaterialDetail",
 						{
-							"returnId": $("#returnId").val(),
-							// "exhibitionId": $("#exhibitionId").val(),
-							// "sendNumber": $("#sendNumber").val(),
-							// "logisticsName": $("#logisticsName").val(),
-							// "logisticsNumber": $("#logisticsNumber").val(),
-							// "receiveAddress": $("#receiveAddress").val(),
-							// "remark": $("#remark").val(),
-							// "receiveBy": $("#treeId").val(),
+							"returnId": [[${status}]],
 							"listMap": listMap
 						}
 				);
