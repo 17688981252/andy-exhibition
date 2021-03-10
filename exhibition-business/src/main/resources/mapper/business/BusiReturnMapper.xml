@@ -62,6 +62,15 @@
         left join sys_user as rec on br.receive_by = rec.user_id
         left join sys_dept as dep on br.dept_id = dep.dept_id
         where br.del = 1
+        <if test="exhibitionName != null and exhibitionName !=''">
+            and be.exhibition_name like concat ('%', #{exhibitionName},'%')
+        </if>
+        <if test="returnNumber != null and returnNumber != ''">
+            and br.return_number like concat ('%', #{returnNumber},'%')
+        </if>
+        <if test="logisticsNumber != null and logisticsNumber != ''">
+            and br.logistics_number like concat ('%', #{logisticsNumber},'%')
+        </if>
         order by br.create_time DESC
     </select>
 
@@ -245,7 +254,8 @@
         bm.update_by AS  updateBy,
         bm.update_time AS  updateTime,
         bm.remark AS  remark,
-        brmd.return_quantity AS returnQuantity
+        brmd.return_quantity AS returnQuantity,
+        IFNULL (brmd.return_receive_quantity,brmd.return_quantity) as returnReceiveQuantity
         FROM
         busi_return_material_detail AS brmd
         LEFT JOIN

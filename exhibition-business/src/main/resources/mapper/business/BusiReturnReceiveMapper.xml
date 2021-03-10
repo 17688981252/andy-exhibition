@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zel.business.mapper.BusiReturnReceiveMapper">
+    <resultMap id="ReturnReceiveResultMap" type="com.zel.business.domain.BusiReturnReceive">
+
+        <id     property="returnReceiveId"    column="return_receive_id" />
+        <result property="returnReceiveNumber"           column="return_receive_number" />
+        <result property="returnId"           column="return_id" />
+        <result property="returnNumber"       column="returnNumber" />
+        <result property="returnNumber"       column="return_number" />
+        <result property="exhibitionId"       column="exhibition_id" />
+        <result property="logisticsName"      column="logistics_name" />
+        <result property="logisticsNumber"    column="logistics_number" />
+        <result property="status"             column="status" />
+        <result property="returnBy"           column="return_by" />
+        <result property="returnTime"         column="return_time" />
+        <result property="receiveBy"          column="receive_by" />
+        <result property="receiveTime"          column="receive_time" />
+        <result property="receiveAddress"     column="receive_address" />
+        <result property="deptId"             column="dept_id" />
+        <result property="createBy"           column="create_by"/>
+        <result property="createTime"         column="create_time"/>
+        <result property="updateBy"           column="update_by"/>
+        <result property="updateTime"         column="update_time"/>
+        <result property="del"                column="del"/>
+        <result property="remark"             column="remark"/>
+        <result property="exhibitionName"     column="exhibitionName"/>
+        <result property="organizer"          column="organizer"/>
+        <result property="address"            column="address"/>
+        <result property="deptName"           column="deptName"/>
+        <result property="receiveName"        column="receiveName"/>
+        <result property="returnName"        column="returnName"/>
+        <result property="createName"         column="createName"/>
+        <result property="deptName"           column="deptName"/>
+    </resultMap>
+
+    <!--查询未签收列表-->
+    <select id="findUnReceiveList" resultMap="ReturnReceiveResultMap">
+        SELECT
+            br.return_id,
+            br.return_number,
+            br.exhibition_id,
+            br.logistics_name,
+            br.logistics_number,
+            br.STATUS,
+            br.return_by,
+            br.return_time,
+            br.receive_by,
+            br.receive_address,
+            br.dept_id,
+            br.create_by,
+            br.create_time,
+            br.update_by,
+            br.update_time,
+            br.del,
+            br.remark,
+            be.exhibition_name as exhibitionName,
+            be.organizer,
+            be.address,
+            su.user_name as returnName
+        FROM
+            busi_return AS br
+                LEFT JOIN busi_exhibition AS be ON br.exhibition_id = be.exhibition_id
+                LEFT JOIN sys_user as su ON br.return_by = su.user_id
+        WHERE
+              be.exhibition_id = #{exhibitionId}
+          AND br.STATUS = 2
+          AND br.del = 1
+    </select>
+
+    <!--查询已签收列表-->
+    <select id="findReceivelist" resultMap="ReturnReceiveResultMap">
+        SELECT
+            brr.return_receive_id,
+            brr.return_receive_number,
+            brr.return_id,
+            brr.exhibition_id,
+            brr.logistics_name,
+            brr.logistics_number,
+            brr.STATUS,
+            brr.receive_by,
+            brr.receive_time,
+            brr.receive_address,
+            brr.dept_id,
+            brr.create_by,
+            brr.create_time,
+            brr.update_by,
+            brr.update_time,
+            brr.del,
+            brr.remark,
+            be.exhibition_name AS exhibitionName,
+            be.organizer,
+            be.address,
+            br.return_number AS returnNumber,
+            br.return_by,
+            br.return_time,
+            rb.user_name AS receiveName,
+            di.dept_name AS deptName,
+            rn.user_name AS returnName
+        FROM
+            busi_return_receive AS brr
+                LEFT JOIN busi_exhibition AS be ON brr.exhibition_id = be.exhibition_id
+                LEFT JOIN busi_return AS br ON br.return_id = brr.return_id
+                LEFT JOIN sys_user AS rb ON rb.user_id = brr.receive_by
+                LEFT JOIN sys_user AS rn ON rn.user_id = br.return_by
+                LEFT JOIN sys_dept AS di ON di.dept_id = brr.dept_id
+        WHERE
+            brr.del = 1
+        <if test="exhibitionName != null and exhibitionName !=''">
+            and be.exhibition_name like concat ('%', #{exhibitionName},'%')
+        </if>
+        <if test="returnReceiveNumber != null and returnReceiveNumber != ''">
+            and brr.return_receive_number like concat ('%', #{returnReceiveNumber},'%')
+        </if>
+        <if test="logisticsNumber != null and logisticsNumber != ''">
+            and brr.logistics_number like concat ('%', #{logisticsNumber},'%')
+        </if>
+    </select>
+
+    <select id="selectExhibitionInfo" resultType="com.zel.business.domain.BusiExhibition">
+        SELECT
+            exhibition_id as exhibitionId,
+            exhibition_name as exhibitionName
+        FROM
+            busi_exhibition
+        WHERE
+            `status` = 4
+          AND del =1
+    </select>
+
+    <select id="selectSerialNumberInFo" resultType="com.zel.business.domain.BusiSerialNumberInfo">
+        SELECT
+            prefix AS prefix,
+            ver AS ver,
+            serial_number AS serialNumber
+        FROM
+            Busi_serial_number_info
+        WHERE
+            serial_number_info_id = 4
+    </select>
+
+    <update id="updateReturnMaterialDetail" parameterType="com.zel.business.domain.BusiReturn">
+        UPDATE busi_return_material_detail
+        SET update_by = #{updateBy},
+            update_time = now(),
+            return_receive_quantity = #{returnReceiveQuantity}
+        WHERE
+            material_id = #{materialId}
+          AND return_id = #{returnId}
+    </update>
+
+    <insert id="saveReturnReceive" parameterType="com.zel.business.domain.BusiReturnReceive">
+        INSERT INTO busi_return_receive (
+            return_receive_number  ,
+            return_id ,
+            exhibition_id  ,
+            logistics_name  ,
+            logistics_number  ,
+            status  ,
+            receive_by  ,
+            receive_time  ,
+            receive_address  ,
+            dept_id  ,
+            create_by  ,
+            create_time  ,
+            del  ,
+            remark
+        )
+        VALUES
+            ( #{returnReceiveNumber},
+              #{returnId},
+              #{exhibitionId},
+              #{logisticsName},
+              #{logisticsNumber},
+              1,
+              #{receiveBy},
+              now(),
+              #{receiveAddress},
+              #{deptId},
+              #{createBy},
+              now(),
+              1,
+              #{remark}
+             );
+    </insert>
+
+    <!--更新退还流水号-->
+    <update id="updateReturnReceiveSerialNumber">
+        update busi_serial_number_info
+        set serial_number = serial_number + 1
+        where serial_number_info_id = 4
+    </update>
+
+    <!--查询退还签收状态-->
+    <select id="seleceReturnReceiveStatus" parameterType="java.lang.Long" resultType="object">
+        SELECT STATUS
+        FROM
+            busi_return_receive
+        WHERE
+            return_id = #{returnId}
+    </select>
+
+    <!--删除签收-->
+    <update id="deleteReturnReceive">
+        UPDATE busi_return_receive
+        SET del = 2
+        WHERE
+            return_receive_id IN
+        <foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!--更新签收状态-->
+    <update id="updateReturnReceiveStatus">
+        UPDATE busi_return_receive
+        SET STATUS = 2
+        WHERE
+            return_receive_id = #{returnReceiveId}
+    </update>
+
+    <!--更新退还状态-->
+    <update id="updateReturnStatus">
+        UPDATE busi_return
+        SET STATUS = 3
+        WHERE
+            return_id IN (SELECT return_id FROM busi_return_receive WHERE return_receive_id = #{returnReceiveId})
+    </update>
+
+    <!--更新展会状态-->
+    <update id="updateExhibitionStatus">
+        UPDATE busi_exhibition
+        SET STATUS = 5
+        WHERE
+            exhibition_id IN (SELECT exhibition_id FROM busi_return_receive WHERE return_receive_id = #{returnReceiveId})
+    </update>
+</mapper>

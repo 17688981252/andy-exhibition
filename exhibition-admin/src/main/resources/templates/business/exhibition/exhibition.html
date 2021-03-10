@@ -51,6 +51,9 @@
 					<a class="btn btn-primary single disabled" onclick="$.operate.prospect()" shiro:hasPermission="business:exhibition:prospect">
 						<i class="fa fa-upload"></i> 勘展
 					</a>
+					<a class="btn btn-primary single disabled" onclick="$.operate.exhibitionTimeLine()" shiro:hasPermission="business:exhibition:prospect">
+						<i class="fa"></i> 时间轴
+					</a>
 		        </div>
 
 		        <div class="col-sm-12 select-table table-striped">
@@ -89,6 +92,7 @@
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
 				statusUrl: prefix + "/updateStatus",
+				exhibitionTimeLineUrl:  prefix + "/exhibitionTimeLine/{id}",
                 sortName: "createTime",
                 uniqueId: "exhibitionId",
                 sortOrder: "desc",

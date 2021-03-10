@@ -1,18 +1,29 @@
 package com.zel.business.domain;
 
 import lombok.Data;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 
 /**
- * 退还信息 busi_return
+ * 退还信息 busi_return_receive
  *
  * @author andy
  */
 @Data
-public class BusiReturn {
+public class BusiReturnReceive {
+
+    /**
+     * 退还签收ID
+     */
+    private Long returnReceiveId;
+
+    /**
+     *退还单号
+     */
+    private String returnReceiveNumber;
 
     /**
      * 退还ID
@@ -20,7 +31,7 @@ public class BusiReturn {
     private Long returnId;
 
     /**
-     *退还单号
+     * 退还单号
      */
     private String returnNumber;
 
@@ -56,9 +67,14 @@ public class BusiReturn {
     private Date returnTime;
 
     /**
-     * 收货人
+     * 签收人
      */
     private Long receiveBy;
+
+    /**
+     * 签收时间
+     */
+    private Date receiveTime;
 
     /**
      * 收货地址
@@ -144,6 +160,9 @@ public class BusiReturn {
 
    /* 结束时间*/
     private String endTime;
+
+   /* 收货单号*/
+    private String receiveNumber;
 
     /*物料ID及数量*/
     private List<Map> listMap;

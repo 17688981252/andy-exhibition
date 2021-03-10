@@ -231,6 +231,14 @@ public class BusiExhibitionController extends BaseController
     }
 
 
+    /**
+     * 展会时间轴
+     * @param exhibitionId 展会ID
+     */
+    @GetMapping("/exhibitionTimeLine/{id}")
+    public String exhibitionTimeLine(Long exhibitionId){
+        return prefix + "/timeLine";
+    }
 
 
 }

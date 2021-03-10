@@ -952,6 +952,7 @@ var table = {
             	});
                 layer.full(index);
             },
+
             // 选卡页方式打开
             openTab: function (title, url) {
             	createMenuItem(url, title);
@@ -1139,6 +1140,23 @@ var table = {
 				});
 			},
 
+			// 签收
+			receiveReceive: function() {
+				table.set();
+				var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+				if (rows.length == 0) {
+					$.modal.alertWarning("请至少选择一条记录");
+					return;
+				}
+				$.modal.confirm("签收前请确认物料信息无误", function() {
+					var url = table.options.addSaveUrl;
+					var data = { "returnId": rows.join(returnId),
+						    	 "exhibitionId": rows.join(exhibitionId)
+					           };
+					$.operate.submit(url, "post", "json", data);
+				});
+			},
+
 			// // 退还
 			// returnMaterial: function() {
 			// 	table.set();
@@ -1239,7 +1257,7 @@ var table = {
                 $.modal.openFull("查看" + table.options.modalName,  table.options.selectSendMaterialDetailUrl.replace("{id}", id));
             },
 
-			// 查询发货物料明细 andy
+			// 查询退还物料明细 andy
 			selectReturnMaterialDetail: function(id) {
 				table.set("bootstrap-table2");
 				$.modal.openFull("查看" + table.options.modalName,  table.options.selectReturnMaterialDetailUrl.replace("{id}", id));
@@ -1323,6 +1341,13 @@ var table = {
 					url = table.options.prospectUrl.replace("{id}", id);
 				}
 				return url;
+			},
+
+			// 时间轴
+			exhibitionTimeLine: function(id) {
+				table.set();
+				var url = $.common.isEmpty(id) ? table.options.exhibitionTimeLineUrl : table.options.exhibitionTimeLineUrl.replace("{id}", id);
+				$.modal.openFull("查看" + table.options.modalName +"进程", url);
 			},
 
 
@@ -1477,7 +1502,7 @@ var table = {
             	}
                 return url;
             },
-			// 发货
+			// 确认退还
 			confirmReturn: function() {
 				table.set();
 				var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
@@ -1497,7 +1522,25 @@ var table = {
 				});
 			},
 
-
+			// 确认签收
+			confirmReturnReceive: function() {
+				table.set();
+				var rows = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+				if (rows.length == 0) {
+					$.modal.alertWarning("请至少选择一条记录");
+					return;
+				}
+				let status = $.table.selectColumns("status")
+				if (status != 1){
+					$.modal.alertWarning("当前展会物料已签收");
+					return;
+				}
+				$.modal.confirm("请确认选中展会物料明细是否正确", function() {
+					var url = table.options.confirmReturnReceiveUrl;
+					var data = { "returnReceiveId": rows.join() };
+					$.operate.submit(url, "post", "json", data);
+				});
+			},
 
 
 

@@ -75,4 +75,7 @@ public class BusiReturnMaterialDto {
     /*退还数量*/
     private Integer returnQuantity;
 
+    /*退还数量*/
+    private Integer returnReceiveQuantity;
+
 }

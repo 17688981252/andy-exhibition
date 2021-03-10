@@ -25,7 +25,7 @@
         where status = 3
         and  del = 1
         <if test="exhibitionName != null and exhibitionName !=''">
-            and exhibition_name like concat ('%', #{exhibitonName},'%')
+            and exhibition_name like concat ('%', #{exhibitionName},'%')
         </if>
         <if test="organizer != null and organizer != ''">
             and organizer like concat ('%', #{organizer},'%')

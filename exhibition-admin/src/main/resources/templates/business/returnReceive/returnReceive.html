@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('签收列表')" />
+	<th:block th:include="include :: layout-latest-css" />
+</head>
+	<body class="gray-bg">
+		<div class="ui-layout-center">
+			<div class="container-div">
+				<div class="row">
+					<div class="col-sm-12 search-collapse">
+						<form id="send-form">
+							<input type="hidden" id="sendId" name="sendId">
+							<input type="hidden" id="parentId" name="parentId">
+							<div class="select-list">
+								<ul>
+									<li>
+										签收单号：<input type="text" name="returnReceiveNumber"/>
+									</li>
+									<li>
+										展会名称：<input type="text" name="exhibitionName"/>
+									</li>
+									<li>
+										物流单号：<input type="text" name="logisticsNumber"/>
+									</li>
+
+									<li>
+										<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+										<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+									</li>
+								</ul>
+							</div>
+						</form>
+					</div>
+
+					<div class="btn-group-sm" id="toolbar" role="group">
+						<a class="btn btn-success" onclick="$.operate.addFull()" shiro:hasPermission="business:returnReceive:add">
+							<i class="fa fa-plus"></i> 新增
+						</a>
+						<a class="btn btn-danger multiple" onclick="$.operate.removeAll()" shiro:hasPermission="business:returnReceive:remove">
+							<i class="fa fa-remove"></i> 删除
+						</a>
+<!--						<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:exhibition:remove">-->
+<!--							<i class="fa fa-remove"></i> 删除-->
+<!--						</a>-->
+						<a class="btn btn-info single" onclick="$.operate.confirmReturnReceive()" shiro:hasPermission="business:send:send">
+							<i class="fa "></i> 确认签收
+						</a>
+					</div>
+					<div class="col-sm-12 select-table table-striped">
+						<table id="bootstrap-table"></table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<th:block th:include="include :: footer" />
+		<th:block th:include="include :: layout-latest-js" />
+		<script th:inline="javascript">
+			var selectSendMaterialDetailFlag = [[${@permission.hasPermi('business:exhibition:selectSendMaterialDetail')}]];
+			var prefix = ctx + "business/returnReceive";
+			var dataStatus = [[${@dict.getType('busi_returnReceive_status')}]];
+            var dataType = [[${@dict.getType('busi_material_type')}]];
+            var dataUnit = [[${@dict.getType('busi_material_unit')}]];
+
+			$(function() {
+				queryReturnReceiveList();
+			});
+
+			function queryReturnReceiveList() {
+				var options = {
+                    url: prefix + "/list",
+					createUrl: prefix + "/add",
+					removeUrl: prefix + "/deleteReturnReceive",
+					selectReturnMaterialDetailUrl: prefix + "/returnMaterial/{id}",
+                    selectSendMaterialDetailUrl:"send/selectSendMaterial/{id}",
+					confirmReturnReceiveUrl:prefix + "/confirmReturnReceive",
+                    uniqueId: "returnReceiveId",
+					sortName: "receiveTime",
+					sortOrder: "desc",
+					modalName: "签收信息",
+                    showSearch: false,
+                    showRefresh: false,
+                    showToggle: false,
+                    showColumns: false,
+                    detailView: false,// 是否显示+-
+					columns: [
+					    {
+							checkbox: true
+						},
+                        {
+                            field: 'returnReceiveId',
+                            title: '签收ID',
+                            visible: false
+                        },
+						{
+							field: 'exhibitionName',
+							title: '展会名称'
+						},
+						{
+							field: 'address',
+							title: '展会地址'
+						},
+						{
+							field: 'organizer',
+							title: '办展方'
+						},
+						{
+							field: 'logisticsName',
+							title: '物流名称'
+						},
+						{
+							field: 'logisticsNumber',
+							title: '物流单号'
+						},
+                        {
+                            field: 'returnReceiveNumber',
+                            title: '签收单号'
+                        },
+						{
+							field: 'receiveName',
+							title: '签收人'
+						},
+						{
+							field: 'receiveTime',
+							title: '签收时间'
+						},
+						{
+							field: 'status',
+							title: '状态',
+							formatter: function(value, row, index) {
+								return $.table.selectDictLabel(dataStatus, row.status);
+							}
+						},
+						{
+							field: 'returnId',
+							title: '退还ID',
+							visible: false
+						},
+						{
+							field: 'returnNumber',
+							title: '退还单号'
+						},
+						{
+							field: 'returnName',
+							title: '退还人'
+						},
+						{
+							field: 'returnTime',
+							title: '退还时间'
+						},
+						{
+							title: '查看/编辑',
+							align: 'center',
+							formatter: function (value, row, index) {
+								var actions = [];
+								actions.push('<a class="btn btn-success btn-xs ' + selectSendMaterialDetailFlag + '" href="javascript:void(0)" onclick="$.operate.selectReturnMaterialDetail(\'' + row.returnId + '\')"><i class="fa fa-edit"></i>物料明细</a> ');
+								return actions.join('');
+							}
+						}
+
+						]
+				};
+				$.table.init(options);
+			}
+
+		</script>
+	</body>
+</html>

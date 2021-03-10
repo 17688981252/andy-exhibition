@@ -1,18 +1,11 @@
-package com.zel.business.domain;
+package com.zel.business.domain.dto;
 
+import com.zel.business.domain.BusiExhibition;
 import lombok.Data;
+
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-
-/**
- * 退还信息 busi_return
- *
- * @author andy
- */
 @Data
-public class BusiReturn {
+public class BusiReturnNoticeOutDto {
 
     /**
      * 退还ID
@@ -30,6 +23,16 @@ public class BusiReturn {
     private Long exhibitionId;
 
     /**
+     * 收货ID
+     */
+    private Long receiveId;
+
+    /**
+     *收货单号
+     */
+    private String receiveNumber;
+
+    /**
      * 物流名称
      */
     private String logisticsName;
@@ -41,17 +44,21 @@ public class BusiReturn {
 
     /**
      * 状态
-     * （1：保存  2：已退货 3：已收货）
      */
     private Integer status;
 
     /**
-     * 退还人
+     * 物流状态（通知）
      */
-    private Long returnBy;
+    private String returnStatus;
 
     /**
-     * 退还时间
+     * 发货人
+     */
+    private String returnBy;
+
+    /**
+     * 发货时间
      */
     private Date returnTime;
 
@@ -59,6 +66,11 @@ public class BusiReturn {
      * 收货人
      */
     private Long receiveBy;
+
+    /**
+     * 收货时间
+     */
+    private Date receiveTime;
 
     /**
      * 收货地址
@@ -83,7 +95,7 @@ public class BusiReturn {
     /**
      * 更新人
      */
-    private Long updateBy;
+    private String updateBy;
 
     /**
      * 更新时间
@@ -106,55 +118,28 @@ public class BusiReturn {
      */
     private BusiExhibition busiExhibitions;
 
-    /**
-     * 展会名称
-     */
+    /*展会名称*/
     private String exhibitionName;
 
-    /**
-     * 展会地址
-     */
-    private String address;
-
-    /**
-     * 办展方
-     */
+    /*办展方*/
     private String organizer;
 
-    /**
-     *收货部门
-     */
+    /*办展地址*/
+    private String address;
+
+
+
+    /*收货部门*/
     private String deptName;
 
-    /**
-     * 收货人
-     */
+    /*收货人*/
     private String receiveName;
 
-    /**
-     * 退还人
-     **/
+    /*发货人*/
     private String returnName;
 
     /*创建人*/
     private String createName;
 
-    /*开始时间*/
-    private String startTime;
-
-   /* 结束时间*/
-    private String endTime;
-
-    /*物料ID及数量*/
-    private List<Map> listMap;
-
-    /*物料ID*/
-    private Long materialId;
-
-    /*退还数量*/
-    private Integer returnQuantity;
-
-    /*退还签收数量*/
-    private Integer returnReceiveQuantity;
 
 }

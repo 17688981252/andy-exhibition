@@ -10,9 +10,9 @@
 			<div class="container-div">
 				<div class="row">
 					<div class="col-sm-12 search-collapse">
-						<form class="form-horizontal" id="form-material-return" >
-							<input type="hidden" id="returnId" name="returnId" th:field="${returnId}" th:value="${returnId}">
-							<input type="hidden" id="status" name="status" th:field="${status}" th:value="${status}">
+						<form class="form-horizontal" id="form-material-returnReceive" >
+							<input type="show" id="returnId" name="returnId" th:field="${returnId}" th:value="${returnId}">
+<!--							<input type="hidden" id="status" name="status" th:field="${status}" th:value="${status}">-->
 							<input type="hidden" id="parentId" name="parentId">
 							<div class="select-list">
 								<ul>
@@ -42,28 +42,30 @@
 		<th:block th:include="include :: layout-latest-js" />
 		<th:block th:include="include :: ztree-js" />
 		<script th:inline="javascript">
-		var prefix = ctx + "business/return";
+		var prefix = ctx + "business/returnReceive";
 		var dataType = [[${@dict.getType('busi_material_type')}]];
 		var dataUnit = [[${@dict.getType('busi_material_unit')}]];
 
 		$(function() {
-			var panehHidden = false;
-			if ($(this).width() < 769) {
-				panehHidden = true;
-			}
-			$('body').layout({ initClosed: panehHidden, west__size: 185 });
+			// var panehHidden = false;
+			// if ($(this).width() < 769) {
+			// 	panehHidden = true;
+			// }
+			// $('body').layout({ initClosed: panehHidden, west__size: 185 });
+
 			queryMaterialList();
+			// alert("AAAAAAAAAA")
 
 		});
 
 
 		function queryMaterialList() {
 			var options = {
-				url: prefix + "/selectReturnMaterialDetail",
+				url: prefix + "/selectReturnReceiveMaterialDetail",
                 queryParams: queryParams,
 				// createUrl: prefix + "/add",
-				// sortName: "createTime",
-				// sortOrder: "desc",
+				sortName: "returnId",
+				sortOrder: "desc",
 				modalName: "物料明细",
 				// data: [[${sendMaterialDetail}]],//接收后端查询返回数据
 				columns: [
@@ -111,13 +113,14 @@
 						title: '标包数量'
 						// visible: false
 					},
-                    // {
-                    //     field: 'receiveQuantity',
-                    //     title: '收货数量'
-                    // },
 					{
 						field: 'returnQuantity',
 						title: '退还数量'
+					},
+
+					{
+						field: 'returnReceiveQuantity',
+						title: '退还签收数量'
 						,
 						formatter: function(value, row, index) {
 						    return Number.parseInt($.common.isEmpty(value) ? 0 : value);
@@ -125,12 +128,11 @@
 					}
                     ],
 				onClickCell: function(field, value, row, $element) {
-					if(field == "returnQuantity"){
+					if(field == "returnReceiveQuantity"){
 						$element.attr('contenteditable', true);
 						$element.blur(function() {
 							var index = $element.parent().data('index');
 							var tdValue = Number.parseInt($element.html());
-
 							saveData(index, field, tdValue);
 						})
 					}
@@ -163,7 +165,7 @@
 				var status = [[${status}]];
 				alert([[${status}]])
 				if(status == 2){
-					$.modal.alertWarning("当前展会物料已退还");
+					$.modal.alertWarning("当前展会物料已签收");
 					return;
 				}
 				var allTableData = $("#bootstrap-table").bootstrapTable('getData');
@@ -172,20 +174,13 @@
 					var map = {};
 					console.log("index=" + index)
 					map["materialId"] = allTableData[index].materialId;
-					map["returnQuantity"] = Number.parseInt(allTableData[index].returnQuantity);
-					// var quantity = allTableData[index].receiveQuantity;
-					// map["receiveQuantity"] = quantity;
-					/*if(quantity == 0){
-						$.modal.alertWarning("发货数量不能为0");
-						throw Error;
-					}else{
-					}*/
+					map["returnReceiveQuantity"] = Number.parseInt(allTableData[index].returnReceiveQuantity);
 					listMap[index] = map;
 
 				});
 				console.log(listMap)
 
-				$.operate.save("/exhibition/business/return/updateReturnMaterialDetail",
+				$.operate.save("/exhibition/business/returnReceive/updateReturnMaterialDetail",
 						{
 							"returnId": [[${returnId}]],
 							"listMap": listMap
