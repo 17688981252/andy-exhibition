@@ -43,4 +43,10 @@ public interface BusiRevokeMapper {
      */
     int updateExhibitionStatus(@Param(value = "exhibitionId") Long exhibitionId,
                                @Param(value = "updateBy") Long updateBy);
+
+    /**
+     * 查询撤展信息
+     * @param exhibitionId 展会ID
+     */
+    List<BusiRevoke> selectRevokeInfo(@Param(value = "exhibitionId") Long exhibitionId);
 }

@@ -65,7 +65,7 @@
 
 				<h4 class="form-header h4">待收货列表</h4>
 				<div class="btn-group-sm" id="toolbar" role="group">
-					<a class="btn btn-info" onclick="$.operate.receiveMaterial()" shiro:hasPermission="business:send:send">
+					<a class="btn btn-info single" onclick="$.operate.receiveMaterial()" shiro:hasPermission="business:send:send">
 						<i class="fa "></i> 收货
 					</a>
 				</div>
@@ -108,8 +108,8 @@
                 modalName: "到货通知信息",
                 showSearch: false,
                 showRefresh: false,
-                showToggle: false,
-                showColumns: false,
+                showToggle: true,
+                showColumns: true,
                 // detailView: true,
                 // onExpandRow : function(index, row, $detail) {
                 //     initChildTable(index, row, $detail);
@@ -118,6 +118,23 @@
                     {
                         checkbox: true
                     },
+					{
+						field: 'sendId',
+						title: '发货ID',
+						visible: false
+					},
+					{
+						field: 'exhibitionName',
+						title: '展会名称'
+					},
+					{
+						field: 'address',
+						title: '展会地址'
+					},
+					{
+						field: 'organizer',
+						title: '办展方'
+					},
                     {
                         field: 'logisticsName',
                         title: '物流名称'
@@ -135,23 +152,6 @@
                         }
                     },
                     {
-                        field: 'busiExhibitions.exhibitionName',
-                        title: '展会名称'
-                    },
-                    {
-                        field: 'busiExhibitions.address',
-                        title: '展会地址'
-                    },
-                    {
-                        field: 'busiExhibitions.organizer',
-                        title: '办展方'
-                    },
-                    {
-                        field: 'sendId',
-                        title: '发货ID',
-                        visible: false
-                    },
-                    {
                         field: 'sendNumber',
                         title: '发货单号'
                     },
@@ -164,7 +164,7 @@
                         title: '发货时间'
                     },
 					{
-						title: '查看',
+						title: '查看/编辑',
 						align: 'center',
 						formatter: function(value, row, index) {
 							var actions = [];

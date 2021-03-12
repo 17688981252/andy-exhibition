@@ -68,6 +68,15 @@
         where  revoke_id = #{revokeId}
     </delete>
 
-
+    <select id="selectRevokeInfo" resultType="com.zel.business.domain.BusiRevoke">
+        SELECT
+            revoke_id as revokeId,
+            revoke_url as revokeUrl,
+            file_name as fileName
+        FROM
+            busi_revoke
+        WHERE
+            exhibition_id = #{exhibitionId}
+    </select>
 
 </mapper>

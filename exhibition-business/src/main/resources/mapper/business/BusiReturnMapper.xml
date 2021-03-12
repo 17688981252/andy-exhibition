@@ -284,8 +284,8 @@
     <update id="confirmReturn" parameterType="java.lang.Long">
         UPDATE busi_return
         SET return_by = #{returnBy},
-            return_time = NOW( ),
-            status = 2
+            status = 2,
+            return_time = now()
         WHERE
             return_id = #{returnId}
     </update>
@@ -303,6 +303,29 @@
             busi_exhibition
         where
             status = 4
+    </select>
+
+    <select id="selectReturnInfo" resultMap="ReturnResultMap">
+        SELECT
+            br.return_number,
+            br.exhibition_id,
+            br.logistics_name,
+            br.logistics_number,
+            br.STATUS,
+            br.return_by,
+            br.return_time ,
+            br.receive_by,
+            br.receive_address,
+            br.dept_id,
+            br.remark,
+            be.exhibition_name AS exhibitionName,
+            rb.user_name AS returnName
+        FROM
+            busi_return AS br
+                LEFT JOIN busi_exhibition AS be ON be.exhibition_id = br.exhibition_id
+                LEFT JOIN sys_user AS rb ON rb.user_id = br.return_by
+        WHERE
+            return_id = #{returnId};
     </select>
 
 </mapper>

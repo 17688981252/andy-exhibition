@@ -1,5 +1,6 @@
 package com.zel.business.service.impl;
 
+import com.zel.business.domain.BusiExhibitionRecord;
 import com.zel.business.domain.BusiReceive;
 import com.zel.business.domain.BusiSend;
 import com.zel.business.domain.dto.BusiReceiveInDto;
@@ -7,6 +8,7 @@ import com.zel.business.domain.dto.BusiReceiveMaterialDto;
 import com.zel.business.domain.dto.BusiReceiveSerialNumberInfo;
 import com.zel.business.mapper.BusiReceiveMapper;
 import com.zel.business.mapper.BusiSendMapper;
+import com.zel.business.service.IBusiExhibitionService;
 import com.zel.business.service.IBusiReceiveService;
 import com.zel.framework.util.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class BusiReceiveServiceImpl implements IBusiReceiveService {
@@ -25,6 +26,12 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
 
     @Autowired
     private BusiSendMapper sendMapper;
+
+    @Autowired
+    private IBusiReceiveService receiveService;
+
+    @Autowired
+    private IBusiExhibitionService exhibitionService;
 
     /**
      * 查询收货列表
@@ -63,11 +70,23 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
             receiveInDto.setReceiveNumber(receiveNumber);
             receiveInDto.setCreateBy((ShiroUtils.getUserId()));
             receiveInDto.setReceiveBy(ShiroUtils.getSysUser().getUserId());
-            receiveMapper.addSave(receiveInDto);
+            int count2 = receiveMapper.addSave(receiveInDto);
             count++;
             sendMapper.updateSendStatus(id);
             Long newNumber = num +1;
             receiveMapper.updateReceiveSerialNumber(newNumber);
+            if (count2>0) {
+                Long receiveId = receiveInDto.getReceiveId();
+                BusiReceive receive = receiveService.selectReceiveInfo(receiveId);
+                BusiExhibitionRecord record = new BusiExhibitionRecord();
+                record.setExhibitionId(receive.getExhibitionId());
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String receiveTime = df.format(receive.getReceiveTime());
+                record.setEvent("展会:"+receive.getExhibitionName()+"、收货单号："+receive.getReceiveNumber()+"、物流名称："+receive.getLogisticsName()
+                        +"、物流单号："+receive.getLogisticsNumber()+"、收货人："+receive.getReceiveName()+"、收货时间："+receiveTime);
+                record.setStatus(4);
+                exhibitionService.insertExhibitionRecord(record);
+            }
         }
         return count;
 
@@ -93,11 +112,13 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
 
     /**
      * 查询已发货信息
+     * @param receiveId
+     * @return
      */
     @Override
-    public List<BusiSend> selectSendInfo(String logisticsNumber) {
+    public BusiReceive selectReceiveInfo(Long receiveId) {
 
-        return receiveMapper.selectSendInfo(logisticsNumber);
+        return receiveMapper.selectReceiveInfo(receiveId);
     }
 
 

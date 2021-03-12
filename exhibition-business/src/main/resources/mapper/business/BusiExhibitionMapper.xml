@@ -101,7 +101,7 @@
     * 保存新增展会
     * @param exhibition 展会信息
     -->
-    <insert id="insertExhibition" parameterType="com.zel.business.domain.BusiExhibition">
+    <insert id="insertExhibition" parameterType="com.zel.business.domain.BusiExhibition" useGeneratedKeys="true" keyProperty="exhibitionId" keyColumn="exhibition_id">
         INSERT INTO busi_exhibition (
          exhibition_name,
          status,
@@ -419,6 +419,29 @@
         from
             busi_revoke
         where
+            exhibition_id = #{exhibitionId}
+    </select>
+
+    <insert id="insertExhibitionRecord" parameterType="com.zel.business.domain.BusiExhibitionRecord" useGeneratedKeys="true" keyProperty="exhibitionRecordId" keyColumn="exhibition_record_id">
+        INSERT INTO busi_exhibition_record ( exhibition_id, EVENT, status, create_by, create_time )
+        VALUES
+            ( #{exhibitionId}, #{event}, #{status}, #{createBy}, now() );
+    </insert>
+
+    <insert id="insertExhibitionRecordAttached" parameterType="com.zel.business.domain.BusiExhibitionRecordAttached">
+        INSERT INTO busi_exhibition_record_attached ( exhibition_record_id, picture_url,  file_name )
+        VALUES
+            (#{exhibitionRecordId}, #{pictureUrl}, #{fileName} );
+    </insert>
+
+    <select id="selectProsectInfo" resultType="com.zel.business.domain.BusiProspect">
+        SELECT
+            prospect_id AS prospectId,
+            prospect_url AS prospectUrl,
+            file_name AS fileName
+        FROM
+            busi_prospect
+        WHERE
             exhibition_id = #{exhibitionId}
     </select>
 

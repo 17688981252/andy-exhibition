@@ -42,4 +42,6 @@ public interface BusiArrangeMapper {
      * @param exhibitionId 展会ID
      */
     int updateExhibitionStatus(@Param(value = "exhibitionId") Long exhibitionId);
+
+    List<BusiArrange> selectArrangeInfo(@Param(value = "exhibitionId") Long exhibitionId);
 }

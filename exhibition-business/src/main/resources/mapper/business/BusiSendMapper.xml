@@ -22,9 +22,9 @@
         <result property="updateTime"       column="update_time"/>
         <result property="del"              column="del"/>
         <result property="remark"           column="remark"/>
-        <result property="busiExhibitions.exhibitionName" column="exhibition_name"/>
-        <result property="busiExhibitions.organizer" column="organizer"/>
-        <result property="busiExhibitions.address" column="address"/>
+        <result property="exhibitionName" column="exhibition_name"/>
+        <result property="organizer" column="organizer"/>
+        <result property="address" column="address"/>
         <result property="deptName" column="deptName"/>
         <result property="receiveName" column="receiveName"/>
         <result property="sendName" column="sendName"/>
@@ -359,10 +359,7 @@
             send_by = #{sendBy},
             send_time = now()
         where
-            send_id in
-            <foreach collection="ids" item="id" index="index" open="(" separator="," close=")">
-                #{id}
-            </foreach>
+            send_id = #{id}
     </update>
 
     <!--
@@ -389,7 +386,8 @@
             be.address,
             be.organizer,
             sd.dept_name as deptName,
-            sr.user_name as receiveName
+            sr.user_name as receiveName,
+            sn.user_name AS sendName
         FROM
             busi_send as bs
         left join
@@ -398,6 +396,8 @@
             sys_dept AS sd ON bs.dept_id = sd.dept_id
         LEFT JOIN
             sys_user AS sr ON bs.receive_by = sr.user_id
+        LEFT JOIN
+            sys_user AS sn ON bs.send_by = sn.user_id
         where
             send_id = #{id}
     </select>
@@ -427,7 +427,7 @@
             bs.send_time,
             bs.logistics_name,
             bs.logistics_number,
-            be.exhibition_name,
+            be.exhibition_name ,
             be.organizer,
             be.address,
             su.user_name as sendName

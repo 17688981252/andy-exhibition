@@ -56,9 +56,9 @@ public interface IBusiSendService {
 
     /**
      * 发货
-     * @param ids
+     * @param id
      */
-    int send(Long ids[]);
+    int send(Long id);
 
     /**
      * 查询发货信息

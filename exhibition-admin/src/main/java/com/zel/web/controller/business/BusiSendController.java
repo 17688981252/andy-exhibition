@@ -172,12 +172,12 @@ public class BusiSendController extends BaseController {
 
     /**
      * 发货
-     * @param ids
+     * @param id
      */
     @PostMapping(value = "/send")
     @ResponseBody
-    public AjaxResult send(Long ids[]){
-        return  toAjax(sendService.send(ids));
+    public AjaxResult send(Long id){
+        return  toAjax(sendService.send(id));
     }
 
 

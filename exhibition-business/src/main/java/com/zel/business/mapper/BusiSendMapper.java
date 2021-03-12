@@ -87,9 +87,9 @@ public interface BusiSendMapper {
 
     /**
      * 发货
-     * @param ids
+     * @param id
      */
-    int send(@Param(value = "ids") Long ids[],
+    int send(@Param(value = "id") Long id,
              @Param(value = "sendBy") Long sendBy);
 
     /**

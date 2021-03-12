@@ -110,4 +110,6 @@ public interface BusiReturnMapper {
      * @return 展会LIST
      */
     List<BusiExhibition> selectUnReturnExhibitionInfo();
+
+    BusiReturn selectReturnInfo(@Param(value = "returnId") Long returnId);
 }

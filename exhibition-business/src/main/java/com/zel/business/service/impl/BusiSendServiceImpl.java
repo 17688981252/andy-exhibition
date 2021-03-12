@@ -4,17 +4,14 @@ import com.zel.business.domain.*;
 import com.zel.business.domain.dto.BusiSendMaterialDto;
 import com.zel.business.domain.dto.BusiUserTreeOutDto;
 import com.zel.business.mapper.BusiSendMapper;
+import com.zel.business.service.IBusiExhibitionService;
 import com.zel.business.service.IBusiSendService;
 import com.zel.common.core.domain.Ztree;
-import com.zel.common.utils.uuid.IdUtils;
 import com.zel.framework.util.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +22,12 @@ public class BusiSendServiceImpl implements IBusiSendService {
     @Autowired
     private BusiSendMapper sendMapper;
 
+    @Autowired
+    private IBusiExhibitionService exhibitionService;
+
     /**
      * 获取发货列表
+     *
      * @param send 发货信息
      */
     @Override
@@ -36,13 +37,14 @@ public class BusiSendServiceImpl implements IBusiSendService {
 
     /**
      * 加载发货物料明细
-     * @param id  发货id
+     *
+     * @param id           发货id
      * @param materialName 物料名称
-     * @param materialCode  物料代码
+     * @param materialCode 物料代码
      */
     @Override
-    public  List<BusiSendMaterialDto> selectSendMaterialDetail(Long id,String materialName,String materialCode) {
-        List<BusiSendMaterialDto> detial = sendMapper.selectSendMaterialDetail(id,materialName,materialCode);
+    public List<BusiSendMaterialDto> selectSendMaterialDetail(Long id, String materialName, String materialCode) {
+        List<BusiSendMaterialDto> detial = sendMapper.selectSendMaterialDetail(id, materialName, materialCode);
         return detial;
     }
 
@@ -59,17 +61,18 @@ public class BusiSendServiceImpl implements IBusiSendService {
 
         String number = busiSend.getSendNumber();
         if (number.length() >= 3) { // 判断是否长度大于等于3
-            String strsub = number.substring(number.length()-3);    //一个参数表示截取传递的序号之后的部分
-            Long serialNumber = Long.parseLong(strsub)+1;
+            String strsub = number.substring(number.length() - 3);    //一个参数表示截取传递的序号之后的部分
+            Long serialNumber = Long.parseLong(strsub) + 1;
             sendMapper.updateSerialNumber(serialNumber);
         }
         return count2;
     }
+
     /**
      * 创建发货单号
      */
     @Override
-    public String createSerialNumber(){
+    public String createSerialNumber() {
 
         String sendNumber = "";
         BusiSerialNumberInfo serialNumberInfo = sendMapper.selectSerialNumberInfo();
@@ -82,7 +85,7 @@ public class BusiSendServiceImpl implements IBusiSendService {
         if (serialNumber.length() < 3) {
 //            serialNumber= String.format("%04s",serialNumber);
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < 3-serialNumber.length(); i++) {
+            for (int i = 0; i < 3 - serialNumber.length(); i++) {
                 sb.append('0');
             }
             serialNumber = sb.append(serialNumber).toString();
@@ -105,15 +108,17 @@ public class BusiSendServiceImpl implements IBusiSendService {
     /**
      * 发货单选择收货人员 组织树查询
      * 根据parentId 父级id 关联子集
+     *
      * @return
      */
     @Override
-    public List<Ztree> sendZTree(){
+    public List<Ztree> sendZTree() {
         return sendMapper.sendZTree();
     }
 
     /**
      * 删除发货信息
+     *
      * @param ids
      */
     @Override
@@ -123,16 +128,30 @@ public class BusiSendServiceImpl implements IBusiSendService {
 
     /**
      * 发货
-     * @param ids
+     *
+     * @param id
      */
     @Override
-    public int send(Long ids[]) {
+    public int send(Long id) {
         Long sendBy = ShiroUtils.getSysUser().getUserId();
-        return sendMapper.send(ids,sendBy);
+        int count = sendMapper.send(id, sendBy);
+        BusiExhibitionRecord record = new BusiExhibitionRecord();
+        if (count > 0) {
+            BusiSend send = sendMapper.selectsendInfo(id);
+            record.setExhibitionId(send.getExhibitionId());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String sendTime = sdf.format(send.getSendTime());
+            record.setEvent("展会：" + send.getExhibitionName() + "已发货，发货单号：" + send.getSendNumber() + "、物流名称：" + send.getLogisticsName()
+                    + "、物流单号：" + send.getLogisticsName() + "、发货人：" + send.getSendName() + "、发货时间：" + sendTime);
+            record.setStatus(3);
+            exhibitionService.insertExhibitionRecord(record);
+        }
+        return count;
     }
 
     /**
      * 查询发货信息
+     *
      * @param id 发货单号
      */
     @Override
@@ -158,6 +177,7 @@ public class BusiSendServiceImpl implements IBusiSendService {
 
     /**
      * 更新发货物料明细
+     *
      * @param send 发货实体
      * @return 更新数量
      */
@@ -165,7 +185,7 @@ public class BusiSendServiceImpl implements IBusiSendService {
     public int updateSendMaterialDetail(BusiSend send) {
         send.setUpdateBy(ShiroUtils.getUserId());
         int count = 0;
-        for(Map map: send.getListMap()){
+        for (Map map : send.getListMap()) {
             send.setMaterialId(Long.parseLong(map.get("materialId").toString()));
             send.setReceiveQuantity(Integer.parseInt(map.get("receiveQuantity").toString()));
             sendMapper.updateSendMaterialDetail(send);

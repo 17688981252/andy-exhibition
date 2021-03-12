@@ -27,8 +27,9 @@ public interface BusiReceiveMapper {
 
     /**
      * 查询已发货信息
+     * @param receiveId
      */
-    List<BusiSend> selectSendInfo(@Param(value = "logisticsNumber") String logisticsNumber);
+    BusiReceive selectReceiveInfo(@Param(value = "receiveId") Long receiveId);
 
     List<BusiSend> selectLogisticsInfo();
 

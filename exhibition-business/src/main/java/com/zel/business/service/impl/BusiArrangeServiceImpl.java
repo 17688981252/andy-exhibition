@@ -2,10 +2,13 @@ package com.zel.business.service.impl;
 
 import com.zel.business.domain.BusiArrange;
 import com.zel.business.domain.BusiExhibition;
+import com.zel.business.domain.BusiExhibitionRecord;
+import com.zel.business.domain.BusiExhibitionRecordAttached;
 import com.zel.business.domain.dto.BusiArrangeDto;
 import com.zel.business.mapper.BusiArrangeMapper;
 import com.zel.business.mapper.BusiExhibitionMapper;
 import com.zel.business.service.IBusiArrangeService;
+import com.zel.business.service.IBusiExhibitionService;
 import com.zel.common.config.Global;
 import com.zel.common.utils.file.FileUploadUtils;
 import com.zel.framework.util.ShiroUtils;
@@ -15,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 
@@ -26,6 +31,9 @@ public class BusiArrangeServiceImpl implements IBusiArrangeService {
     private BusiArrangeMapper arrangeMapper;
     @Autowired
     private BusiExhibitionMapper exhibitionMapper;
+
+    @Autowired
+    private IBusiExhibitionService exhibitionService;
 
     /**
      * 查询布展列表
@@ -128,6 +136,26 @@ public class BusiArrangeServiceImpl implements IBusiArrangeService {
      */
     @Override
     public int updateExhibitionStatus(Long exhibitionId) {
-        return arrangeMapper.updateExhibitionStatus(exhibitionId);
+        int count = arrangeMapper.updateExhibitionStatus(exhibitionId);
+        if (count>0) {
+            BusiExhibitionRecord record = new BusiExhibitionRecord();
+            BusiExhibitionRecordAttached recordAttached = new BusiExhibitionRecordAttached();
+            List<BusiArrange> arrangeList = arrangeMapper.selectArrangeInfo(exhibitionId);
+            for (BusiArrange arrange : arrangeList) {
+                record.setExhibitionId(exhibitionId);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String date = sdf.format(new Date());
+                record.setEvent("布展并上传图片，时间："+date);
+                record.setStatus(5);
+                int count1 = exhibitionService.insertExhibitionRecord(record);
+                if (count1>0) {
+                    recordAttached.setExhibitionRecordId(record.getExhibitionRecordId());
+                    recordAttached.setPictureUrl(arrange.getArrangeUrl());
+                    recordAttached.setFileName(arrange.getFileName());
+                    exhibitionService.insertExhibitionRecordAttached(recordAttached);
+                }
+            }
+        }
+        return count;
     }
 }

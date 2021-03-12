@@ -23,9 +23,9 @@
         <result property="remark" column="remark"/>
         <result property="sendName" column="sendName"/>
         <result property="receiveName" column="receiveName"/>
-        <result property="busiExhibitions.exhibitionName" column="exhibition_name"/>
-        <result property="busiExhibitions.organizer" column="organizer"/>
-        <result property="busiExhibitions.address" column="address"/>
+        <result property="exhibitionName" column="exhibition_name"/>
+        <result property="organizer" column="organizer"/>
+        <result property="address" column="address"/>
     </resultMap>
 
    <!--
@@ -114,34 +114,34 @@
           `status` = 2
     </select>
 
-    <select id="selectSendInfo" resultType="com.zel.business.domain.BusiSend">
-          SELECT
-             send_id ,
-             send_number ,
-             exhibition_id ,
-             logistics_name ,
-             logistics_number ,
-             status ,
-             send_by ,
-             send_time ,
-             receive_by ,
-             receive_address ,
-             dept_id ,
-             create_by ,
-             create_time ,
-             update_by ,
-             update_time ,
-             remark
-          FROM
-             busi_send
-          where
-             logistics_number = #{logisticsNumber}
+    <select id="selectReceiveInfo" resultMap="BaseReceiveResultMap">
+        SELECT
+            br.receive_id,
+            br.receive_number,
+            br.send_id,
+            br.STATUS,
+            br.receive_by,
+            br.receive_time,
+            bs.exhibition_id,
+            bs.logistics_name,
+            bs.logistics_number,
+            be.exhibition_name,
+            be.address,
+            be.organizer,
+            rb.user_name AS receiveName
+        FROM
+            busi_receive AS br
+                LEFT JOIN busi_send AS bs ON bs.send_id = br.send_id
+                LEFT JOIN busi_exhibition AS be ON bs.exhibition_id = be.exhibition_id
+                LEFT JOIN sys_user AS rb ON rb.user_id = br.receive_by
+        WHERE
+            receive_id = #{receiveId}
     </select>
 
     <!--
     * 保存新增收货
     -->
-    <insert id="addSave" parameterType="com.zel.business.domain.BusiReceive">
+    <insert id="addSave" parameterType="com.zel.business.domain.BusiReceive" useGeneratedKeys="true" keyProperty="receiveId" keyColumn="receive_id">
         INSERT INTO  busi_receive
         (
            receive_number ,

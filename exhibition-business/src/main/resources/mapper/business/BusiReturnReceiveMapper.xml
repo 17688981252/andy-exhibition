@@ -236,4 +236,28 @@
         WHERE
             exhibition_id IN (SELECT exhibition_id FROM busi_return_receive WHERE return_receive_id = #{returnReceiveId})
     </update>
+
+    <select id="selectReturnReceiveInfo" resultMap="ReturnReceiveResultMap">
+        SELECT
+            brr.return_receive_number,
+            brr.return_id,
+            brr.exhibition_id,
+            brr.logistics_name,
+            brr.logistics_number,
+            brr.STATUS,
+            brr.receive_by,
+            brr.receive_time,
+            brr.receive_address,
+            brr.dept_id,
+            be.exhibition_name AS exhibitionName,
+            rb.user_name AS receiveName,
+            sd.dept_name AS deptName
+        FROM
+            busi_return_receive AS brr
+                LEFT JOIN busi_exhibition AS be ON be.exhibition_id = brr.exhibition_id
+                LEFT JOIN sys_user AS rb ON rb.user_id = brr.receive_by
+                LEFT JOIN sys_dept AS sd ON sd.dept_id = brr.dept_id
+        WHERE
+            return_receive_id = #{returnReceiveId}
+    </select>
 </mapper>

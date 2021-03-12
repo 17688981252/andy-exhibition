@@ -1104,7 +1104,7 @@ var table = {
 				}
                 $.modal.confirm("确认发货选中的" + rows.length + "条数据吗?", function() {
                     var url = table.options.sendUrl;
-                    var data = { "ids": rows.join() };
+                    var data = { "id": rows.join() };
                     $.operate.submit(url, "post", "json", data);
                 });
             },
@@ -1133,7 +1133,7 @@ var table = {
 					$.modal.alertWarning("请至少选择一条记录");
 					return;
 				}
-				$.modal.confirm("确认收货选中的" + rows.length + "条数据吗?", function() {
+				$.modal.confirm("收货前请确认'物料明细'是否正确", function() {
 					var url = table.options.addSaveUrl;
 					var data = { "ids": rows.join() };
 					$.operate.submit(url, "post", "json", data);
@@ -1515,7 +1515,7 @@ var table = {
 					$.modal.alertWarning("当前展会物料已退还");
 					return;
 				}
-				$.modal.confirm("请确认选中展会物料明细是否正确", function() {
+				$.modal.confirm("请确认选中展会'物料明细'是否正确", function() {
 					var url = table.options.confirmReturnUrl;
 					var data = { "returnId": rows.join() };
 					$.operate.submit(url, "post", "json", data);
@@ -1535,7 +1535,7 @@ var table = {
 					$.modal.alertWarning("当前展会物料已签收");
 					return;
 				}
-				$.modal.confirm("请确认选中展会物料明细是否正确", function() {
+				$.modal.confirm("请确认选中展会'物料明细'是否正确", function() {
 					var url = table.options.confirmReturnReceiveUrl;
 					var data = { "returnReceiveId": rows.join() };
 					$.operate.submit(url, "post", "json", data);

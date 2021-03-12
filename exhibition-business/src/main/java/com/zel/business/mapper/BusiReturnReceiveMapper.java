@@ -80,4 +80,10 @@ public interface BusiReturnReceiveMapper {
      * @param returnReceiveId 退还签收ID
      */
     int updateExhibitionStatus(@Param(value = "returnReceiveId") Long returnReceiveId);
+
+    /**
+     * 查询退还签收信息
+     * @param returnReceiveId 退还签收ID
+     */
+    BusiReturnReceive selectReturnReceiveInfo(@Param(value = "returnReceiveId") Long returnReceiveId);
 }

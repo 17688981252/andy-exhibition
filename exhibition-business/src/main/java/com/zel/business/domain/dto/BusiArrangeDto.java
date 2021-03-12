@@ -16,7 +16,15 @@ import java.util.Map;
 @Data
 public class BusiArrangeDto {
 
-//    private static final long serialVersionUID = 1L;
+
+    /*布展ID*/
+    private Long arrangeId;
+
+    /*图片路径*/
+    private String arrangeurl;
+
+    /*文件名*/
+    private String fileName;
 
     /**
      * 展会ID

@@ -5,6 +5,7 @@ import com.zel.business.domain.dto.BusiReturnMaterialDto;
 import com.zel.business.mapper.BusiMaterialMapper;
 import com.zel.business.mapper.BusiReturnMapper;
 import com.zel.business.mapper.BusiSendMapper;
+import com.zel.business.service.IBusiExhibitionService;
 import com.zel.business.service.IBusiReturnService;
 import com.zel.framework.util.ShiroUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,16 @@ import java.util.Map;
 public class BusiReturnServiceImpl implements IBusiReturnService {
 
     @Autowired
-    BusiReturnMapper returnMapper;
+    private BusiReturnMapper returnMapper;
 
     @Autowired
-    BusiMaterialMapper materialMapper;
+    private BusiMaterialMapper materialMapper;
 
     @Autowired
-    BusiSendMapper sendMapper;
+    private BusiSendMapper sendMapper;
+
+    @Autowired
+    private IBusiExhibitionService exhibitionService;
 
     /**
      * 查询退还列表
@@ -166,7 +170,19 @@ public class BusiReturnServiceImpl implements IBusiReturnService {
     @Override
     public int confirmReturn(Long returnId) {
         Long returnBy = ShiroUtils.getUserId();
-        return returnMapper.confirmReturn(returnId,returnBy);
+        int count = returnMapper.confirmReturn(returnId,returnBy);
+        if (count>0) {
+            BusiExhibitionRecord record = new BusiExhibitionRecord();
+            BusiReturn busiReturn = returnMapper.selectReturnInfo(returnId);
+            record.setExhibitionId(busiReturn.getExhibitionId());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String date = sdf.format(busiReturn.getReturnTime());
+            record.setEvent("退还展会："+busiReturn.getExhibitionName()+" 物料，"+"退还单号："+busiReturn.getReturnNumber()+"、物流名称："+busiReturn.getLogisticsName()
+            +"、物流单号："+busiReturn.getLogisticsNumber()+"、退还人："+busiReturn.getReturnName()+"、退还时间"+date);
+            record.setStatus(7);
+            exhibitionService.insertExhibitionRecord(record);
+        }
+        return count;
     }
 
     /**

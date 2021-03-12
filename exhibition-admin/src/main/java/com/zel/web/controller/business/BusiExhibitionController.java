@@ -1,6 +1,8 @@
 package com.zel.web.controller.business;
 
 import com.zel.business.domain.BusiExhibition;
+import com.zel.business.domain.BusiExhibitionRecord;
+import com.zel.business.domain.BusiExhibitionRecordAttached;
 import com.zel.business.domain.BusiProspect;
 import com.zel.business.service.IBusiExhibitionService;
 import com.zel.common.annotation.Log;
@@ -220,7 +222,7 @@ public class BusiExhibitionController extends BaseController
     }
 
     /**
-     * 更新展会状态
+     * 更新展会状态为勘展
      * @param exhibitionId 展会ID
      */
     @Log(title = "更新展会状态",businessType = BusinessType.UPDATE)
@@ -238,6 +240,22 @@ public class BusiExhibitionController extends BaseController
     @GetMapping("/exhibitionTimeLine/{id}")
     public String exhibitionTimeLine(Long exhibitionId){
         return prefix + "/timeLine";
+    }
+
+    /**
+     * 展会记录
+     * @param record 记录实体
+     */
+    public Integer insertExhibitionRecord(BusiExhibitionRecord record){
+        return exhibitionService.insertExhibitionRecord(record);
+    }
+
+    /**
+     * 展会记录附件
+     * @param recordAttached 附件实体
+     */
+    public Integer insertExhibitionRecordAttached(BusiExhibitionRecordAttached recordAttached){
+        return exhibitionService.insertExhibitionRecordAttached(recordAttached);
     }
 
 

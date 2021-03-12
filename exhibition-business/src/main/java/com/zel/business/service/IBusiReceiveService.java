@@ -31,8 +31,10 @@ public interface IBusiReceiveService {
 
     /**
      * 查询已发货信息
+     * @param receiveId
+     * @return
      */
-    List<BusiSend> selectSendInfo(String logisticsNumber);
+    BusiReceive selectReceiveInfo(Long receiveId);
 
     /**
      * 未收货列表

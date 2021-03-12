@@ -28,9 +28,14 @@ public class BusiExhibitionRecord {
     private String event;
 
     /**
-     * 附件
+     * 展会进程
      */
-    private String attach;
+    private Integer status;
+
+    /**
+     * 是否有附件（0：没有， 1：有）
+     */
+    private Integer attached;
 
     /**
      * 创建人

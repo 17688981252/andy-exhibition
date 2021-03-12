@@ -1,8 +1,9 @@
 package com.zel.business.mapper;
 
 import com.zel.business.domain.BusiExhibition;
+import com.zel.business.domain.BusiExhibitionRecord;
+import com.zel.business.domain.BusiExhibitionRecordAttached;
 import com.zel.business.domain.BusiProspect;
-import com.zel.common.annotation.Log;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -77,8 +78,7 @@ public interface BusiExhibitionMapper {
      * @param exhibitionId 展会ID
      */
     int updateStatus(@Param(value = "exhibitionId") Long exhibitionId,
-                     @Param(value = "status") int status);
-
+                     @Param(value = "status") Integer status);
     /**
      * 查询勘展图片
      * @param prospectId
@@ -115,4 +115,18 @@ public interface BusiExhibitionMapper {
      * @param exhibitionId 展会ID
      */
     BusiExhibition selectRevokeExhibitionInfo(Long exhibitionId);
+
+    int insertExhibitionRecord(BusiExhibitionRecord record);
+
+    /**
+     * 展会记录附件
+     * @param recordAttached 附件实体
+     */
+    int insertExhibitionRecordAttached(BusiExhibitionRecordAttached recordAttached);
+
+    /**
+     * 查询勘展信息
+     * @param exhibitionId 展会ID
+     */
+    List<BusiProspect> selectProsectInfo(@Param(value = "exhibitionId") Long exhibitionId);
 }

@@ -1,11 +1,9 @@
 package com.zel.business.service.impl;
 
-import com.zel.business.domain.BusiExhibition;
-import com.zel.business.domain.BusiReturn;
-import com.zel.business.domain.BusiReturnReceive;
-import com.zel.business.domain.BusiSerialNumberInfo;
+import com.zel.business.domain.*;
 import com.zel.business.domain.dto.BusiReturnMaterialDto;
 import com.zel.business.mapper.BusiReturnReceiveMapper;
+import com.zel.business.service.IBusiExhibitionService;
 import com.zel.business.service.IBusiReturnReceiveService;
 import com.zel.business.service.IBusiReturnService;
 import com.zel.framework.util.ShiroUtils;
@@ -28,6 +26,9 @@ public class BusiReturnReceiveImpl implements IBusiReturnReceiveService {
 
     @Autowired
     private IBusiReturnReceiveService returnReceiveService;
+
+    @Autowired
+    private IBusiExhibitionService exhibitionService;
 
     /**
      * 查看退还未签收列表
@@ -163,7 +164,18 @@ public class BusiReturnReceiveImpl implements IBusiReturnReceiveService {
         int count = returnReceiveMapper.updateReturnReceiveStatus(returnReceiveId);
         if (count>0) {
             returnReceiveMapper.updateReturnStatus(returnReceiveId);
-            returnReceiveMapper.updateExhibitionStatus(returnReceiveId);
+            int count1 = returnReceiveMapper.updateExhibitionStatus(returnReceiveId);
+            if (count1>0) {
+                BusiReturnReceive returnReceive = returnReceiveMapper.selectReturnReceiveInfo(returnReceiveId);
+                BusiExhibitionRecord record = new BusiExhibitionRecord();
+                record.setExhibitionId(returnReceive.getExhibitionId());
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String date = sdf.format(returnReceive.getReceiveTime());
+                record.setEvent("签收展会："+ returnReceive.getExhibitionName()+" 物料，"+"签收单号："+returnReceive.getReturnReceiveNumber()+"、物流名称："+returnReceive.getLogisticsName()
+                + "、物流单号："+returnReceive.getLogisticsNumber()+"签收人："+returnReceive.getReceiveName()+"、签收时间："+date);
+                record.setStatus(8);
+                exhibitionService.insertExhibitionRecord(record);
+            }
         }
         return count;
     }

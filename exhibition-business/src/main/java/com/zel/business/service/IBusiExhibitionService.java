@@ -1,10 +1,9 @@
 package com.zel.business.service;
 
 import com.zel.business.domain.BusiExhibition;
+import com.zel.business.domain.BusiExhibitionRecord;
+import com.zel.business.domain.BusiExhibitionRecordAttached;
 import com.zel.business.domain.BusiProspect;
-import com.zel.common.annotation.Log;
-import com.zel.common.core.domain.AjaxResult;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -69,7 +68,7 @@ public interface IBusiExhibitionService {
     void deleteProspectUrl(Long prospectId);
 
     /**
-     * 更新展会状态
+     * 更新展会状态为勘展
      * @param exhibitionId 展会ID
      */
     int updateStatus(Long exhibitionId);
@@ -100,4 +99,17 @@ public interface IBusiExhibitionService {
      * @param id
      */
     List<BusiExhibition> selectEditExhibitionInfo(Long id);
+
+    /**
+     * 展会记录
+     * @param record 记录实体
+     */
+    Integer insertExhibitionRecord(BusiExhibitionRecord record);
+
+    /**
+     * 展会记录附件
+     * @param recordAttached 附件实体
+     * @return
+     */
+    int insertExhibitionRecordAttached(BusiExhibitionRecordAttached recordAttached);
 }

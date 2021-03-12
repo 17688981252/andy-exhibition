@@ -102,10 +102,10 @@ public class BusiReceiveController extends BaseController {
     /**
      * 查询已发货信息
      */
-    @PostMapping("/sendInfo")
+    @PostMapping("/receiveInfo")
     @ResponseBody
-    public AjaxResult sendInfo(@RequestParam(value = "logisticsNumber")String logisticsNumber ){
-        List<BusiSend> list = receiveService.selectSendInfo(logisticsNumber);
+    public AjaxResult receiveInfo(@RequestParam(value = "receiveId")Long receiveId ){
+        BusiReceive list = receiveService.selectReceiveInfo(receiveId);
         return null;
     }
 

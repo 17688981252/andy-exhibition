@@ -1,8 +1,6 @@
 package com.zel.business.service.impl;
 
-import com.zel.business.domain.BusiArrange;
-import com.zel.business.domain.BusiExhibition;
-import com.zel.business.domain.BusiRevoke;
+import com.zel.business.domain.*;
 import com.zel.business.domain.dto.BusiReceiveInDto;
 import com.zel.business.domain.dto.BusiReceiveMaterialDto;
 import com.zel.business.domain.dto.BusiRevokeDto;
@@ -10,6 +8,7 @@ import com.zel.business.mapper.BusiArrangeMapper;
 import com.zel.business.mapper.BusiExhibitionMapper;
 import com.zel.business.mapper.BusiReceiveMapper;
 import com.zel.business.mapper.BusiRevokeMapper;
+import com.zel.business.service.IBusiExhibitionService;
 import com.zel.business.service.IBusiRevokeService;
 import com.zel.common.config.Global;
 import com.zel.common.utils.StringUtils;
@@ -20,19 +19,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Service
 @Slf4j
 public class BusiRevokeServiceImpl implements IBusiRevokeService {
     @Autowired
-    BusiRevokeMapper revokeMapper;
+    private BusiRevokeMapper revokeMapper;
 
     @Autowired
-    BusiReceiveMapper receiveMapper;
+    private BusiReceiveMapper receiveMapper;
 
     @Autowired
-    BusiExhibitionMapper exhibitionMapper;
+    private BusiExhibitionMapper exhibitionMapper;
+
+    @Autowired
+    private IBusiExhibitionService exhibitionService;
 
     /**
      * 查询撤展列表
@@ -118,6 +122,26 @@ public class BusiRevokeServiceImpl implements IBusiRevokeService {
     @Override
     public int updateExhibitionStatus(Long exhibitionId) {
         Long updateBy = ShiroUtils.getSysUser().getUserId();
-        return revokeMapper.updateExhibitionStatus(exhibitionId,updateBy);
+        int count = revokeMapper.updateExhibitionStatus(exhibitionId,updateBy);
+        if (count>0) {
+            List<BusiRevoke> revokeList = revokeMapper.selectRevokeInfo(exhibitionId);
+            BusiExhibitionRecord record = new BusiExhibitionRecord();
+            for (BusiRevoke revoke : revokeList) {
+                record.setExhibitionId(exhibitionId);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String date = sdf.format(new Date());
+                record.setEvent("撤展并上传图片，时间："+date);
+                record.setStatus(6);
+                int count1 = exhibitionService.insertExhibitionRecord(record);
+                if (count1>0) {
+                    BusiExhibitionRecordAttached recordAttached = new BusiExhibitionRecordAttached();
+                    recordAttached.setExhibitionRecordId(record.getExhibitionRecordId());
+                    recordAttached.setPictureUrl(revoke.getRevokeUrl());
+                    recordAttached.setFileName(revoke.getFileName());
+                    exhibitionService.insertExhibitionRecordAttached(recordAttached);
+                }
+            }
+        }
+        return count;
     }
 }
