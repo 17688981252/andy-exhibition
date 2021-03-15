@@ -237,4 +237,14 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
     public int insertExhibitionRecordAttached(BusiExhibitionRecordAttached recordAttached) {
         return exhibitionMapper.insertExhibitionRecordAttached(recordAttached);
     }
+
+    /**
+     * 查询展会记录
+     * @param exhibitionId 展会ID
+     */
+    @Override
+    public List<BusiExhibitionRecord> selectExhibitionRecord(Long exhibitionId) {
+
+        return exhibitionMapper.selectExhibitionRecord(exhibitionId);
+    }
 }

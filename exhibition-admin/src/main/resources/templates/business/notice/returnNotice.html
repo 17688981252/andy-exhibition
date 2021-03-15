@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('到货通知列表')" />
+	<th:block th:include="include :: layout-latest-css" />
+</head>
+	<body class="gray-bg">
+		<div class="ui-layout-center">
+			<div class="container-div">
+				<div class="row">
+					<div class="col-sm-12 search-collapse">
+						<form id="send-form">
+							<input type="hidden" id="sendId" name="sendId">
+							<input type="hidden" id="parentId" name="parentId">
+							<div class="select-list">
+								<ul>
+									<li>
+										展会名称：<input type="text" name="exhibitionName"/>
+									</li>
+									<li>
+										物流名称：<input type="text" name="logisticsName"/>
+									</li>
+									<li>
+										物流单号：<input type="text" name="logisticsNumber"/>
+									</li>
+									<li>
+										退还单号：<input type="text" name="returnNumber"/>
+									</li>
+									<li class="select-time">
+										<label>退还时间： </label>
+										<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="startTime"/>
+										<span>-</span>
+										<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="endTime"/>
+									</li>
+
+									<li>
+										<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+										<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+									</li>
+								</ul>
+							</div>
+						</form>
+					</div>
+					<div class="col-sm-12 select-table table-striped">
+						<table id="bootstrap-table"></table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<th:block th:include="include :: footer" />
+		<th:block th:include="include :: layout-latest-js" />
+		<script th:inline="javascript">
+			var prefix = ctx + "business/notice";
+            var dataType = [[${@dict.getType('busi_material_type')}]];
+            var dataUnit = [[${@dict.getType('busi_material_unit')}]];
+
+			$(function() {
+
+				queryReturnNoticeList();
+			});
+
+			function queryReturnNoticeList() {
+				var options = {
+                    url: prefix + "/returnNoticeList",
+                    selectSendMaterialDetailUrl:"send/selectSendMaterial/{id}",
+                    uniqueId: "sendId",
+					sortName: "returnTime",
+					sortOrder: "desc",
+					modalName: "退还通知信息",
+                    showSearch: false,
+                    showRefresh: false,
+                    showToggle: false,
+                    showColumns: false,
+                    detailView: true,
+                    onExpandRow : function(index, row, $detail) {
+                        initChildTable(index, row, $detail);
+                    },
+					columns: [
+                        // {
+                        //     checkbox: true
+                        // },
+
+						{
+							field: 'returnId',
+							title: '退还ID',
+							visible: false
+						},
+						{
+							field: 'exhibitionId',
+							title: '展会ID',
+							visible: false
+						},
+						{
+							field: 'exhibitionName',
+							title: '展会名称'
+						},
+						{
+							field: 'address',
+							title: '展会地址'
+						},
+						{
+							field: 'organizer',
+							title: '办展方'
+						},
+                        {
+                            field: 'logisticsName',
+                            title: '物流名称'
+                        },
+                        {
+                            field: 'logisticsNumber',
+                            title: '物流单号'
+                        },
+                        {
+                            field: 'returnStatus',
+                            title: '状态'
+                        },
+
+
+						{
+							field: 'returnNumber',
+							title: '退还单号'
+						},
+                        {
+                            field: 'returnName',
+                            title: '退还人'
+                        },
+                        {
+                            field: 'returnTime',
+                            title: '退还时间'
+                        }
+                        // ,
+                        // {
+                        //     field: 'receiveNumber',
+                        //     title: '收货单号'
+                        // },
+						// {
+						// 	field: 'receiveName',
+						// 	title: '收货人'
+						// },
+                        // {
+                        //     field: 'receiveTime',
+                        //     title: '收货时间'
+                        // }
+                        ]
+				};
+				$.table.init(options);
+			}
+            initChildTable = function(index, row, $detail) {
+                var childTable = $detail.html('<table style="table-layout:fixed"></table>').find('table');
+                $(childTable).bootstrapTable({
+                    url: prefix + "/selectReturnMaterialDetail",
+                    method: 'post',
+                    sidePagination: "server",
+                    // contentType: "application/json;charset=UTF-8",
+                    contentType: "application/x-www-form-urlencoded",
+                    queryParams : {returnId:row.returnId},
+                    columns: [{
+                        field: 'materialId',
+                        title: '物料ID',
+                        visible: false
+                    },
+                        {
+                            field: 'materialName',
+                            title: '物料名称'
+                        },
+                        {
+                            field: 'materialCode',
+                            title: '物料代码'
+                        },
+                        {
+                            field: 'nickName',
+                            title: '物料简称'
+                        },  {
+                            field: 'specifications',
+                            title: '规格型号'
+                        },
+
+                        {
+                            field: 'type',
+                            title: '类型',
+                            formatter: function(value, row, index) {
+
+                                return $.table.selectDictLabel(dataType, row.type);
+                            }
+                        },{
+                            field: 'unit',
+                            title: '计量单位',
+                            formatter: function(value, row, index) {
+
+                                return $.table.selectDictLabel(dataUnit, row.unit);
+                            }
+                        },
+                        {
+                            field: 'packageQuantity',
+                            title: '标包数量'
+                            // visible: false
+                        },
+                        {
+                            field: 'returnQuantity',
+                            title: '退还数量'
+                        }]
+                });
+            };
+
+		</script>
+	</body>
+</html>

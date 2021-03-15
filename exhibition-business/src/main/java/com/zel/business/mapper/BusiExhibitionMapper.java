@@ -129,4 +129,10 @@ public interface BusiExhibitionMapper {
      * @param exhibitionId 展会ID
      */
     List<BusiProspect> selectProsectInfo(@Param(value = "exhibitionId") Long exhibitionId);
+
+    /**
+     * 查询展会记录
+     * @param exhibitionId 展会ID
+     */
+    List<BusiExhibitionRecord> selectExhibitionRecord(@Param(value = "exhibitionId") Long exhibitionId);
 }

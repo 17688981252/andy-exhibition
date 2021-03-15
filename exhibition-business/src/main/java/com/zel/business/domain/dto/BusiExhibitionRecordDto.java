@@ -1,16 +1,11 @@
-package com.zel.business.domain;
+package com.zel.business.domain.dto;
 
 import lombok.Data;
 
 import java.util.Date;
 
-/**
- * 展会记录 busi_eshibition_record
- *
- * @author andy 20210310
- */
 @Data
-public class BusiExhibitionRecord {
+public class BusiExhibitionRecordDto {
 
     /**
      * 展会记录ID
@@ -28,7 +23,7 @@ public class BusiExhibitionRecord {
     private String event;
 
     /**
-     * 展会进程(1:创展 2：勘展 3：发货  4：收货 5：布展 6：撤展 7：退还 8：签收)
+     * 展会进程
      */
     private Integer status;
 
@@ -56,4 +51,13 @@ public class BusiExhibitionRecord {
      * 更新时间
      */
     private Date updateTime;
+
+    /*附件ID*/
+    private Long exhibitionRecordAttachedId;
+
+    /*图片路径*/
+    private String pictureUrl;
+
+    /*原文件名*/
+    private String fileName;
 }

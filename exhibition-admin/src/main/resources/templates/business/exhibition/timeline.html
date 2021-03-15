@@ -8,15 +8,17 @@
     <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
     <link href="../static/css/main/animate.min.css" th:href="@{/css/main/animate.min.css}" rel="stylesheet"/>
     <link th:href="@{/css/style.css}" rel="stylesheet"/>
+    <th:block th:include="include :: header('展会时间轴')"/>
+    <th:block th:include="include :: layout-latest-css"/>
 </head>
 <body class="gray-bg">
 <div class="row animated fadeInRight">
     <div class="ibox float-e-margins">
-        <div class="text-center float-e-margins p-md">
-            <span>打开/关闭颜色/背景或方向版本: </span>
-            <a href="#" class="btn btn-xs btn-primary" id="lightVersion">轻型版本 </a>
-            <a href="#" class="btn btn-xs btn-primary" id="darkVersion">黑色版本 </a>
-        </div>
+        <!--        <div class="text-center float-e-margins p-md">-->
+        <!--            <span>打开/关闭颜色/背景或方向版本: </span>-->
+        <!--            <a href="#" class="btn btn-xs btn-primary" id="lightVersion">轻型版本 </a>-->
+        <!--            <a href="#" class="btn btn-xs btn-primary" id="darkVersion">黑色版本 </a>-->
+        <!--        </div>-->
         <div id="ibox-content">
             <div id="vertical-timeline" class="vertical-container light-timeline">
                 <div class="vertical-timeline-block">
@@ -25,14 +27,14 @@
                     </div>
 
                     <div class="vertical-timeline-content">
-                        <h2>会议</h2>
+                        <h2>创展</h2>
                         <p>上一年的销售业绩发布会。总结产品营销和销售趋势及销售的现状。
                         </p>
                         <a href="#" class="btn btn-sm btn-primary"> 更多信息</a>
                         <span class="vertical-date">
                          	今天 <br>
                          <small>2月3日</small>
-                     </span>
+                        </span>
                     </div>
                 </div>
 
@@ -42,7 +44,7 @@
                     </div>
 
                     <div class="vertical-timeline-content">
-                        <h2>给张三发送文档</h2>
+                        <h2>勘展</h2>
                         <p>发送上年度《销售业绩报告》</p>
                         <a href="#" class="btn btn-sm btn-success"> 下载文档 </a>
                         <span class="vertical-date">
@@ -58,7 +60,7 @@
                     </div>
 
                     <div class="vertical-timeline-content">
-                        <h2>喝咖啡休息</h2>
+                        <h2>发货</h2>
                         <p>喝咖啡啦，啦啦啦~~</p>
                         <a href="#" class="btn btn-sm btn-info">更多</a>
                         <span class="vertical-date"> 昨天 <br><small>2月2日</small></span>
@@ -71,7 +73,7 @@
                     </div>
 
                     <div class="vertical-timeline-content">
-                        <h2>给李四打电话</h2>
+                        <h2>收货</h2>
                         <p>给李四打电话分配本月工作任务</p>
                         <span class="vertical-date">昨天 <br><small>2月2日</small></span>
                     </div>
@@ -83,7 +85,43 @@
                     </div>
 
                     <div class="vertical-timeline-content">
-                        <h2>公司年会</h2>
+                        <h2>布展</h2>
+                        <p>发年终奖啦，啦啦啦~~</p>
+                        <span class="vertical-date">前天 <br><small>2月1日</small></span>
+                    </div>
+                </div>
+
+                <div class="vertical-timeline-block">
+                    <div class="vertical-timeline-icon lazur-bg">
+                        <i class="fa fa-user-md"></i>
+                    </div>
+
+                    <div class="vertical-timeline-content">
+                        <h2>撤展</h2>
+                        <p>发年终奖啦，啦啦啦~~</p>
+                        <span class="vertical-date">前天 <br><small>2月1日</small></span>
+                    </div>
+                </div>
+
+                <div class="vertical-timeline-block">
+                    <div class="vertical-timeline-icon lazur-bg">
+                        <i class="fa fa-user-md"></i>
+                    </div>
+
+                    <div class="vertical-timeline-content">
+                        <h2>退还</h2>
+                        <p>发年终奖啦，啦啦啦~~</p>
+                        <span class="vertical-date">前天 <br><small>2月1日</small></span>
+                    </div>
+                </div>
+
+                <div class="vertical-timeline-block">
+                    <div class="vertical-timeline-icon lazur-bg">
+                        <i class="fa fa-user-md"></i>
+                    </div>
+
+                    <div class="vertical-timeline-content">
+                        <h2>签收</h2>
                         <p>发年终奖啦，啦啦啦~~</p>
                         <span class="vertical-date">前天 <br><small>2月1日</small></span>
                     </div>
@@ -93,7 +131,11 @@
     </div>
 </div>
 <th:block th:include="include :: footer"/>
+<th:block th:include="include :: layout-latest-js"/>
+<th:block th:include="include :: footer"/>
 <script>
+
+    var prefix =  ctx + "business/exhibition";
     $(document).ready(function () {
         $('#lightVersion').click(function (event) {
             event.preventDefault()
@@ -108,6 +150,28 @@
             $('#vertical-timeline').addClass('dark-timeline');
         });
     });
+
+    $(function (){
+        yueryExhibitionTimeLine()
+    });
+    function yueryExhibitionTimeLine(){
+        var options = {
+            url: prefix + "/selectExhibitionRecord",
+            sortName: "status",
+            uniqueId: "exhibitionId",
+            sortOrder: "ASC",
+            modalName: "展会时间轴",
+            queryParams:queryParams
+        }
+        $.table.init(options);
+    }
+
+    function queryParams(params) {
+        var search = $.table.queryParams(params);
+        var exhibitionId =  [[${exhibitionId}]];
+        search.exhibitionId = exhibitionId;
+        return search;
+    }
 </script>
 </body>
 </html>

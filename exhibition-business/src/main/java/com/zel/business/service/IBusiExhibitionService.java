@@ -112,4 +112,10 @@ public interface IBusiExhibitionService {
      * @return
      */
     int insertExhibitionRecordAttached(BusiExhibitionRecordAttached recordAttached);
+
+    /**
+     * 查询展会记录
+     * @param exhibitionId 展会ID
+     */
+    List<BusiExhibitionRecord> selectExhibitionRecord(Long exhibitionId);
 }

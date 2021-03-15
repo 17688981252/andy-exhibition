@@ -235,11 +235,24 @@ public class BusiExhibitionController extends BaseController
 
     /**
      * 展会时间轴
-     * @param exhibitionId 展会ID
+     * @param id 展会ID
      */
     @GetMapping("/exhibitionTimeLine/{id}")
-    public String exhibitionTimeLine(Long exhibitionId){
-        return prefix + "/timeLine";
+    public String exhibitionTimeLine(@PathVariable(value = "id") Long id,ModelMap mmp){
+        mmp.put("exhibitionId",id);
+        return prefix + "/timeline";
+    }
+
+    /**
+     * 查询展会记录
+     * @param exhibitionId 展会ID
+     */
+    @PostMapping("/selectExhibitionRecord")
+    @ResponseBody
+    public TableDataInfo selectExhibitionRecord(Long exhibitionId){
+        startPage();
+        List<BusiExhibitionRecord> list = exhibitionService.selectExhibitionRecord(exhibitionId);
+        return getDataTable(list);
     }
 
     /**

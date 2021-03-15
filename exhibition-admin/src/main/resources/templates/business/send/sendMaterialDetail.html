@@ -31,7 +31,9 @@
 					</div>
 
 					<div class="col-sm-12 select-table table-striped">
-						<table id="bootstrap-table"></table>
+<!--						<table id="bootstrap-table"></table>-->
+						<table id="bootstrap-table"  data-show-print="true"></table>
+
 					</div>
 				</div>
 			</div>
@@ -40,6 +42,7 @@
 		<th:block th:include="include :: footer" />
 		<th:block th:include="include :: layout-latest-js" />
 		<th:block th:include="include :: ztree-js" />
+		<th:block th:include="include :: bootstrap-table-print-js" />
 		<script th:inline="javascript">
 		var prefix = ctx + "business/send";
 		var dataType = [[${@dict.getType('busi_material_type')}]];
@@ -65,9 +68,15 @@
 				// sortOrder: "desc",
 				// modalName: "物料",
 				// data: [[${sendMaterialDetail}]],//接收后端查询返回数据
-				columns: [{
-					checkbox: true
-				},
+				showSearch: false,
+				showRefresh: false,
+				showToggle: false,
+				showColumns: false,
+				detailView: false,// 是否显示+-
+				columns: [
+					// {
+					// checkbox: false
+					// },
 					{
 						field: 'materialId',
 						title: '物料ID'

@@ -78,6 +78,16 @@
         </collection>
     </resultMap>
 
+    <resultMap id="ExhibitionRecordResult" type="com.zel.business.domain.dto.BusiExhibitionRecordDto">
+        <id property="exhibitionRecordId" column="exhibition_record_id"/>
+        <result property="exhibitionId" column="exhibition_id"/>
+        <result property="event" column="event"/>
+        <result property="status" column="status"/>
+        <result property="exhibitionRecordAttachedId" column="exhibition_record_attached_id"/>
+        <result property="pictureUrl" column="picture_url"/>
+        <result property="fileName" column="file_name"/>
+    </resultMap>
+
     <sql id="selectExhibitionVo">
                 select `exhibition_id`, `exhibition_name`, `status`, `start_time`, `end_time`, `address`, `organizer`, `create_by`, `create_time`, `update_by`, `update_time`, `del`, `remark`
                 from  busi_exhibition
@@ -443,6 +453,22 @@
             busi_prospect
         WHERE
             exhibition_id = #{exhibitionId}
+    </select>
+
+    <select id="selectExhibitionRecord" resultMap="ExhibitionRecordResult">
+        SELECT
+            ber.exhibition_record_id,
+            ber.EVENT,
+            ber.STATUS,
+            bera.picture_url,
+            bera.file_name
+        FROM
+            busi_exhibition_record AS ber
+                LEFT JOIN busi_exhibition_record_attached AS bera ON bera.exhibition_record_id = ber.exhibition_record_id
+        WHERE
+            ber.exhibition_id = #{exhibitionId}
+        ORDER BY
+            ber.`status` ASC
     </select>
 
 </mapper>

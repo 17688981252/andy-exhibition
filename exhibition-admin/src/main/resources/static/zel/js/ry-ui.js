@@ -1346,8 +1346,35 @@ var table = {
 			// 时间轴
 			exhibitionTimeLine: function(id) {
 				table.set();
-				var url = $.common.isEmpty(id) ? table.options.exhibitionTimeLineUrl : table.options.exhibitionTimeLineUrl.replace("{id}", id);
-				$.modal.openFull("查看" + table.options.modalName +"进程", url);
+				if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
+					var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
+					if ($.common.isEmpty(row)) {
+						$.modal.alertWarning("请至少选择一条记录");
+						return;
+					}
+					var url = table.options.exhibitionTimeLineUrl.replace("{id}", row[table.options.uniqueId]);
+					$.modal.open("查看" + table.options.modalName, url);
+				} else {
+					$.modal.openTab("查看" + table.options.modalName, $.operate.exhibitionTimeLineUrl(id));
+				}
+				// var url = $.common.isEmpty(id) ? table.options.exhibitionTimeLineUrl : table.options.exhibitionTimeLineUrl.replace("{id}", id);
+				// $.modal.openTab("查看" + table.options.modalName +"进程", url);
+			},
+
+			//时间轴访问地址
+			exhibitionTimeLineUrl: function(id) {
+				var url = "/404.html";
+				if ($.common.isNotEmpty(id)) {
+					url = table.options.exhibitionTimeLineUrl.replace("{id}", id);
+				} else {
+					var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+					if (id.length == 0) {
+						$.modal.alertWarning("请至少选择一条记录");
+						return;
+					}
+					url = table.options.exhibitionTimeLineUrl.replace("{id}", id);
+				}
+				return url;
 			},
 
 
