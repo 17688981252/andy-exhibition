@@ -4,8 +4,10 @@ import com.zel.business.domain.BusiExhibition;
 import com.zel.business.domain.BusiExhibitionRecord;
 import com.zel.business.domain.BusiExhibitionRecordAttached;
 import com.zel.business.domain.BusiProspect;
+import com.zel.business.domain.dto.BusiExhibitionRecordDto;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IBusiExhibitionService {
 
@@ -117,5 +119,5 @@ public interface IBusiExhibitionService {
      * 查询展会记录
      * @param exhibitionId 展会ID
      */
-    List<BusiExhibitionRecord> selectExhibitionRecord(Long exhibitionId);
+    Map<Integer, List<BusiExhibitionRecordDto>> selectExhibitionRecord(Long exhibitionId);
 }

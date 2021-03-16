@@ -87,7 +87,6 @@
         <result property="pictureUrl" column="picture_url"/>
         <result property="fileName" column="file_name"/>
     </resultMap>
-
     <sql id="selectExhibitionVo">
                 select `exhibition_id`, `exhibition_name`, `status`, `start_time`, `end_time`, `address`, `organizer`, `create_by`, `create_time`, `update_by`, `update_time`, `del`, `remark`
                 from  busi_exhibition
@@ -460,7 +459,7 @@
             ber.exhibition_record_id,
             ber.EVENT,
             ber.STATUS,
-            bera.picture_url,
+            ifnull(bera.picture_url,'') as picture_url,
             bera.file_name
         FROM
             busi_exhibition_record AS ber

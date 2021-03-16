@@ -182,13 +182,16 @@
     <!--
     * 查询收货流水号
     -->
-    <select id="selectReceiveSerialNumberInfo" resultType="com.zel.business.domain.dto.BusiReceiveSerialNumberInfo">
-        select
-            receive_serial_number_info_id as receiveSerialNumberInfoId ,
-            prefix as prefix,
-            ver as ver,
-            serial_number as serialNumber
-        from busi_receive_serial_number_info
+    <select id="selectReceiveSerialNumberInfo" resultType="com.zel.business.domain.BusiSerialNumberInfo">
+        SELECT
+            serial_number_info_id AS  serialNumberInfoId,
+            prefix AS prefix,
+            ver AS ver,
+            serial_number AS serialNumber
+        FROM
+            busi_serial_number_info
+        WHERE
+            serial_number_info_id = 2
     </select>
 
    <!--
@@ -196,7 +199,8 @@
     * @param newNumber
     -->
     <update id="updateReceiveSerialNumber" parameterType="java.lang.Long">
-        update busi_receive_serial_number_info
-        set serial_number = #{newNumber}
+        update busi_serial_number_info
+        set serial_number = serial_number + 1
+        where serial_number_info_id = 2
     </update>
 </mapper>

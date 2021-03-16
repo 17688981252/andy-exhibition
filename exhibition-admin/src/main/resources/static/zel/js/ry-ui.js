@@ -1355,7 +1355,7 @@ var table = {
 					var url = table.options.exhibitionTimeLineUrl.replace("{id}", row[table.options.uniqueId]);
 					$.modal.open("查看" + table.options.modalName, url);
 				} else {
-					$.modal.openTab("查看" + table.options.modalName, $.operate.exhibitionTimeLineUrl(id));
+					$.modal.openTab("查看" + table.options.modalName+"进程", $.operate.exhibitionTimeLineUrl(id));
 				}
 				// var url = $.common.isEmpty(id) ? table.options.exhibitionTimeLineUrl : table.options.exhibitionTimeLineUrl.replace("{id}", id);
 				// $.modal.openTab("查看" + table.options.modalName +"进程", url);

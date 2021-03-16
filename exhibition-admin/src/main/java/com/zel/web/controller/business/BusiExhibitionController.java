@@ -4,6 +4,7 @@ import com.zel.business.domain.BusiExhibition;
 import com.zel.business.domain.BusiExhibitionRecord;
 import com.zel.business.domain.BusiExhibitionRecordAttached;
 import com.zel.business.domain.BusiProspect;
+import com.zel.business.domain.dto.BusiExhibitionRecordDto;
 import com.zel.business.service.IBusiExhibitionService;
 import com.zel.common.annotation.Log;
 import com.zel.common.config.Global;
@@ -26,6 +27,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description:展会信息
@@ -235,11 +237,12 @@ public class BusiExhibitionController extends BaseController
 
     /**
      * 展会时间轴
-     * @param id 展会ID
+     * @param exhibitionId 展会ID
      */
-    @GetMapping("/exhibitionTimeLine/{id}")
-    public String exhibitionTimeLine(@PathVariable(value = "id") Long id,ModelMap mmp){
-        mmp.put("exhibitionId",id);
+    @GetMapping("/exhibitionTimeLine/{exhibitionId}")
+    public String exhibitionTimeLine(@PathVariable(value = "exhibitionId") Long exhibitionId,ModelMap mmp){
+        mmp.put("exhibitionId",exhibitionId);
+        mmp.put("exhibitionRecord",exhibitionService.selectExhibitionRecord(exhibitionId));
         return prefix + "/timeline";
     }
 
@@ -249,10 +252,9 @@ public class BusiExhibitionController extends BaseController
      */
     @PostMapping("/selectExhibitionRecord")
     @ResponseBody
-    public TableDataInfo selectExhibitionRecord(Long exhibitionId){
-        startPage();
-        List<BusiExhibitionRecord> list = exhibitionService.selectExhibitionRecord(exhibitionId);
-        return getDataTable(list);
+    public Map<Integer, List<BusiExhibitionRecordDto>> selectExhibitionRecord(Long exhibitionId){
+        Map<Integer, List<BusiExhibitionRecordDto>> result = exhibitionService.selectExhibitionRecord(exhibitionId);
+        return result;
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.zel.business.service.impl;
 
 import com.zel.business.domain.*;
+import com.zel.business.domain.dto.BusiExhibitionRecordDto;
 import com.zel.business.mapper.BusiArrangeMapper;
 import com.zel.business.mapper.BusiExhibitionMapper;
 import com.zel.business.service.IBusiExhibitionService;
@@ -12,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
@@ -243,8 +244,13 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
      * @param exhibitionId 展会ID
      */
     @Override
-    public List<BusiExhibitionRecord> selectExhibitionRecord(Long exhibitionId) {
+    public Map<Integer, List<BusiExhibitionRecordDto>> selectExhibitionRecord(Long exhibitionId) {
 
-        return exhibitionMapper.selectExhibitionRecord(exhibitionId);
+        List<BusiExhibitionRecordDto> list = exhibitionMapper.selectExhibitionRecord(exhibitionId);
+
+//        Map<Integer, List<BusiExhibitionRecordDto>> result = list.stream().collect(Collectors.groupingBy(e -> e.getStatus(), Collectors.toList()));
+        Map<Integer,List<BusiExhibitionRecordDto>> result = list.stream().collect(Collectors.groupingBy(BusiExhibitionRecordDto::getStatus));
+
+        return result;
     }
 }

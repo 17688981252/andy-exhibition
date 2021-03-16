@@ -3,6 +3,7 @@ package com.zel.business.service.impl;
 import com.zel.business.domain.BusiExhibitionRecord;
 import com.zel.business.domain.BusiReceive;
 import com.zel.business.domain.BusiSend;
+import com.zel.business.domain.BusiSerialNumberInfo;
 import com.zel.business.domain.dto.BusiReceiveInDto;
 import com.zel.business.domain.dto.BusiReceiveMaterialDto;
 import com.zel.business.domain.dto.BusiReceiveSerialNumberInfo;
@@ -52,7 +53,7 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
         for(Long id : receiveInDto.getIds()){
             receiveInDto.setSendId(id);
             String receiveNumber = "";
-            BusiReceiveSerialNumberInfo receiveSerialNumberInfo = receiveMapper.selectReceiveSerialNumberInfo();
+            BusiSerialNumberInfo receiveSerialNumberInfo = receiveMapper.selectReceiveSerialNumberInfo();
             String pre = receiveSerialNumberInfo.getPrefix();
             String ver = receiveSerialNumberInfo.getVer().toString();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -73,8 +74,7 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
             int count2 = receiveMapper.addSave(receiveInDto);
             count++;
             sendMapper.updateSendStatus(id);
-            Long newNumber = num +1;
-            receiveMapper.updateReceiveSerialNumber(newNumber);
+            receiveMapper.updateReceiveSerialNumber();
             if (count2>0) {
                 Long receiveId = receiveInDto.getReceiveId();
                 BusiReceive receive = receiveService.selectReceiveInfo(receiveId);

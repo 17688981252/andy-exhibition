@@ -2,6 +2,7 @@ package com.zel.business.mapper;
 
 import com.zel.business.domain.BusiReceive;
 import com.zel.business.domain.BusiSend;
+import com.zel.business.domain.BusiSerialNumberInfo;
 import com.zel.business.domain.dto.BusiReceiveInDto;
 import com.zel.business.domain.dto.BusiReceiveMaterialDto;
 import com.zel.business.domain.dto.BusiReceiveSerialNumberInfo;
@@ -42,13 +43,12 @@ public interface BusiReceiveMapper {
     /**
      * 查询收货流水号
      */
-    BusiReceiveSerialNumberInfo selectReceiveSerialNumberInfo();
+    BusiSerialNumberInfo selectReceiveSerialNumberInfo();
 
     /**
      * 更新收货流水号
-     * @param newNumber
      */
-    void updateReceiveSerialNumber(@Param(value = "newNumber") long newNumber);
+    void updateReceiveSerialNumber();
 
     /**
      * 删除收货
