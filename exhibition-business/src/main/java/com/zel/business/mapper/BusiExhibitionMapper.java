@@ -136,4 +136,11 @@ public interface BusiExhibitionMapper {
      * @param exhibitionId 展会ID
      */
     List<BusiExhibitionRecordDto> selectExhibitionRecord(@Param(value = "exhibitionId") Long exhibitionId);
+
+    /**
+     * 定时任务
+     *
+     * 每日23:59 更新流水号
+     */
+    Integer updateSerialUnmber();
 }

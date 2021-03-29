@@ -1,5 +1,7 @@
 package com.zel.web.controller.business;
 
+import com.github.tobato.fastdfs.domain.fdfs.StorePath;
+import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.zel.business.domain.BusiExhibition;
 import com.zel.business.domain.BusiExhibitionRecord;
 import com.zel.business.domain.BusiExhibitionRecordAttached;
@@ -17,6 +19,7 @@ import com.zel.common.enums.ExhibitionStatus;
 import com.zel.common.utils.file.FileUploadUtils;
 import com.zel.common.utils.poi.ExcelUtil;
 import com.zel.framework.util.ShiroUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,11 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +52,9 @@ public class BusiExhibitionController extends BaseController
 
     @Autowired
     private IBusiExhibitionService exhibitionService;
+
+    @Autowired
+    private  FastFileStorageClient storageclient;
 
     @RequiresPermissions("business:exhibition:view")
     @GetMapping()
@@ -169,24 +180,28 @@ public class BusiExhibitionController extends BaseController
     @ResponseBody
     public AjaxResult saveProspectUrl(@RequestParam(value = "file_data") MultipartFile[] files,@RequestParam(value = "exhibitionId") Long exhibitionId)
     {
-        BusiProspect prospect = new BusiProspect();
-        try
-        {
-            for(MultipartFile file:files)
-            {
-                String prospectUrl = FileUploadUtils.upload(Global.getProspectUrlPath(), file);
-                BusiProspect busiProspect = new BusiProspect(exhibitionId,file.getOriginalFilename(),prospectUrl);
-                busiProspect.setCreateBy(ShiroUtils.getSysUser().getUserId());
-                exhibitionService.insertProspectUrl(busiProspect);
-                prospect = exhibitionService.findProspectUrl(busiProspect.getProspectId(),exhibitionId) ;
-            }
+        boolean result = exhibitionService.saveProspectUrl(files, exhibitionId);
+        if (!result) {
+            return new AjaxResult(AjaxResult.Type.ERROR, "保存布展图片失败");
+        } else {
+            return new AjaxResult(AjaxResult.Type.SUCCESS, "保存布展图片成功");
         }
-        catch (Exception e)
-        {
-            log.error("保存勘展图片失败！", e);
-            return error(e.getMessage());
-        }
-        return new AjaxResult(  AjaxResult.Type.SUCCESS,"保存勘展图片成功",prospect);
+
+
+
+//        for (MultipartFile file : files) {
+//            try {
+//                String extension = StringUtils.substringAfterLast(file.getOriginalFilename(), ".");
+////                StorePath storePath = storageclient.uploadFile(file.getInputStream(), file.getSize(), extension, null);
+////                System.out.println("storePath = " + storePath);
+////                String fullPath = storePath.getFullPath();
+//                StorePath storePathWithCrtThumbImage = storageclient.uploadImageAndCrtThumbImage(file.getInputStream(), file.getSize(), "jpg", null);
+//                System.out.println("storePathWithCrtThumbImage = " + storePathWithCrtThumbImage);
+//            } catch (IOException e) {
+//                log.error("[文件上传] 上传文件失败", e);
+//            }
+//        }
+//        return new AjaxResult(  AjaxResult.Type.SUCCESS,"保存勘展图片成功",null);
     }
 
 
@@ -197,6 +212,9 @@ public class BusiExhibitionController extends BaseController
     @PostMapping("/deleteProspectUrl")
     @ResponseBody
     public AjaxResult deleteProspectUrl (@RequestParam(value = "key") Long prospectId,@RequestParam(value = "exhibitionId") Long exhibitionId)
+
+
+
     {
         boolean result = false;
         try{
@@ -243,7 +261,7 @@ public class BusiExhibitionController extends BaseController
     public String exhibitionTimeLine(@PathVariable(value = "exhibitionId") Long exhibitionId,ModelMap mmp){
         mmp.put("exhibitionId",exhibitionId);
         mmp.put("exhibitionRecord",exhibitionService.selectExhibitionRecord(exhibitionId));
-        return prefix + "/timeline";
+        return prefix + "/timeline33";
     }
 
     /**
@@ -273,5 +291,13 @@ public class BusiExhibitionController extends BaseController
         return exhibitionService.insertExhibitionRecordAttached(recordAttached);
     }
 
+    /**
+     * 定时任务
+     *
+     * 每日23:59 更新流水号
+     */
+    public Integer updateSerialUnmber(){
+        return exhibitionService.updateSerialUnmber();
+    }
 
 }

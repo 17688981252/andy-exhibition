@@ -138,3 +138,13 @@ xss:
 swagger:
   # 是否开启swagger
   enabled: true
+
+
+fdfs:
+  so-timeout: 2500
+  connect-timeout: 600
+  thumb-image: # 缩略图
+    width: 60
+    height: 60
+  tracker-list: # tracker地址
+    - 192.168.0.113:22122

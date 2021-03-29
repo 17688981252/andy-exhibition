@@ -19,6 +19,10 @@ public class BusiExhibitionRecordAttached {
     /*图片路径*/
     private String pictureUrl;
 
+    /*缩略图*/
+    private String thumbImage;
+
     /*原文件名*/
     private String fileName;
+
 }

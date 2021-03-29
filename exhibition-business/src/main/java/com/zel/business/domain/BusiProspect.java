@@ -1,5 +1,7 @@
 package com.zel.business.domain;
 
+import lombok.Data;
+
 import java.util.Date;
 
 /**
@@ -7,6 +9,7 @@ import java.util.Date;
  *
  * @author andy
  */
+@Data
 public class BusiProspect {
 
     private static final long serialVersionUID = 1L;
@@ -36,6 +39,11 @@ public class BusiProspect {
     private String prospectUrl;
 
     /**
+     * 缩略图
+     */
+    private String thumbImage;
+
+    /**
      * 创建人
      */
     private Long createBy;
@@ -55,69 +63,7 @@ public class BusiProspect {
      */
     private Date updateTime;
 
-    public Long getProspectId() {
-        return prospectId;
-    }
 
-    public void setProspectId(Long prospectId) {
-        this.prospectId = prospectId;
-    }
-
-    public Long getExhibitionId() {
-        return exhibitionId;
-    }
-
-    public void setExhibitionId(Long exhibitionId) {
-        this.exhibitionId = exhibitionId;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getProspectUrl() {
-        return prospectUrl;
-    }
-
-    public void setProspectUrl(String prospectUrl) {
-        this.prospectUrl = prospectUrl;
-    }
-
-    public Long getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(Long createBy) {
-        this.createBy = createBy;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Long getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(Long updateBy) {
-        this.updateBy = updateBy;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
 
     public BusiProspect() {
         super();

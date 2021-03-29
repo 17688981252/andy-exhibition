@@ -5,6 +5,7 @@ import com.zel.business.domain.BusiExhibitionRecord;
 import com.zel.business.domain.BusiExhibitionRecordAttached;
 import com.zel.business.domain.BusiProspect;
 import com.zel.business.domain.dto.BusiExhibitionRecordDto;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -120,4 +121,19 @@ public interface IBusiExhibitionService {
      * @param exhibitionId 展会ID
      */
     Map<Integer, List<BusiExhibitionRecordDto>> selectExhibitionRecord(Long exhibitionId);
+
+
+    /**
+     * 定时任务
+     *
+     * 每日23:59 更新流水号
+     */
+    Integer updateSerialUnmber();
+
+    /**
+     * 保存勘展图片
+     * @param files
+     * @param exhibitionId
+     */
+    boolean saveProspectUrl(MultipartFile[] files, Long exhibitionId);
 }

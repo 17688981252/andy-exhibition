@@ -5,16 +5,32 @@ import com.zel.business.domain.dto.BusiExhibitionRecordDto;
 import com.zel.business.mapper.BusiArrangeMapper;
 import com.zel.business.mapper.BusiExhibitionMapper;
 import com.zel.business.service.IBusiExhibitionService;
+import com.zel.business.utils.ImageUtil;
+import com.zel.common.config.Global;
 import com.zel.common.constant.UserConstants;
+import com.zel.common.core.domain.AjaxResult;
 import com.zel.common.enums.ExhibitionStatus;
+import com.zel.common.utils.StringUtils;
+import com.zel.common.utils.file.FileUploadUtils;
 import com.zel.framework.util.ShiroUtils;
+import lombok.SneakyThrows;
+import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.crypto.Data;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.zel.common.config.datasource.DynamicDataSourceContextHolder.log;
 
 @Service
 public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
@@ -26,7 +42,6 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
 
     @Autowired
     private BusiArrangeMapper arrangeMapper;
-
 
 
     /**
@@ -143,13 +158,13 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
     @Override
     public int updateStatus(Long exhibitionId) {
         int status = ExhibitionStatus.PROSPECT.getCode();
-        int count = exhibitionMapper.updateStatus(exhibitionId,status);
+        int count = exhibitionMapper.updateStatus(exhibitionId, status);
         if (count > 0) {
             BusiExhibitionRecord record = new BusiExhibitionRecord();
             record.setExhibitionId(exhibitionId);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String date = sdf.format(new Date());
-            record.setEvent("勘察展会并上传图片,时间："+date);
+            record.setEvent("勘察展会并上传图片,时间：" + date);
             record.setStatus(2);
             exhibitionService.insertExhibitionRecord(record);
             BusiExhibitionRecordAttached recordAttached = new BusiExhibitionRecordAttached();
@@ -157,10 +172,11 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
             List<BusiProspect> prospectList = exhibitionMapper.selectProsectInfo(exhibitionId);
             for (BusiProspect prospect : prospectList) {
                 recordAttached.setPictureUrl(prospect.getProspectUrl());
+                String thumbImage = prospect.getThumbImage();
+                recordAttached.setThumbImage(thumbImage);
                 recordAttached.setFileName(prospect.getFileName());
                 exhibitionService.insertExhibitionRecordAttached(recordAttached);
             }
-
         }
 
         return count;
@@ -231,6 +247,7 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
 
     /**
      * 展会记录附件
+     *
      * @param recordAttached 附件实体
      * @return
      */
@@ -241,6 +258,7 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
 
     /**
      * 查询展会记录
+     *
      * @param exhibitionId 展会ID
      */
     @Override
@@ -249,8 +267,74 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
         List<BusiExhibitionRecordDto> list = exhibitionMapper.selectExhibitionRecord(exhibitionId);
 
 //        Map<Integer, List<BusiExhibitionRecordDto>> result = list.stream().collect(Collectors.groupingBy(e -> e.getStatus(), Collectors.toList()));
-        Map<Integer,List<BusiExhibitionRecordDto>> result = list.stream().collect(Collectors.groupingBy(BusiExhibitionRecordDto::getStatus));
+        Map<Integer, List<BusiExhibitionRecordDto>> result = list.stream().collect(Collectors.groupingBy(BusiExhibitionRecordDto::getStatus));
 
+        return result;
+    }
+
+    /**
+     * 定时任务
+     * <p>
+     * 每日23:59 更新流水号
+     */
+    @Override
+    public Integer updateSerialUnmber() {
+        return exhibitionMapper.updateSerialUnmber();
+    }
+
+    /**
+     * 保存勘展图片
+     * @param files
+     * @param exhibitionId
+     */
+    @Override
+    public boolean saveProspectUrl(MultipartFile[] files, Long exhibitionId) {
+        boolean result = true;
+        BusiProspect prospect = new BusiProspect();
+        try
+        {
+            for(MultipartFile file:files)
+            {
+                //上传图片
+                String prospectUrl = FileUploadUtils.upload(Global.getProspectUrlPath(), file);
+                //生成缩略图
+                String pre = "F:/zel_exhibition/uploadPath";
+                String imageUrl = StringUtils.replace(prospectUrl, "/profile", pre);
+                String thumbImage = ImageUtil.thumbnailImage(imageUrl, 100, 100, "thumb_", false);
+
+//                String pre2 = "F:\\zel_exhibition\\uploadPath\\";
+//
+//                thumbImage.replace(pre2,"/profile");
+
+                BusiProspect busiProspect = new BusiProspect(exhibitionId,file.getOriginalFilename(),prospectUrl);
+                busiProspect.setCreateBy(ShiroUtils.getSysUser().getUserId());
+                busiProspect.setThumbImage(thumbImage);
+                exhibitionMapper.insertProspectUrl(busiProspect);
+                prospect = exhibitionMapper.findProspectUrl(busiProspect.getProspectId(),exhibitionId) ;
+
+                //file 转 multipartFile
+//                MultipartFile multipartFile = null;
+//                try {
+//                    FileInputStream fileInputStream = new FileInputStream(fileThumb);
+//                    multipartFile = new MockMultipartFile(fileThumb.getName(), fileThumb.getName(),
+//                            ContentType.APPLICATION_OCTET_STREAM.toString(), fileInputStream);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                //上传缩略图并返回路径
+//                String path = null;
+//                try {
+//                    path = FileUploadUtils.upload(Global.getProspectUrlPath(), multipartFile);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+            }
+        }
+        catch (Exception e)
+        {
+            log.error("保存勘布图片失败！");
+            result = false;
+        }
         return result;
     }
 }
