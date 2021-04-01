@@ -84,6 +84,7 @@
         SELECT
             bsmd.material_id AS materialId,
             bsmd.receive_quantity AS receiveQuantity,
+            bsmd.send_quantity AS sendQuantity,
             bm.material_name AS  materialName,
             bm.material_code AS  materialCode,
             bm.nick_name AS  nickName,
@@ -202,5 +203,13 @@
         update busi_serial_number_info
         set serial_number = serial_number + 1
         where serial_number_info_id = 2
+    </update>
+
+
+    <update id="updateReceiveQuantity">
+        UPDATE busi_send_material_detail
+        SET receive_quantity = IFNULL( receive_quantity, send_quantity )
+        WHERE
+            send_id = #{id}
     </update>
 </mapper>

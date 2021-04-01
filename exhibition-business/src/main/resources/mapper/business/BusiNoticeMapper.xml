@@ -59,6 +59,8 @@
         <result property="receiveName"      column="receiveName"/>
         <result property="returnName"         column="returnName"/>
         <result property="receiveName"       column="receiveName"/>
+        <result property="returnReceiveNumber" column="return_receive_number"/>
+        <result property="receiveTime" column="receive_time"/>
     </resultMap>
 
     <!--退还物料resultMap-->
@@ -138,7 +140,7 @@
         <if test="endTime!=null and endTime!=''">
             and DATE_FORMAT(bs.send_time, '%Y-%m-%d')  <![CDATA[ <= ]]> DATE_FORMAT(#{endTime}, '%Y-%m-%d')
         </if>
-        order by br.receive_time ASC
+        order by bs.status ASC, br.receive_time DESC
     </select>
     
     
@@ -156,17 +158,20 @@
             br.receive_address,
             br.dept_id,
             ret.user_name as returnName,
-            rec.user_name as receiveName,
             dep.dept_name as deptName,
             be.exhibition_name,
             be.address,
-            be.organizer
+            be.organizer,
+            brr.return_receive_number ,
+            brr.receive_time,
+            rec.user_name as receiveName
         FROM
             busi_return AS br
                 LEFT JOIN sys_user AS ret ON br.return_by = ret.user_id
-                LEFT JOIN sys_user AS rec ON br.receive_by = rec.user_id
                 LEFT JOIN sys_dept AS dep ON br.dept_id = dep.dept_id
                 LEFT JOIN busi_exhibition AS be ON br.exhibition_id = be.exhibition_id
+                LEFT JOIN busi_return_receive AS brr ON br.return_id = brr.return_id
+                LEFT JOIN sys_user AS rec ON brr.receive_by = rec.user_id
         WHERE
             br.del = 1
         and br.status != 1
@@ -188,7 +193,9 @@
         <if test="endTime!=null and endTime!=''">
             and DATE_FORMAT(br.return_time, '%Y-%m-%d')  <![CDATA[ <= ]]> DATE_FORMAT(#{endTime}, '%Y-%m-%d')
         </if>
-
+        ORDER BY
+        br.STATUS ASC,
+        brr.receive_time DESC,br.return_time DESC
     </select>
 
     <select id="selectReturnMaterialDetail" resultMap="BusiReturnMaterialResult">

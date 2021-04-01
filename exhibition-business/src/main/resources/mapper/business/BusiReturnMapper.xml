@@ -71,7 +71,7 @@
         <if test="logisticsNumber != null and logisticsNumber != ''">
             and br.logistics_number like concat ('%', #{logisticsNumber},'%')
         </if>
-        order by br.create_time DESC
+        order by br.status ASC, br.return_time DESC
     </select>
 
     <!--查询退还展会信息 -->
@@ -239,36 +239,39 @@
         </if>
     </select>
 
-    <select id="selectReturnMaterialDetail" resultType="com.zel.business.domain.dto.BusiReturnMaterialDto">
+    <!--查看收货物料明细-->
+    <select id="selectReceiveMaterialDetail" resultType="com.zel.business.domain.dto.BusiReturnMaterialDto">
         SELECT
-        bm.material_id AS   materialId,
-        bm.material_name AS  materialName,
-        bm.material_code AS  materialCode,
-        bm.nick_name AS  nickName,
-        bm.specifications AS  specifications,
-        bm.type AS  type,
-        bm.unit AS  unit,
-        bm.package_quantity AS  packageQuantity,
-        bm.create_by AS  createBy,
-        bm.create_time AS  createTime,
-        bm.update_by AS  updateBy,
-        bm.update_time AS  updateTime,
-        bm.remark AS  remark,
-        brmd.return_quantity AS returnQuantity,
-        IFNULL (brmd.return_receive_quantity,brmd.return_quantity) as returnReceiveQuantity
+            bm.material_id AS materialId,
+            bm.material_name AS materialName,
+            bm.material_code AS materialCode,
+            bm.nick_name AS nickName,
+            bm.specifications AS specifications,
+            bm.type AS type,
+            bm.unit AS unit,
+            bm.package_quantity AS packageQuantity,
+            bm.create_by AS createBy,
+            bm.create_time AS createTime,
+            bm.update_by AS updateBy,
+            bm.update_time AS updateTime,
+            bm.remark AS remark,
+            SUM( bsmd.receive_quantity ) AS receiveQuantity,
+            SUM( bsmd.receive_quantity ) AS returnQuantity
         FROM
-        busi_return_material_detail AS brmd
-        LEFT JOIN
-        busi_material as bm ON bm.material_id = brmd.material_id
+            busi_send AS bs
+                LEFT JOIN busi_send_material_detail AS bsmd ON bs.send_id = bsmd.send_id
+                LEFT JOIN busi_material AS bm ON bm.material_id = bsmd.material_id
         WHERE
-        brmd.return_id = #{returnId}
+            bs.send_id IN ( SELECT send_id FROM busi_send WHERE exhibition_id = #{exhibitionId} )
+          AND bm.del = 1
         <if test="materialName != null and materialName != ''">
             AND bm.material_name like concat('%', #{materialName}, '%')
         </if>
         <if test="materialCode != null and materialCode != ''">
             AND bm.material_code like concat('%', #{materialCode}, '%')
         </if>
-        and bm.del = 1
+        GROUP BY
+            bsmd.material_id
     </select>
 
     <update id="updateReturnMaterialDetail" parameterType="com.zel.business.domain.BusiReturn">
@@ -281,11 +284,13 @@
           AND return_id = #{returnId}
     </update>
 
-    <update id="confirmReturn" parameterType="java.lang.Long">
+    <update id="confirmReturn" parameterType="com.zel.business.domain.BusiReturn">
         UPDATE busi_return
         SET return_by = #{returnBy},
             status = 2,
-            return_time = now()
+            return_time = now(),
+            update_by = #{updateBy},
+            update_time = now()
         WHERE
             return_id = #{returnId}
     </update>
@@ -303,6 +308,7 @@
             busi_exhibition
         where
             status = 4
+        ORDER BY create_time DESC
     </select>
 
     <select id="selectReturnInfo" resultMap="ReturnResultMap">
@@ -328,4 +334,41 @@
             return_id = #{returnId};
     </select>
 
+    <select id="selectExhibitionId" resultType="object">
+        select exhibition_id from busi_return where return_id = #{returnId}
+    </select>
+
+    <!--查看退还物料明细-->
+    <select id="selectReturnMaterialDetail" resultType="com.zel.business.domain.dto.BusiReturnMaterialDto">
+        SELECT
+        bm.material_id AS   materialId,
+        bm.material_name AS  materialName,
+        bm.material_code AS  materialCode,
+        bm.nick_name AS  nickName,
+        bm.specifications AS  specifications,
+        bm.type AS  type,
+        bm.unit AS  unit,
+        bm.package_quantity AS  packageQuantity,
+        bm.create_by AS  createBy,
+        bm.create_time AS  createTime,
+        bm.update_by AS  updateBy,
+        bm.update_time AS  updateTime,
+        bm.remark AS  remark,
+        brmd.return_quantity AS returnQuantity,
+        brmd.return_quantity AS receiveQuantity,
+        IFNULL (brmd.return_receive_quantity,brmd.return_quantity) as returnReceiveQuantity
+        FROM
+        busi_return_material_detail AS brmd
+        LEFT JOIN
+        busi_material as bm ON bm.material_id = brmd.material_id
+        WHERE
+        brmd.return_id = #{returnId}
+        <if test="materialName != null and materialName != ''">
+            AND bm.material_name like concat('%', #{materialName}, '%')
+        </if>
+        <if test="materialCode != null and materialCode != ''">
+            AND bm.material_code like concat('%', #{materialCode}, '%')
+        </if>
+        and bm.del = 1
+    </select>
 </mapper>

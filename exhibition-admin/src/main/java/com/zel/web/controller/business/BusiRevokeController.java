@@ -27,7 +27,6 @@ public class BusiRevokeController extends BaseController {
     IBusiRevokeService revokeService;
 
 
-
     private final String prefix = "business/revoke";
 
     /**

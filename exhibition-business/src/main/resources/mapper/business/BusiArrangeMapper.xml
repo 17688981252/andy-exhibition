@@ -58,9 +58,9 @@
 
     <!--插入布展图片信息-->
     <insert id="insertArrangeUrl" parameterType="com.zel.business.domain.BusiArrange" useGeneratedKeys="true" keyProperty="arrangeId" keyColumn="arrange_id">
-        INSERT INTO  busi_arrange  (  arrange_id ,  exhibition_id ,  arrange_url ,  file_name ,  create_by ,  create_time )
+        INSERT INTO  busi_arrange  (  arrange_id ,  exhibition_id ,  arrange_url , thumb_image, file_name ,  create_by ,  create_time )
         VALUES
-            ( #{arrangeId}, #{exhibitionId}, #{arrangeUrl}, #{fileName}, #{createBy}, now() );
+            ( #{arrangeId}, #{exhibitionId}, #{arrangeUrl}, #{thumbImage}, #{fileName}, #{createBy}, now() );
     </insert>
 
     <!--查询布展信息-->
@@ -86,6 +86,7 @@
         SELECT
             arrange_id as arrangeId,
             arrange_url as arrangeUrl,
+            thumb_image AS thumbImage,
             file_name as fileName
         FROM
             busi_arrange

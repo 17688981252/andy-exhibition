@@ -4,6 +4,7 @@ import com.zel.business.domain.BusiExhibition;
 import com.zel.business.domain.BusiReturn;
 import com.zel.business.domain.BusiReturnReceive;
 import com.zel.business.domain.BusiSerialNumberInfo;
+import com.zel.business.domain.dto.BusiReturnMaterialDto;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -86,4 +87,15 @@ public interface BusiReturnReceiveMapper {
      * @param returnReceiveId 退还签收ID
      */
     BusiReturnReceive selectReturnReceiveInfo(@Param(value = "returnReceiveId") Long returnReceiveId);
+
+    /**
+     * 查询退还物料明细
+     * @param returnId 退还ID
+     * @param materialName 物料名称
+     * @param materialCode 物料代码
+     * @return 物料列表
+     */
+    List<BusiReturnMaterialDto> selectReturnMaterialDetail(@Param(value = "returnId") Long returnId,
+                                                           @Param(value = "materialName") String materialName,
+                                                           @Param(value = "materialCode") String materialCode);
 }

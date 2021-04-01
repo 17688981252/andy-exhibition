@@ -90,7 +90,7 @@ public class BusiReturnReceiveImpl implements IBusiReturnReceiveService {
      */
     @Override
     public List<BusiReturnMaterialDto> findReturnMaterial(Long returnId, String materialName, String materialCode) {
-        return returnService.selectReturnMaterialDetail(returnId,materialName,materialCode);
+        return returnReceiveMapper.selectReturnMaterialDetail(returnId,materialName,materialCode);
     }
 
     /**
@@ -172,7 +172,7 @@ public class BusiReturnReceiveImpl implements IBusiReturnReceiveService {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String date = sdf.format(returnReceive.getReceiveTime());
                 record.setEvent("签收展会："+ returnReceive.getExhibitionName()+" 物料，"+"签收单号："+returnReceive.getReturnReceiveNumber()+"、物流名称："+returnReceive.getLogisticsName()
-                + "、物流单号："+returnReceive.getLogisticsNumber()+"签收人："+returnReceive.getReceiveName()+"、签收时间："+date);
+                + "、物流单号："+returnReceive.getLogisticsNumber()+"、签收人："+returnReceive.getReceiveName()+"、签收时间："+date);
                 record.setStatus(8);
                 exhibitionService.insertExhibitionRecord(record);
             }

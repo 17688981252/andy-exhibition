@@ -134,15 +134,15 @@ public class BusiReturnServiceImpl implements IBusiReturnService {
     }
 
     /**
-     * 查询退还物料明细
-     * @param returnId 退还ID
+     * 查询收货物料明细
+     * @param exhibitionId 展会ID
      * @param materialName 物料名称
      * @param materialCode 物料代码
      * @return 物料列表
      */
     @Override
-    public List<BusiReturnMaterialDto> selectReturnMaterialDetail(Long returnId, String materialName, String materialCode) {
-        return returnMapper.selectReturnMaterialDetail(returnId, materialName, materialCode);
+    public List<BusiReturnMaterialDto> selectReceiveMaterialDetail(Long exhibitionId, String materialName, String materialCode) {
+        return returnMapper.selectReceiveMaterialDetail(exhibitionId, materialName, materialCode);
     }
 
     /**
@@ -169,8 +169,11 @@ public class BusiReturnServiceImpl implements IBusiReturnService {
      */
     @Override
     public int confirmReturn(Long returnId) {
-        Long returnBy = ShiroUtils.getUserId();
-        int count = returnMapper.confirmReturn(returnId,returnBy);
+        BusiReturn busiReturnEntity = new BusiReturn();
+        busiReturnEntity.setReturnId(returnId);
+        busiReturnEntity.setReturnBy(ShiroUtils.getUserId());
+        busiReturnEntity.setUpdateBy(ShiroUtils.getUserId());
+        int count = returnMapper.confirmReturn(busiReturnEntity);
         if (count>0) {
             BusiExhibitionRecord record = new BusiExhibitionRecord();
             BusiReturn busiReturn = returnMapper.selectReturnInfo(returnId);
@@ -201,6 +204,28 @@ public class BusiReturnServiceImpl implements IBusiReturnService {
     @Override
     public List<BusiExhibition> selectUnReturnExhibitionInfo() {
         return returnMapper.selectUnReturnExhibitionInfo();
+    }
+
+    /**
+     * 查询展会ID
+     * @param returnId
+     * @return
+     */
+    @Override
+    public Object selectExhibitionId(Long returnId) {
+        return returnMapper.selectExhibitionId(returnId);
+    }
+
+    /**
+     * 查询收货物料明细
+     * @param returnId 展会ID
+     * @param materialName 物料名称
+     * @param materialCode 物料代码
+     * @return 物料列表
+     */
+    @Override
+    public List<BusiReturnMaterialDto> selectReturnMaterialDetail(Long returnId, String materialName, String materialCode) {
+        return returnMapper.selectReturnMaterialDetail(returnId,materialName,materialCode);
     }
 
 }

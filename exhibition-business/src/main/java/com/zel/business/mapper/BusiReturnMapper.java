@@ -74,13 +74,13 @@ public interface BusiReturnMapper {
     List<BusiExhibition> selectUnreturnList();
 
     /**
-     * 查询退还物料明细
-     * @param returnId 退还ID
+     * 查询收货物料明细
+     * @param exhibitionId  展会ID
      * @param materialName 物料名称
      * @param materialCode 物料代码
      * @return 物料列表
      */
-    List<BusiReturnMaterialDto> selectReturnMaterialDetail(@Param(value = "returnId") Long returnId,
+    List<BusiReturnMaterialDto> selectReceiveMaterialDetail(@Param(value = "exhibitionId") Long exhibitionId,
                                                            @Param(value = "materialName") String materialName,
                                                            @Param(value = "materialCode") String materialCode);
 
@@ -93,11 +93,9 @@ public interface BusiReturnMapper {
 
     /**
      * 确认退还
-     * @param returnId 退还ID
-     * @param returnBy 退还人
+     * @param busiReturnEntity 退还实体
      */
-    int confirmReturn(@Param(value = "returnId") Long returnId,
-                      @Param(value = "returnBy")Long returnBy);
+    int confirmReturn(BusiReturn busiReturnEntity);
 
     /**
      * 查看退还状态
@@ -112,4 +110,22 @@ public interface BusiReturnMapper {
     List<BusiExhibition> selectUnReturnExhibitionInfo();
 
     BusiReturn selectReturnInfo(@Param(value = "returnId") Long returnId);
+
+    /**
+     * 查询展会ID
+     * @param returnId
+     * @return
+     */
+    Object selectExhibitionId(@Param(value = "returnId") Long returnId);
+
+    /**
+     * 查询收货物料明细
+     * @param returnId 展会ID
+     * @param materialName 物料名称
+     * @param materialCode 物料代码
+     * @return 物料列表
+     */
+    List<BusiReturnMaterialDto> selectReturnMaterialDetail(@Param(value = "returnId") Long returnId,
+                                                           @Param(value = "materialName") String materialName,
+                                                           @Param(value = "materialCode") String materialCode);
 }

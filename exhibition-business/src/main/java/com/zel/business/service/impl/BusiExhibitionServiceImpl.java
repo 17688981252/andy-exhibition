@@ -73,8 +73,11 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
         if (count > 0) {
             BusiExhibitionRecord record = new BusiExhibitionRecord();
             record.setExhibitionId(exhibition.getExhibitionId());
-            record.setEvent("创建展会：" + exhibition.getExhibitionName() + "  办展方：" + exhibition.getOrganizer() + "  展会地址：" + exhibition.getAddress()
-                    + "  开始时间：" + exhibition.getStartTime() + "  结束时间：" + exhibition.getEndTime());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            String startTime = sdf.format(exhibition.getStartTime()) ;
+            String endTime = sdf.format(exhibition.getEndTime());
+            record.setEvent("创建展会：" + exhibition.getExhibitionName() + "、 办展方：" + exhibition.getOrganizer() + "、  展会地址：" + exhibition.getAddress()
+                    + "、  开始时间：" + startTime + "、  结束时间：" + endTime + "、  备注：" + exhibition.getRemark());
             record.setStatus(1);
             exhibitionService.insertExhibitionRecord(record);
         }
@@ -118,7 +121,18 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
      */
     @Override
     public int updateExhibition(BusiExhibition exhibition) {
-        return exhibitionMapper.updateExhibition(exhibition);
+
+        int count = exhibitionMapper.updateExhibition(exhibition);
+        BusiExhibitionRecord record = new BusiExhibitionRecord();
+        record.setExhibitionId(exhibition.getExhibitionId());
+        record.setUpdateBy(ShiroUtils.getUserId());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String startTime = sdf.format(exhibition.getStartTime()) ;
+        String endTime = sdf.format(exhibition.getEndTime());
+        record.setEvent("创建展会：" + exhibition.getExhibitionName() + "、  办展方：" + exhibition.getOrganizer() + "、  展会地址：" + exhibition.getAddress()
+                + "、  开始时间：" + startTime + "、  结束时间：" + endTime +"、  备注：" + exhibition.getRemark());
+        exhibitionMapper.updateExhibitionRecord(record);
+        return count;
     }
 
     /**
@@ -157,8 +171,11 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
      */
     @Override
     public int updateStatus(Long exhibitionId) {
-        int status = ExhibitionStatus.PROSPECT.getCode();
-        int count = exhibitionMapper.updateStatus(exhibitionId, status);
+        BusiExhibition exhibition = new BusiExhibition();
+        exhibition.setExhibitionId(exhibitionId);
+        exhibition.setStatus(ExhibitionStatus.PROSPECT.getCode());
+        exhibition.setUpdateBy(ShiroUtils.getUserId());
+        int count = exhibitionMapper.updateStatus(exhibition);
         if (count > 0) {
             BusiExhibitionRecord record = new BusiExhibitionRecord();
             record.setExhibitionId(exhibitionId);

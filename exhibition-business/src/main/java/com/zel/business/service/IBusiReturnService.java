@@ -59,13 +59,13 @@ public interface IBusiReturnService
     List<BusiExhibition> selectUnreturnList();
 
     /**
-     * 查询退还物料明细
-     * @param returnId 退还ID
+     * 查询收货物料明细
+     * @param exhibitionId 展会ID
      * @param materialName 物料名称
      * @param materialCode 物料代码
      * @return 物料列表
      */
-    List<BusiReturnMaterialDto> selectReturnMaterialDetail(Long returnId,String materialName, String materialCode);
+    List<BusiReturnMaterialDto> selectReceiveMaterialDetail(Long exhibitionId,String materialName, String materialCode);
 
     /**
      * 更新收货物料明细
@@ -91,4 +91,20 @@ public interface IBusiReturnService
      * @return 展会LIST
      */
     List<BusiExhibition> selectUnReturnExhibitionInfo();
+
+    /**
+     * 查询展会ID
+     * @param returnId
+     * @return
+     */
+    Object selectExhibitionId(Long returnId);
+
+    /**
+     * 查询收货物料明细
+     * @param returnId 展会ID
+     * @param materialName 物料名称
+     * @param materialCode 物料代码
+     * @return 物料列表
+     */
+    List<BusiReturnMaterialDto> selectReturnMaterialDetail(Long returnId, String materialName, String materialCode);
 }

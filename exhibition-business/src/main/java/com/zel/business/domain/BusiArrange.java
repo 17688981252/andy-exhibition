@@ -37,6 +37,11 @@ public class BusiArrange {
      */
     private String arrangeUrl;
 
+    /**
+     * 缩略图
+     */
+    private String thumbImage;
+
     private List<String> arrangeUrlList;
 
     /**

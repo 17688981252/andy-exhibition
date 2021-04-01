@@ -46,7 +46,7 @@
 						</a>
 					</div>
 					<div class="col-sm-12 select-table table-striped">
-						<table id="bootstrap-table"></table>
+						<table id="bootstrap-table" data-show-print="true"></table>
 					</div>
 				</div>
 			</div>
@@ -76,13 +76,17 @@
 					selectReturnMaterialDetailUrl: prefix + "/selectReturnMaterial/{id}",
 					confirmReturnUrl:prefix + "/confirmReturn",
                     uniqueId: "returnId",
-					sortName: "returnTime",
-					sortOrder: "asc",
+					// sortName: "returnTime",
+					// sortOrder: "asc",
 					modalName: "退还信息",
 					// detailView: true,
 					// onExpandRow : function(index, row, $detail) {
 					// 	initChildTable(index, row, $detail);
 					// },
+					showSearch: false,
+					showRefresh: false,
+					showToggle: false,
+					showColumns: true,
 					columns: [{
 						checkbox: true
 					},
@@ -91,6 +95,11 @@
                             title: '退还ID',
                             visible: false
                         },
+						{
+							field: 'exhibitionId',
+							title: '展会ID'
+							// ,visible: false
+						},
 						{
 							field: 'exhibitionName',
 							title: '展会名称'

@@ -58,6 +58,7 @@
         }
         $('body').layout({initClosed: panehHidden, west__size: 185});
         queryMaterialList();
+        // alert("AAAAAAAAAA")
 
     });
 
@@ -121,10 +122,10 @@
                     title: '标包数量'
                     // visible: false
                 },
-                // {
-                //     field: 'receiveQuantity',
-                //     title: '收货数量'
-                // },
+                {
+                    field: 'receiveQuantity',
+                    title: '收货数量'
+                },
                 {
                     field: 'returnQuantity',
                     title: '退还数量'
@@ -162,6 +163,7 @@
     function queryParams(params) {
         var search = $.table.queryParams(params);
         var returnId = [[${returnId}]];
+        // alert(exhibitionId)
         search.returnId = returnId;
         return search;
     }

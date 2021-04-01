@@ -100,11 +100,11 @@
     <select id="checkExhibitionNameUnique" resultType="java.lang.Integer">
         select count(0) from busi_exhibition
         where
-        exhibition_name = #{exhibitionName}
+            exhibition_name = #{exhibitionName}
         and del = 1
-        <if test="exhibitionId != null">
-            and exhibition_id != #{exhibitionId}
-        </if>
+          <if test="exhibitionId != null">
+              and exhibition_id != #{exhibitionId}
+          </if>
     </select>
 
     <!--
@@ -167,6 +167,7 @@
         <if test="endTime!=null and endTime!=''">
             and DATE_FORMAT(end_time, '%Y-%m-%d')  <![CDATA[ <= ]]> DATE_FORMAT(#{endTime}, '%Y-%m-%d')
         </if>
+        ORDER BY status ASC,update_time DESC
     </select>
 
     <!--
@@ -305,7 +306,9 @@
     <update id="updateStatus">
           update busi_exhibition
           set
-              status = #{status}
+              status = #{status},
+              update_by = #{updateBy},
+              updateTime = now()
           where
               exhibition_id = #{exhibitionId}
     </update>
@@ -335,13 +338,7 @@
       FROM
         busi_exhibition
       WHERE del = 1
---         exhibition_id NOT IN
---            (SELECT
---                 exhibition_id
---             FROM
---                 busi_send
---             )
---         and status = 2
+        ORDER BY create_time DESC
     </select>
 
 
@@ -475,9 +472,24 @@
             ber.`status` ASC
     </select>
 
+    <!--
+    定时任务
+    更新流水号
+    -->
     <update id="updateSerialUnmber">
         UPDATE busi_serial_number_info
         SET serial_number = 1
+    </update>
+
+    <!--更新展会记录表-->
+    <update id="updateExhibitionRecord">
+        UPDATE busi_exhibition_record
+        SET event = #{event},
+            update_by = #{updateBy},
+            update_time = NOW()
+        WHERE
+            exhibition_id = #{exhibitionId}
+          AND `status` = 1
     </update>
 
 </mapper>

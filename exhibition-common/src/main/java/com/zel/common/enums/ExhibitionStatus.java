@@ -10,7 +10,8 @@ public enum ExhibitionStatus
     SAVE(1, "保存"),
     PROSPECT(2, "勘展"),
     ARRANGE(3, "布展"),
-    DISMANTLING(4, "撤展");
+    REVOKE(4, "撤展"),
+    END(5,"结束");
 
     private final int code;
     private final String info;

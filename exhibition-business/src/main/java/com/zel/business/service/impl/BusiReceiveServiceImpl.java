@@ -73,8 +73,10 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
             receiveInDto.setReceiveBy(ShiroUtils.getSysUser().getUserId());
             int count2 = receiveMapper.addSave(receiveInDto);
             count++;
+            receiveMapper.updateReceiveQuantity(id);
             sendMapper.updateSendStatus(id);
             receiveMapper.updateReceiveSerialNumber();
+            // 记录
             if (count2>0) {
                 Long receiveId = receiveInDto.getReceiveId();
                 BusiReceive receive = receiveService.selectReceiveInfo(receiveId);

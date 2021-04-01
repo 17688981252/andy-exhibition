@@ -34,8 +34,8 @@
 					</div>
 
 					<div class="btn-group-sm" id="toolbar" role="group">
-						<a class="btn btn-success" onclick="$.operate.addTab()" shiro:hasPermission="business:receive:add">
-							<i class="fa fa-plus"></i> 新增
+						<a class="btn btn-info" onclick="$.operate.addTab()" shiro:hasPermission="business:receive:add">
+							<i class="fa"></i> 待收货
 						</a>
 						<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:receive:remove">
 							<i class="fa fa-remove"></i> 删除
@@ -200,6 +200,10 @@
                             title: '标包数量'
                             // visible: false
                         },
+						{
+							field: 'sendQuantity',
+							title: '发货数量'
+						}	,
                         {
                             field: 'receiveQuantity',
                             title: '收货数量'

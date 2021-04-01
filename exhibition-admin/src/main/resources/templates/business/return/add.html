@@ -76,6 +76,16 @@
 
         $(function() {
             queryUnReturnList();
+
+			$('#exhibitionId').on('select2:select', function (e) {
+				// 处理自己的业务
+
+				$.table.refresh();
+
+				// alert("AAAAAAA")
+
+			})
+
         });
 
 

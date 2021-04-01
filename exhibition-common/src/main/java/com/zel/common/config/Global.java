@@ -137,4 +137,14 @@ public class Global
     {
         return getProfile() + "/upload";
     }
+
+    /**
+     *  磁盘前缀
+     */
+    public static String getDiskPre(){return "F:/zel_exhibition/uploadPath";}
+
+    /**
+     * 缩略图前缀
+     */
+    public static String getThumbPre(){return "thumb_";}
 }

@@ -1102,7 +1102,7 @@ var table = {
 					$.modal.alertWarning("当前状态不可发货");
 					return;
 				}
-                $.modal.confirm("确认发货选中的" + rows.length + "条数据吗?", function() {
+                $.modal.confirm("请确认物料明细无误，且已打印清单", function() {
                     var url = table.options.sendUrl;
                     var data = { "id": rows.join() };
                     $.operate.submit(url, "post", "json", data);
@@ -1133,7 +1133,7 @@ var table = {
 					$.modal.alertWarning("请至少选择一条记录");
 					return;
 				}
-				$.modal.confirm("收货前请确认'物料明细'是否正确", function() {
+				$.modal.confirm("收货前请确认“物料明细”是否正确", function() {
 					var url = table.options.addSaveUrl;
 					var data = { "ids": rows.join() };
 					$.operate.submit(url, "post", "json", data);
@@ -1260,6 +1260,7 @@ var table = {
 			// 查询退还物料明细 andy
 			selectReturnMaterialDetail: function(id) {
 				table.set("bootstrap-table2");
+				// var exhibitionId = $.table.selectColumns("exhibitionId");
 				$.modal.openFull("查看" + table.options.modalName,  table.options.selectReturnMaterialDetailUrl.replace("{id}", id));
 			},
 

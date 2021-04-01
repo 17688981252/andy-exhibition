@@ -141,5 +141,11 @@ public class BusiReturnNoticeOutDto {
     /*创建人*/
     private String createName;
 
+    /*签收单号*/
+    private String returnReceiveNumber;
+
+
+
+
 
 }

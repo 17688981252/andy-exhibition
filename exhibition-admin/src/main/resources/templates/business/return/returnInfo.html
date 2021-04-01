@@ -32,9 +32,14 @@
 						<div class="form-group">
 							<label class="col-sm-4 control-label is-required">展会信息：</label>
 							<div class="col-sm-8">
-								<select id="exhibitionId" name="exhibitionId" class="form-control " >
-									<option th:each="name:${exhibitionInfo}" th:value="${name.exhibitionId}" th:text="${name.exhibitionName}"></option>
+								<select id="exhibitionId" name="exhibitionId" class="form-control ">
+									<option value=""> ---请选择展会信息---</option>
+									<option th:each="name:${exhibitionInfo}" th:value="${name.exhibitionId}"
+											th:text="${name.exhibitionName}"></option>
 								</select>
+<!--								<select id="exhibitionId" name="exhibitionId" class="form-control " >-->
+<!--									<option th:each="name:${exhibitionInfo}" th:value="${name.exhibitionId}" th:text="${name.exhibitionName}"></option>-->
+<!--								</select>-->
 							</div>
 						</div>
 					</div>
@@ -96,6 +101,7 @@
 						</div>
 					</div>
 				</div>
+<!--				<h4 class="form-header h4">物料信息</h4>-->
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="col-sm-12 select-table table-striped">
@@ -117,18 +123,27 @@
         var dataType = [[${@dict.getType('busi_material_type')}]];
         var dataUnit = [[${@dict.getType('busi_material_unit')}]];
         $(function() {
-            var panehHidden = false;
-            if ($(this).width() < 769) {
-                panehHidden = true;
-            }
-            $('body').layout({ initClosed: panehHidden, west__size: 185 });
+            // var panehHidden = false;
+            // if ($(this).width() < 769) {
+            //     panehHidden = true;
+            // }
+            // $('body').layout({ initClosed: panehHidden, west__size: 185 });
 
-			$('#exhibitionId').select2({
-				placeholder: "---请选择展会信息---",
-				allowClear: true
-			});
+			// $('#exhibitionId').select2({
+			// 	placeholder: "---请选择展会信息---",
+			// 	allowClear: true
+			// });
 
             queryReturnInfo();
+
+			$('#exhibitionId').on('select2:select', function (e) {
+				// 处理自己的业务
+
+				$.table.refresh();
+
+				// alert("AAAAAAA")
+
+			})
 
         });
 
@@ -138,8 +153,8 @@
 				addSaveUrl:prefix + "/addSave",
 				createUrl:prefix + "/returnInfo",
 				uniqueId: "sendId",
-				sortName: "sendTime",
-				sortOrder: "ASC",
+				// sortName: "sendTime",
+				// sortOrder: "ASC",
 				modalName: "退还信息",
 				queryParams: queryParams,
 				showSearch: false,
@@ -147,9 +162,75 @@
 				showToggle: false,
 				showColumns: false,
 				detailView: false,
+				columns: [
+					// {
+					// checkbox: true
+					// },
+					{
+						field: 'returnId',
+						title: '退还ID',
+						visible: false
+					},
+					{
+						field: 'exhibitionId',
+						title: '展会ID',
+						visible: false
+					},
+					{
+						field: 'exhibitionName',
+						title: '展会名称'
+					},
+					{
+						field: 'address',
+						title: '展会地址'
+					},
+					{
+						field: 'organizer',
+						title: '办展方'
+					},
+					{
+						field: 'logisticsName',
+						title: '物流名称'
+					},
+					{
+						field: 'logisticsNumber',
+						title: '物流单号'
+					},
+					{
+						field: 'status',
+						title: '状态',
+						formatter: function (value, row, index) {
+
+							return $.table.selectDictLabel(dataStatus, row.status);
+						}
+					},
+
+					{
+						field: 'returnNumber',
+						title: '退还单号'
+					},
+					{
+						field: 'returnName',
+						title: '退还人'
+					},
+					{
+						field: 'returnTime',
+						title: '退还时间'
+					},
+					{
+						title: '查看/编辑',
+						align: 'center',
+						formatter: function (value, row, index) {
+							var actions = [];
+							actions.push('<a class="btn btn-success btn-xs ' + selectSendMaterialDetailFlag + '" href="javascript:void(0)" onclick="$.operate.selectReturnMaterialDetail(\'' + row.returnId + '\')"><i class="fa fa-edit"></i>物料明细</a> ');
+							return actions.join('');
+						}
+					}
+				],
 			};
 			$.table.init(options);
 		}
+
 		function queryParams(params) {
 			// alert("fasdfasd");
 			var search = $.table.queryParams(params);

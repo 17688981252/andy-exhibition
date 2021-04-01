@@ -143,6 +143,7 @@ public class BusiReturnController extends BaseController {
                                                     @RequestParam(value = "materialName",required = false) String materialName,
                                                     @RequestParam(value = "materialCode",required = false) String materialCode){
         startPage();
+//        List<BusiReturnMaterialDto> list = returnService.selectReceiveMaterialDetail(exhibitionId,materialName,materialCode);
         List<BusiReturnMaterialDto> list = returnService.selectReturnMaterialDetail(returnId,materialName,materialCode);
         return getDataTable(list);
     }

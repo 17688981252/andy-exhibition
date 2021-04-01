@@ -163,7 +163,7 @@
 			if ($.validate.form()) {
 				var data = $('#form-material-return').serialize();
 				var status = [[${status}]];
-				alert([[${status}]])
+				// alert([[${status}]])
 				if(status == 2){
 					$.modal.alertWarning("当前展会物料已签收");
 					return;

@@ -31,14 +31,22 @@
 						</div>
 						<div class="col-sm-6">
 							<div class="form-group">
-								<label class="col-sm-4 control-label is-required">展会信息：</label>
+								<label class="col-sm-4 control-label is-required">展会名称：</label>
 								<div class="col-sm-8">
-									<select id="exhibitionId" name="exhibitionId" class="form-control " >
-										<option th:each="ex:${exhibitionInfo}" th:value="${ex.exhibitionId}" th:text="${ex.exhibitionName}" th:selected="${ex.flag}"></option>
-									</select>
+									<input class="form-control" type="text" disabled="disabled" name="exhibitionName" id="exhibitionName" th:value="${sendInfo.exhibitionName}" required>
 								</div>
 							</div>
 						</div>
+<!--						<div class="col-sm-6">-->
+<!--							<div class="form-group">-->
+<!--								<label class="col-sm-4 control-label is-required">展会名称：</label>-->
+<!--								<div class="col-sm-8">-->
+<!--									<select id="exhibitionId" name="exhibitionId" class="form-control " >-->
+<!--										<option th:each="ex:${exhibitionInfo}" th:value="${ex.exhibitionId}" th:text="${ex.exhibitionName}" th:selected="${ex.flag}"></option>-->
+<!--									</select>-->
+<!--								</div>-->
+<!--							</div>-->
+<!--						</div>-->
 					</div>
 					<div class="row">
 						<div class="col-sm-6">

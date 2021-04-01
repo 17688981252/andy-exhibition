@@ -165,6 +165,7 @@
         <if test="remark != null and remark !=''">
             and remark like concat ('%', #{remark} ,'%')
         </if>
+        ORDER BY status ASC,send_time DESC
     </select>
 
     <!--
@@ -278,8 +279,8 @@
           serial_number as serialNumber
         FROM
           busi_serial_number_info
-        order by create_time DESC
-        limit 1
+        where
+            serial_number_info_id = 1
     </select>
 
     <!--
@@ -491,5 +492,22 @@
         GROUP BY
             material_id
     </select>
+
+    <update id="updateSend" parameterType="com.zel.business.domain.BusiSend">
+        UPDATE exhibition.busi_send
+        SET
+            logistics_name = #{logisticsName},
+            logistics_number = #{logisticsNumber},
+            STATUS = 1,
+            receive_by = #{receiveBy},
+            receive_address = #{receiveAddress},
+            dept_id = #{deptId},
+            update_by = #{updateBy},
+            update_time = now(),
+            remark = #{remark}
+        WHERE
+            send_id = #{sendId}
+            and del = 1
+    </update>
 
 </mapper>

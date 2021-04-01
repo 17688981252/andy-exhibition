@@ -52,9 +52,9 @@
 
     <!--插入撤展图片信息-->
     <insert id="insertRevokeUrl" parameterType="com.zel.business.domain.BusiRevoke" useGeneratedKeys="true" keyProperty="revokeId" keyColumn="revoke_id">
-        INSERT INTO  busi_revoke  (  revoke_id ,  exhibition_id ,  revoke_url ,  file_name ,  create_by ,  create_time )
+        INSERT INTO  busi_revoke  (  revoke_id ,  exhibition_id ,  revoke_url ,thumb_image,  file_name ,  create_by ,  create_time )
         VALUES
-        ( #{revokeId}, #{exhibitionId}, #{revokeUrl}, #{fileName}, #{createBy}, now() );
+        ( #{revokeId}, #{exhibitionId}, #{revokeUrl},#{thumbImage}, #{fileName}, #{createBy}, now() );
     </insert>
 
     <select id="findRevokeUrl" resultMap="BaseRevokeResult">
@@ -72,6 +72,7 @@
         SELECT
             revoke_id as revokeId,
             revoke_url as revokeUrl,
+            thumb_image AS thumbImage,
             file_name as fileName
         FROM
             busi_revoke

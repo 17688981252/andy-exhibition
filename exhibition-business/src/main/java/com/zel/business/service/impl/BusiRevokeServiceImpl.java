@@ -10,7 +10,9 @@ import com.zel.business.mapper.BusiReceiveMapper;
 import com.zel.business.mapper.BusiRevokeMapper;
 import com.zel.business.service.IBusiExhibitionService;
 import com.zel.business.service.IBusiRevokeService;
+import com.zel.business.utils.ImageUtil;
 import com.zel.common.config.Global;
+import com.zel.common.enums.ExhibitionStatus;
 import com.zel.common.utils.StringUtils;
 import com.zel.common.utils.file.FileUploadUtils;
 import com.zel.framework.util.ShiroUtils;
@@ -78,9 +80,15 @@ public class BusiRevokeServiceImpl implements IBusiRevokeService {
         boolean result = true;
         try {
             for (MultipartFile file : files) {
+                //上传图片
                 String revokeUrl = FileUploadUtils.upload(Global.getRevokeUrlPath(), file);
+                //生成缩略图
+                String fullPath = StringUtils.replace(revokeUrl,"/profile",Global.getDiskPre());
+                String thumbImage = ImageUtil.thumbnailImage(fullPath,100,100,Global.getThumbPre(),false);
+
                 BusiRevoke busiRevoke = new BusiRevoke(exhibitionId, file.getOriginalFilename(), revokeUrl);
                 busiRevoke.setCreateBy(ShiroUtils.getSysUser().getUserId());
+                busiRevoke.setThumbImage(thumbImage);
                 revokeMapper.insertRevokeUrl(busiRevoke);
             }
         } catch (Exception e) {
@@ -121,8 +129,13 @@ public class BusiRevokeServiceImpl implements IBusiRevokeService {
      */
     @Override
     public int updateExhibitionStatus(Long exhibitionId) {
-        Long updateBy = ShiroUtils.getSysUser().getUserId();
-        int count = revokeMapper.updateExhibitionStatus(exhibitionId,updateBy);
+        //更新展会状态
+        BusiExhibition exhibition = new BusiExhibition();
+        exhibition.setExhibitionId(exhibitionId);
+        exhibition.setStatus(ExhibitionStatus.REVOKE.getCode());
+        exhibition.setUpdateBy(ShiroUtils.getUserId());
+        int count = exhibitionMapper.updateStatus(exhibition);
+        //展会记录
         if (count>0) {
             List<BusiRevoke> revokeList = revokeMapper.selectRevokeInfo(exhibitionId);
             BusiExhibitionRecord record = new BusiExhibitionRecord();
@@ -137,6 +150,7 @@ public class BusiRevokeServiceImpl implements IBusiRevokeService {
                     BusiExhibitionRecordAttached recordAttached = new BusiExhibitionRecordAttached();
                     recordAttached.setExhibitionRecordId(record.getExhibitionRecordId());
                     recordAttached.setPictureUrl(revoke.getRevokeUrl());
+                    recordAttached.setThumbImage(revoke.getThumbImage());
                     recordAttached.setFileName(revoke.getFileName());
                     exhibitionService.insertExhibitionRecordAttached(recordAttached);
                 }

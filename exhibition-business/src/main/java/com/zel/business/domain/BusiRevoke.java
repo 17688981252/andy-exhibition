@@ -35,6 +35,11 @@ public class BusiRevoke {
      */
     private String revokeUrl;
 
+    /**
+     * 缩略图
+     */
+    private String thumbImage;
+
     private List<String> revokeUrlList;
 
     /**

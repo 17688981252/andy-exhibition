@@ -123,4 +123,11 @@ public interface BusiSendMapper {
      * @param exhibitionId 展会ID
      */
     List<BusiSend> selectReceiveMaterialDetial(@Param(value = "exhibitionId") Long exhibitionId);
+
+    /**
+     * 更新发货
+     * @param busiSend
+     * @return
+     */
+    int updateSend(BusiSend busiSend);
 }

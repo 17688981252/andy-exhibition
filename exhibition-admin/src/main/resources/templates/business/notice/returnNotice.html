@@ -65,8 +65,8 @@
                     url: prefix + "/returnNoticeList",
                     selectSendMaterialDetailUrl:"send/selectSendMaterial/{id}",
                     uniqueId: "sendId",
-					sortName: "returnTime",
-					sortOrder: "desc",
+					// sortName: "returnTime",
+					// sortOrder: "desc",
 					modalName: "退还通知信息",
                     showSearch: false,
                     showRefresh: false,
@@ -129,19 +129,19 @@
                             field: 'returnTime',
                             title: '退还时间'
                         }
-                        // ,
-                        // {
-                        //     field: 'receiveNumber',
-                        //     title: '收货单号'
-                        // },
-						// {
-						// 	field: 'receiveName',
-						// 	title: '收货人'
-						// },
-                        // {
-                        //     field: 'receiveTime',
-                        //     title: '收货时间'
-                        // }
+                        ,
+                        {
+                            field: 'returnReceiveNumber',
+                            title: '收货单号'
+                        },
+						{
+							field: 'receiveName',
+							title: '收货人'
+						},
+                        {
+                            field: 'receiveTime',
+                            title: '收货时间'
+                        }
                         ]
 				};
 				$.table.init(options);

@@ -166,6 +166,7 @@ public class BusiExhibitionController extends BaseController
      * 勘展
      * @param exhibitionId 展会ID
      */
+    @RequiresPermissions("business:exhibition:prospect")
     @GetMapping(value = "/prospect/{exhibitionId}")
     public String prospect(@PathVariable("exhibitionId")Long exhibitionId,ModelMap map){
         map.put("prospect",exhibitionService.selectProspect(exhibitionId));

@@ -9,10 +9,13 @@ import com.zel.business.mapper.BusiArrangeMapper;
 import com.zel.business.mapper.BusiExhibitionMapper;
 import com.zel.business.service.IBusiArrangeService;
 import com.zel.business.service.IBusiExhibitionService;
+import com.zel.business.utils.ImageUtil;
 import com.zel.common.config.Global;
+import com.zel.common.enums.ExhibitionStatus;
 import com.zel.common.utils.file.FileUploadUtils;
 import com.zel.framework.util.ShiroUtils;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.ehcache.hibernate.management.api.EhcacheStats;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -116,9 +119,17 @@ public class BusiArrangeServiceImpl implements IBusiArrangeService {
         boolean result = true;
         try {
             for (MultipartFile file : files) {
+                //上传图片
                 String arrangeUrl = FileUploadUtils.upload(Global.getArrangeUrlPath(), file);
+                //生成缩略图
+//                String fullPath = arrangeUrl.replace("/"+Global.getProfile(),Global.getDiskPre());
+
+                String fullPath = StringUtils.replace(arrangeUrl,"/profile",Global.getDiskPre());
+                String thumbImage = ImageUtil.thumbnailImage(fullPath,100,100,"thumb_",false);
+
                 BusiArrange busiArrange = new BusiArrange(exhibitionId, file.getOriginalFilename(), arrangeUrl);
                 busiArrange.setCreateBy(ShiroUtils.getSysUser().getUserId());
+                busiArrange.setThumbImage(thumbImage);
                 arrangeMapper.insertArrangeUrl(busiArrange);
             }
         } catch (Exception e) {
@@ -136,7 +147,12 @@ public class BusiArrangeServiceImpl implements IBusiArrangeService {
      */
     @Override
     public int updateExhibitionStatus(Long exhibitionId) {
-        int count = arrangeMapper.updateExhibitionStatus(exhibitionId);
+
+        BusiExhibition exhibition = new BusiExhibition();
+        exhibition.setExhibitionId(exhibitionId);
+        exhibition.setStatus(ExhibitionStatus.ARRANGE.getCode());
+        exhibition.setUpdateBy(ShiroUtils.getUserId());
+        int count = exhibitionMapper.updateStatus(exhibition);
         if (count>0) {
             BusiExhibitionRecord record = new BusiExhibitionRecord();
             BusiExhibitionRecordAttached recordAttached = new BusiExhibitionRecordAttached();
@@ -151,6 +167,7 @@ public class BusiArrangeServiceImpl implements IBusiArrangeService {
                 if (count1>0) {
                     recordAttached.setExhibitionRecordId(record.getExhibitionRecordId());
                     recordAttached.setPictureUrl(arrange.getArrangeUrl());
+                    recordAttached.setThumbImage(arrange.getThumbImage());
                     recordAttached.setFileName(arrange.getFileName());
                     exhibitionService.insertExhibitionRecordAttached(recordAttached);
                 }

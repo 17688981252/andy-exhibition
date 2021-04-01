@@ -76,10 +76,9 @@ public interface BusiExhibitionMapper {
 
     /**
      * 更新展会状态
-     * @param exhibitionId 展会ID
+     * @param exhibition 展会实体
      */
-    int updateStatus(@Param(value = "exhibitionId") Long exhibitionId,
-                     @Param(value = "status") Integer status);
+    int updateStatus(BusiExhibition exhibition);
     /**
      * 查询勘展图片
      * @param prospectId
@@ -143,4 +142,10 @@ public interface BusiExhibitionMapper {
      * 每日23:59 更新流水号
      */
     Integer updateSerialUnmber();
+
+    /**
+     * 更新展会记录表
+     * @param record  展会记录实体
+     */
+    int updateExhibitionRecord(BusiExhibitionRecord record);
 }

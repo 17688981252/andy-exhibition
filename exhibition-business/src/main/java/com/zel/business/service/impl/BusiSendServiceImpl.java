@@ -141,7 +141,7 @@ public class BusiSendServiceImpl implements IBusiSendService {
             record.setExhibitionId(send.getExhibitionId());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String sendTime = sdf.format(send.getSendTime());
-            record.setEvent("展会：" + send.getExhibitionName() + "已发货，发货单号：" + send.getSendNumber() + "、物流名称：" + send.getLogisticsName()
+            record.setEvent("展会：" + send.getExhibitionName() + " 发货单号：" + send.getSendNumber() + "、物流名称：" + send.getLogisticsName()
                     + "、物流单号：" + send.getLogisticsName() + "、发货人：" + send.getSendName() + "、发货时间：" + sendTime);
             record.setStatus(3);
             exhibitionService.insertExhibitionRecord(record);
@@ -165,12 +165,14 @@ public class BusiSendServiceImpl implements IBusiSendService {
      */
     @Override
     public int saveEdit(BusiSend busiSend) {
-        sendMapper.deleteSend(busiSend.getSendId());
+//        sendMapper.deleteSend(busiSend.getSendId());
+        busiSend.setUpdateBy(ShiroUtils.getUserId());
+        sendMapper.updateSend(busiSend);
         sendMapper.deleteSendMaterialDetial(busiSend.getSendId());
 
-        busiSend.setCreateBy(ShiroUtils.getSysUser().getUserId());
-        int count1 = sendMapper.insertSend(busiSend);
-        busiSend.getSendId();
+//        busiSend.setCreateBy(ShiroUtils.getSysUser().getUserId());
+//        int count1 = sendMapper.insertSend(busiSend);
+//        busiSend.getSendId();
         int count2 = sendMapper.insertSendMaterialDetail(busiSend);
         return count2;
     }

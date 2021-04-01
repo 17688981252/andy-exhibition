@@ -19,11 +19,11 @@
         <form id="form-returnReceive-add" class="form-horizontal" th:object="${exhibitionInfo}">
             <input id="deptId" name="deptId" type="hidden"/>
             <input id="treeId" name="treeId" type="hidden"/>
-            <h4 class="form-header h4">退还单</h4>
+            <h4 class="form-header h4">签收单</h4>
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">退还单号：</label>
+                        <label class="col-sm-4 control-label is-required">签收单号：</label>
                         <div class="col-sm-8">
                             <input class="form-control" type="text" disabled="disabled" name="returnReceiveNumber"
                                    id="returnReceiveNumber" th:value="${returnReceiveNumber}" required>
@@ -83,7 +83,7 @@
                     </div>
                 </div>
             </div>
-            <h4 class="form-header h4">发货明细</h4>
+            <h4 class="form-header h4">物料信息</h4>
 
             <div class="row">
                 <div class="col-sm-12">
@@ -124,7 +124,7 @@
 
             $.table.refresh();
 
-            alert("AAAAAAA")
+            // alert("AAAAAAA")
 
         })
 
@@ -132,7 +132,7 @@
 
 
     function queryUnReceiveList() {
-        alert($("#exhibitionId").select2("val"))
+        // alert($("#exhibitionId").select2("val"))
         var options = {
             url: prefix + "/unReceiveList",
             selectReturnMaterialDetailUrl: prefix + "/returnMaterial/{id}",
@@ -219,10 +219,10 @@
     }
 
     function queryParams(params) {
-        alert("fasdfasd");
+        // alert("fasdfasd");
         var search = $.table.queryParams(params);
         var id = $("#exhibitionId").select2("val");
-        alert(id)
+        // alert(id)
         search.id = id;
         return search;
     }
