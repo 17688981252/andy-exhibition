@@ -39,7 +39,7 @@
 		        	<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="business:exhibition:add">
 		                <i class="fa fa-plus"></i> 新增
 		            </a>
-		             <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="business:exhibition:edit">
+		             <a class="btn btn-primary single disabled" onclick="$.operate.exhibitionEdit()" shiro:hasPermission="business:exhibition:edit">
 			            <i class="fa fa-edit"></i> 修改
 			        </a>
 		            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:exhibition:remove">
@@ -48,10 +48,10 @@
 		            <a class="btn btn-warning multiple disabled" onclick="$.table.exportExcel()" shiro:hasPermission="business:exhibition:export">
 			            <i class="fa fa-download"></i> 导出
 			        </a>
-					<a class="btn btn-primary single disabled" onclick="$.operate.prospect()" shiro:hasPermission="business:exhibition:prospect">
-						<i class="fa fa-upload"></i> 勘展
-					</a>
-					<a class="btn btn-primary single disabled" onclick="$.operate.exhibitionTimeLine()" shiro:hasPermission="business:exhibition:prospect">
+<!--					<a class="btn btn-primary single disabled" onclick="$.operate.prospect()" shiro:hasPermission="business:exhibition:prospect">-->
+<!--						<i class="fa fa-upload"></i> 勘展-->
+<!--					</a>-->
+					<a class="btn btn-primary single disabled" onclick="$.operate.exhibitionTimeLine()" shiro:hasPermission="business:exhibition:timeline">
 						<i class="fa"></i> 时间轴
 					</a>
 		        </div>
@@ -142,10 +142,23 @@
                             return changeDateFormat(value)
                         }
                     },
-                    {
-                        field: 'remark',
-                        title: '备注'
-                    }
+					{
+						field: 'remark',
+						title: '备注' ,
+						formatter : function(value, row, index, field){
+							return "<span style='display: block;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;' title='" + value + "'>" + value + "</span>";
+						},
+						cellStyle : function(value, row, index, field){
+							return {
+								css: {
+									"white-space": "nowrap",
+									"text-overflow": "ellipsis",
+									"overflow": "hidden",
+									"max-width":"100px"
+								}
+							};
+						}
+					},
                     // ,
                     // {
                     //     title: '操作',

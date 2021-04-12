@@ -1,5 +1,6 @@
 package com.zel.web.controller.business;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.zel.business.domain.BusiExhibition;
@@ -21,9 +22,11 @@ import com.zel.common.utils.poi.ExcelUtil;
 import com.zel.framework.util.ShiroUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
@@ -34,6 +37,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +49,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/business/exhibition")
+@Component("serialNumberTask")
 public class BusiExhibitionController extends BaseController
 {
     private static final Logger log = LoggerFactory.getLogger(BusiExhibitionController.class);
@@ -82,6 +88,14 @@ public class BusiExhibitionController extends BaseController
         if (UserConstants.EXHIBITION_NAME_NOT_UNIQUE.equals(exhibitionService.checkExhibitionNameUnique(exhibition))) {
             return error("新增展会"+ exhibition.getExhibitionName() +"失败，展会名称已存在");
         }
+        if(exhibition != null){
+            Date startTime = exhibition.getStartTime();
+            Date endTime = exhibition.getEndTime();
+            int compareTo = startTime.compareTo(endTime);
+            if(compareTo == 1){
+                return error("“开始时间”不能大于“结束时间”");
+            }
+        }
         exhibition.setCreateBy(ShiroUtils.getUserId());
         exhibition.setStatus(ExhibitionStatus.SAVE.getCode());
         return toAjax(exhibitionService.insertExhibition(exhibition));
@@ -113,6 +127,7 @@ public class BusiExhibitionController extends BaseController
      *修改展会
      * @param exhibitionId
      */
+    @RequiresPermissions("business:exhibition:edit")
     @GetMapping("/edit/{exhibitionId}")
     public String edit(@PathVariable("exhibitionId") Long exhibitionId, ModelMap mmap) {
         mmap.put("exhibition", exhibitionService.selectExhibitionById(exhibitionId));
@@ -130,6 +145,14 @@ public class BusiExhibitionController extends BaseController
     public AjaxResult editSave(@Validated BusiExhibition exhibition){
         if (UserConstants.EXHIBITION_NAME_NOT_UNIQUE.equals(exhibitionService.checkExhibitionNameUnique(exhibition))) {
             return error("新增展会"+exhibition.getExhibitionName()+"失败，展会名称已存在");
+        }
+        if(exhibition != null){
+            Date startTime = exhibition.getStartTime();
+            Date endTime = exhibition.getEndTime();
+            int compareTo = startTime.compareTo(endTime);
+            if(compareTo == 1){
+                return error("“开始时间”不能大于“结束时间”");
+            }
         }
         /*exhibition.setUpdateBy(ShiroUtils.getLoginName());*/
         exhibition.setUpdateBy(ShiroUtils.getUserId());
@@ -164,15 +187,44 @@ public class BusiExhibitionController extends BaseController
 
     /**
      * 勘展
+     */
+    @GetMapping("/prospect")
+    public String prospect(){
+        return "business/prospect/prospect";
+    }
+
+    /**
+     * 勘展列表
+     * @param exhibition
+     */
+    @PostMapping("/prospectList")
+    @ResponseBody
+    public TableDataInfo selectProspectList(BusiExhibition exhibition){
+        List<BusiExhibition> list = exhibitionService.selectProspectList(exhibition);
+        return getDataTable(list);
+    }
+
+
+    /**
+     * 上传勘展图片
      * @param exhibitionId 展会ID
      */
     @RequiresPermissions("business:exhibition:prospect")
     @GetMapping(value = "/prospect/{exhibitionId}")
     public String prospect(@PathVariable("exhibitionId")Long exhibitionId,ModelMap map){
         map.put("prospect",exhibitionService.selectProspect(exhibitionId));
-        return prefix + "/prospect";
+        return "business/prospect/prospectUrl";
     }
 
+    /**
+     * 查看勘展图片
+     * @param exhibitionId 展会ID
+     */
+    @GetMapping(value = "prospectImageUrl/{id}")
+    public String image(@PathVariable("id")Long exhibitionId,ModelMap map){
+        map.put("prospect",exhibitionService.selectProspect(exhibitionId));
+        return "business/prospect/image";
+    }
     /**
      * 保存勘展图片
      */
@@ -185,24 +237,8 @@ public class BusiExhibitionController extends BaseController
         if (!result) {
             return new AjaxResult(AjaxResult.Type.ERROR, "保存布展图片失败");
         } else {
-            return new AjaxResult(AjaxResult.Type.SUCCESS, "保存布展图片成功");
+            return new AjaxResult(AjaxResult.Type.SUCCESS, "保存布展图片成功",exhibitionService.selectProspectUrlList(exhibitionId));
         }
-
-
-
-//        for (MultipartFile file : files) {
-//            try {
-//                String extension = StringUtils.substringAfterLast(file.getOriginalFilename(), ".");
-////                StorePath storePath = storageclient.uploadFile(file.getInputStream(), file.getSize(), extension, null);
-////                System.out.println("storePath = " + storePath);
-////                String fullPath = storePath.getFullPath();
-//                StorePath storePathWithCrtThumbImage = storageclient.uploadImageAndCrtThumbImage(file.getInputStream(), file.getSize(), "jpg", null);
-//                System.out.println("storePathWithCrtThumbImage = " + storePathWithCrtThumbImage);
-//            } catch (IOException e) {
-//                log.error("[文件上传] 上传文件失败", e);
-//            }
-//        }
-//        return new AjaxResult(  AjaxResult.Type.SUCCESS,"保存勘展图片成功",null);
     }
 
 
@@ -262,7 +298,7 @@ public class BusiExhibitionController extends BaseController
     public String exhibitionTimeLine(@PathVariable(value = "exhibitionId") Long exhibitionId,ModelMap mmp){
         mmp.put("exhibitionId",exhibitionId);
         mmp.put("exhibitionRecord",exhibitionService.selectExhibitionRecord(exhibitionId));
-        return prefix + "/timeline33";
+        return prefix + "/timeline";
     }
 
     /**
@@ -285,6 +321,14 @@ public class BusiExhibitionController extends BaseController
     }
 
     /**
+     * 更新展会记录
+     * @param number
+     */
+    public void updateExhibitionRecordEvent(String number){
+        exhibitionService.updateExhibitionRecordEvent(number);
+    }
+
+    /**
      * 展会记录附件
      * @param recordAttached 附件实体
      */
@@ -297,8 +341,9 @@ public class BusiExhibitionController extends BaseController
      *
      * 每日23:59 更新流水号
      */
-    public Integer updateSerialUnmber(){
-        return exhibitionService.updateSerialUnmber();
+    @GetMapping("/updateSerialNumber")
+    public Integer updateSerialNumber(){
+        return exhibitionService.updateSerialNumber();
     }
 
 }

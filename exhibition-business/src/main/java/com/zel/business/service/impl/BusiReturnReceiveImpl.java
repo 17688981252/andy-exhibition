@@ -151,6 +151,13 @@ public class BusiReturnReceiveImpl implements IBusiReturnReceiveService {
      */
     @Override
     public int deleteReturnReceive(Long[] ids) {
+        int count = 0;
+        for (Long id : ids) {
+            returnReceiveMapper.deleteReturnReceiveById(id);
+            count++;
+            String number = returnReceiveMapper.seleceReturnReceiveNumberById(id);
+            exhibitionService.updateExhibitionRecordEvent(number);
+        }
         return returnReceiveMapper.deleteReturnReceive(ids);
     }
 

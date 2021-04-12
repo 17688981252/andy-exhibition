@@ -15,6 +15,7 @@
         <result property="endTime"          column="end_time"/>
         <result property="address"          column="address"/>
         <result property="organizer"        column="organizer"/>
+        <result property="remark" column="remark"/>
     </resultMap>
 
     <!--
@@ -28,23 +29,11 @@
             start_time ,
             end_time ,
             address ,
-            organizer
+            organizer,
+            remark
         from busi_exhibition
-        where exhibition_id IN
-              (
-                  select exhibition_id
-                  from busi_send
-                  where send_id IN
-                        (
-                        select send_id from busi_receive
-                        where status = 2 and del = 1
-                        group by send_id
-                        )
-                  and status = 3
-                  and del = 1
-              )
+        where status = 2
         and del = 1
-        and status = 2
         <if test="exhibitionName != null and exhibitionName !=''">
             and exhibition_name like concat ('%', #{exhibitionName},'%')
         </if>
@@ -54,6 +43,7 @@
         <if test="address != null and address != ''">
             and address like concat ('%', #{address},'%')
         </if>
+        ORDER BY update_time DESC
     </select>
 
     <!--插入布展图片信息-->

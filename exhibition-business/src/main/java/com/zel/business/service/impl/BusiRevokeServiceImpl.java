@@ -106,8 +106,8 @@ public class BusiRevokeServiceImpl implements IBusiRevokeService {
     @Override
     public boolean deleteRevokeUrl(Long revokeId) {
         boolean result = false;
-        BusiRevoke revoke = revokeMapper.findRevokeUrl(revokeId);
-        String url = revoke.getRevokeUrl();
+
+        String url = revokeMapper.findRevokeUrl(revokeId);
 
         try {
             if (StringUtils.isNotBlank(url)) {

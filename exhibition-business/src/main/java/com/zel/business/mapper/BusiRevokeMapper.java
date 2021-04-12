@@ -30,7 +30,7 @@ public interface BusiRevokeMapper {
      * @param revokeId
      * @return
      */
-    BusiRevoke findRevokeUrl(@Param(value = "revokeId") Long revokeId);
+    String findRevokeUrl(@Param(value = "revokeId") Long revokeId);
 
     void deleteRevokeUrl(@Param(value = "revokeId") Long revokeId);
 

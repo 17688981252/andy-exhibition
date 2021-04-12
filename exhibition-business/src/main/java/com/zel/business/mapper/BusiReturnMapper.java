@@ -128,4 +128,24 @@ public interface BusiReturnMapper {
     List<BusiReturnMaterialDto> selectReturnMaterialDetail(@Param(value = "returnId") Long returnId,
                                                            @Param(value = "materialName") String materialName,
                                                            @Param(value = "materialCode") String materialCode);
+
+    /**
+     * 查询退还单号
+     * @param id
+     * @return
+     */
+    String selectReturnNumberById(@Param(value = "id") Long id);
+
+    /**
+     * 删除退还
+     * @param id
+     * @return
+     */
+    int removeReturnById(@Param(value = "id") Long id);
+
+    /**
+     * 根据ID查询退还信息
+     * @param returnId
+     */
+    BusiReturn selectReturnMassageById(@Param(value = "returnId") Long returnId);
 }

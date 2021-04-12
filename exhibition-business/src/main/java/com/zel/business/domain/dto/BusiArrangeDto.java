@@ -69,5 +69,7 @@ public class BusiArrangeDto {
      */
     private List<Map> arrangeUrlList;
 
+    private String remark;
+
 
 }

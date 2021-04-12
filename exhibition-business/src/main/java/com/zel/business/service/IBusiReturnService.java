@@ -50,6 +50,7 @@ public interface IBusiReturnService
      */
     List<BusiMaterial> selectRerurnMaterialDetial(Long returnId);
 
+
     int returnMaterial(Long[] ids);
 
     /**
@@ -107,4 +108,12 @@ public interface IBusiReturnService
      * @return 物料列表
      */
     List<BusiReturnMaterialDto> selectReturnMaterialDetail(Long returnId, String materialName, String materialCode);
+
+    /**
+     * 根据ID查询退还信息
+     * @param returnId
+     * @return
+     */
+    BusiReturn selectReturnMassageById(Long returnId);
+
 }

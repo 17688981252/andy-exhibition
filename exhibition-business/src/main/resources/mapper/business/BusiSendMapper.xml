@@ -510,4 +510,25 @@
             and del = 1
     </update>
 
+    <update id="removeSendInfo">
+        update busi_send
+        set del = 2
+        where send_id = #{id}
+    </update>
+
+    <update id="updateExhibitionRecord" parameterType="java.lang.String">
+        UPDATE busi_exhibition_record
+        SET EVENT = CONCAT( EVENT, '“已删除”' )
+        WHERE
+            EVENT LIKE concat ('%', #{number} ,'%')
+    </update>
+
+    <select id="selectsendNumberById" resultType="java.lang.String">
+        select send_number from busi_send where send_id = #{id}
+    </select>
+
+    <select id="selectExhibitionId" resultType="java.lang.Long">
+        select exhibition_id from busi_send where send_id = #{id}
+    </select>
+
 </mapper>

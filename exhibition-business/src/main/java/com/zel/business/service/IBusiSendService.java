@@ -77,4 +77,10 @@ public interface IBusiSendService {
      * @return 更新数量
      */
     int updateSendMaterialDetail(BusiSend send);
+
+    /**
+     * 查询展会ID
+     * @param id
+     */
+    Long selectExhibitionId(Long id);
 }

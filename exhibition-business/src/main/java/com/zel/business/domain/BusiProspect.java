@@ -29,6 +29,11 @@ public class BusiProspect {
     private Long exhibitionId;
 
     /**
+     * 展会名称
+     */
+    private String exhibitionName;
+
+    /**
      * 图片名称
      */
     private String fileName;

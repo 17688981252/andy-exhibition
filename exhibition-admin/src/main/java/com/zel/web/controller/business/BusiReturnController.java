@@ -5,6 +5,7 @@ import com.zel.business.domain.BusiMaterial;
 import com.zel.business.domain.BusiReturn;
 import com.zel.business.domain.BusiSend;
 import com.zel.business.domain.dto.BusiReturnMaterialDto;
+import com.zel.business.service.IBusiExhibitionService;
 import com.zel.business.service.IBusiReturnService;
 import com.zel.common.core.controller.BaseController;
 import com.zel.common.core.domain.AjaxResult;
@@ -29,6 +30,9 @@ public class BusiReturnController extends BaseController {
 
     @Autowired
     private IBusiReturnService returnService;
+
+    @Autowired
+    private IBusiExhibitionService exhibitionService;
 
     private String prefix = "business/return";
 
@@ -95,6 +99,7 @@ public class BusiReturnController extends BaseController {
     }
 
 
+
     @PostMapping("/returnMaterial")
     @ResponseBody
     public AjaxResult returnMaterial(Long[] ids){
@@ -133,6 +138,8 @@ public class BusiReturnController extends BaseController {
     @GetMapping("/selectReturnMaterial/{returnId}")
     public String selectReturnMaterial(@PathVariable("returnId")Long returnId,ModelMap mmp){
         mmp.put("returnId",returnId);
+        BusiReturn busiReturn = returnService.selectReturnMassageById(returnId);
+        mmp.put("exhibitionInfo",exhibitionService.selectExhibitionById(busiReturn.getExhibitionId()));
         mmp.put("status",returnService.selectReturnStatus(returnId));
         return prefix + "/returnMaterialDetial";
     }

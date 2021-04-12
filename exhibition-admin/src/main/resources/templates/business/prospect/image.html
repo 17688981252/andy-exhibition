@@ -1,112 +1,115 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
-    <th:block th:include="include :: header('布展')" />
-    <th:block th:include="include :: bootstrap-fileinput-css" />
+	<th:block th:include="include :: header('勘展图片')" />
+	<th:block th:include="include :: bootstrap-fileinput-css" />
 </head>
 <body class="white-bg">
 <div class="col-sm-12 search-collapse">
-    <form id="form-exhibition-info" class="form-horizontal" th:object="${arrange}">
-        <div class="col-sm-4" >
-            <div class="form-group">
-                <label class="col-sm-4 control-label is-required" >展会名称：</label>
-                <div class="col-sm-8" >
-                    <input class="form-control" type="text" disabled="disabled" name="exhibitionName"
-                           id="exhibitionName" th:value="${arrange.exhibitionName}" required>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                <label class="col-sm-4 control-label is-required">展会地址：</label>
-                <div class="col-sm-8">
-                    <input class="form-control" type="text" disabled="disabled" name="address"
-                           id="address" th:value="${arrange.address}" required>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                <label class="col-sm-4 control-label is-required">办展方：</label>
-                <div class="col-sm-8">
-                    <input class="form-control" type="text" disabled="disabled" name="organizer"
-                           id="organizer" th:value="${arrange.organizer}" required>
-                </div>
-            </div>
-        </div>
-    </form>
+	<form id="form-exhibition-info" class="form-horizontal" th:object="${prospect}">
+<!--		<input id="status" name="status" type="show" th:field="${prospect.status}" th:value="${prospect.status}"/>-->
+		<div class="col-sm-4" >
+			<div class="form-group">
+				<label class="col-sm-4 control-label is-required" >展会名称：</label>
+				<div class="col-sm-8" >
+					<input class="form-control" type="text" disabled="disabled" name="exhibitionName"
+						   id="exhibitionName" th:value="${prospect.exhibitionName}" required>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-4">
+			<div class="form-group">
+				<label class="col-sm-4 control-label is-required">展会地址：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" disabled="disabled" name="address"
+						   id="address" th:value="${prospect.address}" required>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-4">
+			<div class="form-group">
+				<label class="col-sm-4 control-label is-required">办展方：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" disabled="disabled" name="organizer"
+						   id="organizer" th:value="${prospect.organizer}" required>
+				</div>
+			</div>
+		</div>
+	</form>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-    <form class="form-horizontal" id="form-exhibition-arrange" th:object="${arrange}">
-        <input id="exhibitionId" name="exhibitionId" type="hidden" th:field="*{exhibitionId}"/>
+	<form class="form-horizontal" id="form-exhibition-prospect" th:object="${prospect}">
+		<input id="exhibitionId" name="exhibitionId" type="hidden" th:field="*{exhibitionId}"/>
 
-        <!--上传控件-->
-        <div class="wrapper wrapper-content animated fadeInRight">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-content">
+		<!--上传控件-->
+		<div class="wrapper wrapper-content animated fadeInRight">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="ibox float-e-margins">
+						<div class="ibox-content">
 
-                            <div class="form-group">
-                                <label class="font-noraml">勘展图片上传</label>
-                                <div class="file-loading">
-                                    <input id="fileinput-demo-1" type="file" multiple>
-                                </div>
-                            </div>
-                            <hr>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
+							<div class="form-group">
+								<label class="font-noraml">勘展图片</label>
+								<div class="file-loading">
+									<input id="fileinput-demo-1" type="file" multiple>
+								</div>
+							</div>
+							<hr>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
 </div>
 
 
 <th:block th:include="include :: footer" />
 <th:block th:include="include :: bootstrap-fileinput-js" />
 <script type="text/javascript" th:inline="javascript">
-    var prefix = ctx + "business/arrange";
+	var prefix = ctx + "business/exhibition";
 
-    $(document).ready(function () {
+	$(document).ready(function () {
 
-        var obj = [[${arrange.arrangeUrlList}]];
-        var arrayObj = new Array();　//创建一个数组
-        var arrayDetail = new Array();
-        for (var i = 0; i < obj.length; i++) {
+        var obj = [[${prospect.prospectUrlList}]];
+		var arrayObj = new Array();　//创建一个数组
+		var arrayDetail = new Array();
+		for (var i = 0; i < obj.length; i++) {
 
-            var map = obj[i];
-            console.log(i+"//arrangeId="+map['arrangeId']+
-                "&&arrangeUrl="+map['arrangeUrl']);
-            arrayObj. push("/exhibition"+map['arrangeUrl']);
-            var detail = {
-                caption: map['fileName'], // 文件名
-                url: prefix + '/deleteArrangeUrl', // 删除url
-                key: map['arrangeId'], // 删除是Ajax向后台传递的参数post请求
+			var map = obj[i];
+            console.log(i+"//prospectId="+map['prospectId']+
+                "&&prospectUrl="+map['prospectUrl']);
+			arrayObj. push("/exhibition"+map['prospectUrl']);
+			var detail = {
+				caption: map['fileName'], // 文件名
+				url: prefix + '/deleteProspectUrl', // 删除url
+				key: map['prospectId'], // 删除是Ajax向后台传递的参数post请求
                 // previewAsData: true,
-                extra: function() { //删除时向后台传递参数，可以是json对象
-                    return {
+				extra: function() { //删除时向后台传递参数，可以是json对象
+					return {
                         "exhibitionId":$("#exhibitionId").val()
                     };
-                }
-            }
-            arrayDetail.push(detail);
-        }
+				}
+			}
+			arrayDetail.push(detail);
+		}
 
         $("#fileinput-demo-1").fileinput({
             language: 'zh',
-            uploadUrl: prefix + '/saveArrangeUrl', //上传的地址
+            uploadUrl: prefix + '/saveProspectUrl', //上传的地址
             uploadExtraData:{"exhibitionId":$("#exhibitionId").val()},
             showPreview: true,              //展前预览
-            showUpload: true,              //显示上传按钮
+            showUpload: false,              //显示上传按钮
             showCaption: false,             //显示文字表述
-            showRemove: false,				//显示删除按钮
-            uploadAsync:false,
+			showRemove: false,				//显示删除按钮
+            uploadAsync:false,   			//是否为异步上传
+			showBrowse:false,              //是否显示浏览
 
-            fileActionSettings : {
-                showUpload: false,//是否显示上传小图标
-                showRemove: true//是否显示删除小图标
-            },
+			fileActionSettings : {
+				showUpload: false,//是否显示上传小图标
+				showRemove: false//是否显示删除小图标
+			},
+			layoutTemplates: {actionDelete: ''}, //隐藏小删除按钮
 
             removeFromPreviewOnError:true,
             maxFileCount: 5,
@@ -126,10 +129,10 @@
             alert("执行上传方法，对于未上传的文件上传=");
             $('#fileinput-demo-1').fileinput('addToStack', data); // `fileObj`是文件blob对象实例
             // $.table.refresh();
-            $("#fileinput-demo-1").fileinput('refresh', {
-                initialPreview: arrayObj,
-                initialPreviewConfig: arrayDetail
-            });
+			$("#fileinput-demo-1").fileinput('refresh', {
+				initialPreview: arrayObj,
+				initialPreviewConfig: arrayDetail
+			});
 
 
             var filesCount = $('#fileinput-demo-1').fileinput('getFilesCount'); //返回文件数（待上传）
@@ -159,7 +162,7 @@
             console.info(index);
 
 
-            console.log( "////"+data.response.data['arrangeUrl']);
+            console.log( "////"+data.response.data['prospectUrl']);
 
             var filesCount = $('#fileinput-demo-1').fileinput('getFilesCount'); //返回文件数（待上传）
             console.info("fileuploaded  ---> 未上传文件数"+filesCount)
@@ -168,14 +171,18 @@
             console.info("fileuploaded  --->  上传的文件总数"+totalFilesCount)
         });
 
-    });
+	});
 
     function submitHandler() {
-        // $.modal.confirm("勘展图片保存后不可修改，是否确定保存？", function(){
-        // 	        $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
-        // 	    })
+		// $.modal.confirm("勘展图片保存后不可修改，是否确定保存？", function(){
+		// 	        $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
+		// 	    })
+		if (status == 2) {
+			$.modal.alertWarning("当前展会已勘展");
+			throw Error;
+		}
         var filesCount = $('#fileinput-demo-1').fileinput('getFilesCount'); //返回文件数（待上传）
-        alert("未上传文件数"+filesCount)
+		alert("未上传文件数"+filesCount)
 
         var totalFilesCount = $('#fileinput-demo-1').fileinput('getFilesCount',true); //返回文件数（待上传的文件以及已经上传并通过初始预览设置的文件）
         alert("总文件数"+totalFilesCount)
@@ -186,10 +193,10 @@
             })
         }
         else if ( filesCount > 0) {
-            $.modal.confirm("有 "+filesCount+" 张图片未上传，是否确定保存？", function(){
-                $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
-            })
-        }
+                $.modal.confirm("有 "+filesCount+" 张图片未上传，是否确定保存？", function(){
+                    $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
+                })
+            }
         else if ( totalFilesCount == 0) {
             $.modal.alertWarning("您尚未上传图片")
         }

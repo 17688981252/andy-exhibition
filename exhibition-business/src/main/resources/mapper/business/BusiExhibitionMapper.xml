@@ -308,7 +308,7 @@
           set
               status = #{status},
               update_by = #{updateBy},
-              updateTime = now()
+              update_time = now()
           where
               exhibition_id = #{exhibitionId}
     </update>
@@ -476,9 +476,9 @@
     定时任务
     更新流水号
     -->
-    <update id="updateSerialUnmber">
+    <update id="updateSerialNumber">
         UPDATE busi_serial_number_info
-        SET serial_number = 1
+        SET serial_number = 1,update_time = sysdate()
     </update>
 
     <!--更新展会记录表-->
@@ -491,5 +491,48 @@
             exhibition_id = #{exhibitionId}
           AND `status` = 1
     </update>
+
+    <update id="updateExhibitionRecordEvent">
+        UPDATE busi_exhibition_record
+        SET EVENT = CONCAT( EVENT, '“已删除”')
+        WHERE
+            EVENT LIKE concat ('%', #{number} ,'%')
+    </update>
+
+    <select id="selectProspectList" resultType="com.zel.business.domain.BusiExhibition">
+        SELECT
+            exhibition_id AS exhibitionId,
+            exhibition_name AS exhibitionName,
+            STATUS,
+            start_time AS startTime ,
+            end_time AS endTime,
+            address AS address ,
+            organizer AS organizer,
+            remark AS remark
+        FROM
+            busi_exhibition
+        WHERE
+            `status` = 1
+          AND del = 1
+        <if test="exhibitionName != null and exhibitionName !=''">
+            and exhibition_name like concat ('%', #{exhibitionName},'%')
+        </if>
+        <if test="organizer != null and organizer != ''">
+            and organizer like concat ('%', #{organizer},'%')
+        </if>
+        <if test="address != null and address != ''">
+            and address like concat ('%', #{address},'%')
+        </if>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectProspectUrlList" resultType="com.zel.business.domain.BusiProspect">
+        select
+            prospect_url as prospectUrl
+        FROM
+            busi_prospect
+        WHERE
+            exhibition_id = #{exhibitionId}
+    </select>
 
 </mapper>

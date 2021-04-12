@@ -98,4 +98,17 @@ public interface BusiReturnReceiveMapper {
     List<BusiReturnMaterialDto> selectReturnMaterialDetail(@Param(value = "returnId") Long returnId,
                                                            @Param(value = "materialName") String materialName,
                                                            @Param(value = "materialCode") String materialCode);
+
+    /**
+     * 删除退还签收
+     * @param id  退还签收id
+     */
+    int deleteReturnReceiveById(@Param(value = "id") Long id);
+
+    /**
+     * 查询退还签收ID
+     * @param id
+     * @return
+     */
+    String seleceReturnReceiveNumberById(@Param(value = "id") Long id);
 }

@@ -11,6 +11,7 @@
         <result property="endTime"          column="end_time"/>
         <result property="address"          column="address"/>
         <result property="organizer"        column="organizer"/>
+        <result property="remark"           column="remark"/>
     </resultMap>
     <select id="selectRevokeList" resultMap="BaseRevokeResult">
         select
@@ -20,7 +21,8 @@
             start_time ,
             end_time ,
             address ,
-            organizer
+            organizer,
+            remark
         from busi_exhibition
         where status = 3
         and  del = 1
@@ -33,6 +35,7 @@
         <if test="address != null and address != ''">
             and address like concat ('%', #{address},'%')
         </if>
+        ORDER BY update_time DESC
     </select>
 
     <update id="updateExhibitionStatus">
@@ -57,7 +60,7 @@
         ( #{revokeId}, #{exhibitionId}, #{revokeUrl},#{thumbImage}, #{fileName}, #{createBy}, now() );
     </insert>
 
-    <select id="findRevokeUrl" resultMap="BaseRevokeResult">
+    <select id="findRevokeUrl" resultType="java.lang.String">
         select revoke_url
         from busi_revoke
         where revoke_id = #{revokeId}

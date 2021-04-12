@@ -8,22 +8,14 @@ import com.zel.business.service.IBusiExhibitionService;
 import com.zel.business.utils.ImageUtil;
 import com.zel.common.config.Global;
 import com.zel.common.constant.UserConstants;
-import com.zel.common.core.domain.AjaxResult;
 import com.zel.common.enums.ExhibitionStatus;
 import com.zel.common.utils.StringUtils;
 import com.zel.common.utils.file.FileUploadUtils;
 import com.zel.framework.util.ShiroUtils;
-import lombok.SneakyThrows;
-import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -69,6 +61,8 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
      */
     @Override
     public int insertExhibition(BusiExhibition exhibition) {
+
+
         int count = exhibitionMapper.insertExhibition(exhibition);
         if (count > 0) {
             BusiExhibitionRecord record = new BusiExhibitionRecord();
@@ -295,8 +289,8 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
      * 每日23:59 更新流水号
      */
     @Override
-    public Integer updateSerialUnmber() {
-        return exhibitionMapper.updateSerialUnmber();
+    public Integer updateSerialNumber() {
+        return exhibitionMapper.updateSerialNumber();
     }
 
     /**
@@ -319,32 +313,12 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
                 String imageUrl = StringUtils.replace(prospectUrl, "/profile", pre);
                 String thumbImage = ImageUtil.thumbnailImage(imageUrl, 100, 100, "thumb_", false);
 
-//                String pre2 = "F:\\zel_exhibition\\uploadPath\\";
-//
-//                thumbImage.replace(pre2,"/profile");
-
                 BusiProspect busiProspect = new BusiProspect(exhibitionId,file.getOriginalFilename(),prospectUrl);
                 busiProspect.setCreateBy(ShiroUtils.getSysUser().getUserId());
                 busiProspect.setThumbImage(thumbImage);
                 exhibitionMapper.insertProspectUrl(busiProspect);
                 prospect = exhibitionMapper.findProspectUrl(busiProspect.getProspectId(),exhibitionId) ;
 
-                //file 转 multipartFile
-//                MultipartFile multipartFile = null;
-//                try {
-//                    FileInputStream fileInputStream = new FileInputStream(fileThumb);
-//                    multipartFile = new MockMultipartFile(fileThumb.getName(), fileThumb.getName(),
-//                            ContentType.APPLICATION_OCTET_STREAM.toString(), fileInputStream);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//                //上传缩略图并返回路径
-//                String path = null;
-//                try {
-//                    path = FileUploadUtils.upload(Global.getProspectUrlPath(), multipartFile);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
             }
         }
         catch (Exception e)
@@ -353,5 +327,43 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
             result = false;
         }
         return result;
+    }
+
+    /**
+     * 更新展会记录
+     * @param number
+     */
+    @Override
+    public void updateExhibitionRecordEvent(String number) {
+        exhibitionMapper.updateExhibitionRecordEvent(number);
+    }
+
+    /**
+     * 查看勘展列表
+     * @return
+     * @param exhibition
+     */
+    @Override
+    public List<BusiExhibition> selectProspectList(BusiExhibition exhibition) {
+        return exhibitionMapper.selectProspectList(exhibition);
+    }
+
+    /**
+     * 根据ID查询展会信息
+     * @param exhibitionId
+     */
+    @Override
+    public BusiExhibition selectExhibitionInfoById(Long exhibitionId) {
+        return exhibitionMapper.selectExhibitionInfoById(exhibitionId);
+    }
+
+
+    /**
+     * 查询勘展图片List
+     * @param exhibitionId
+     */
+    @Override
+    public List<BusiExhibition> selectProspectUrlList(Long exhibitionId) {
+        return exhibitionMapper.selectProspectUrlList(exhibitionId);
     }
 }

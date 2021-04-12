@@ -53,4 +53,9 @@ public class BusiRevokeDto {
      */
     private String organizer;
 
+    /**
+     * 备注
+     */
+    private String remark;
+
 }

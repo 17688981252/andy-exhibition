@@ -48,7 +48,7 @@
                         <div class="ibox-content">
 
                             <div class="form-group">
-                                <label class="font-noraml">勘展图片上传</label>
+                                <label class="font-noraml">布展图片</label>
                                 <div class="file-loading">
                                     <input id="fileinput-demo-1" type="file" multiple>
                                 </div>
@@ -98,16 +98,16 @@
             uploadUrl: prefix + '/saveArrangeUrl', //上传的地址
             uploadExtraData:{"exhibitionId":$("#exhibitionId").val()},
             showPreview: true,              //展前预览
-            showUpload: true,              //显示上传按钮
+            showUpload: false,              //显示上传按钮
             showCaption: false,             //显示文字表述
             showRemove: false,				//显示删除按钮
             uploadAsync:false,
-
+            showBrowse:false,              //是否显示浏览
             fileActionSettings : {
                 showUpload: false,//是否显示上传小图标
                 showRemove: true//是否显示删除小图标
             },
-
+            layoutTemplates: {actionDelete: ''}, //隐藏小删除按钮
             removeFromPreviewOnError:true,
             maxFileCount: 5,
             maxFileSize: 1024*10,           //单位为kb，如果为0表示不限制文件大小

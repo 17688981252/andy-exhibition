@@ -174,7 +174,7 @@ public class ${ClassName}Controller extends BaseController
 #if($table.tree)
 
     /**
-     * 选择${functionName}树
+     * ${functionName}树
      */
 #set($BusinessName=$businessName.substring(0,1).toUpperCase() + ${businessName.substring(1)})
     @GetMapping(value = { "/select${BusinessName}Tree/{${pkColumn.javaField}}", "/select${BusinessName}Tree/" })

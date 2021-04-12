@@ -7,7 +7,6 @@ import com.zel.common.core.domain.Ztree;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.lang.reflect.Array;
 import java.util.List;
 
 
@@ -130,4 +129,30 @@ public interface BusiSendMapper {
      * @return
      */
     int updateSend(BusiSend busiSend);
+
+    /**
+     * 移除发货信息
+     * @param id
+     * @return
+     */
+    int removeSendInfo(@Param(value = "id") Long id);
+
+
+    /**
+     * 更新展会记录
+     * @param number
+     */
+    void updateExhibitionRecord(@Param(value = "number") String number);
+
+    /**
+     * 查询发货单号
+     * @param id 发货id
+     */
+    String selectsendNumberById(@Param(value = "id") Long id);
+
+    /**
+     * 查询展会ID
+     * @param id
+     */
+    Long selectExhibitionId(@Param(value = "id") Long id);
 }

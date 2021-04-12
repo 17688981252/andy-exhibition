@@ -57,4 +57,8 @@ public interface BusiReceiveMapper {
     int deleteReceive(@Param(value = "ids") Long[] ids);
 
     int updateReceiveQuantity(@Param(value = "id") Long id);
+
+    void deleteReceiveById(@Param(value = "id") Long id);
+
+    String selectReceiveNumberById(@Param(value = "id") Long id);
 }

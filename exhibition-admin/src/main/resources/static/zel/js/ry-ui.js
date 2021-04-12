@@ -953,6 +953,48 @@ var table = {
                 layer.full(index);
             },
 
+			// 弹出层全屏（无按钮）
+			openFullNoBtn: function (title, url, width, height) {
+				//如果是移动端，就使用自适应大小弹窗
+				if ($.common.isMobile()) {
+					width = 'auto';
+					height = 'auto';
+				}
+				if ($.common.isEmpty(title)) {
+					title = false;
+				}
+				if ($.common.isEmpty(url)) {
+					url = "/404.html";
+				}
+				if ($.common.isEmpty(width)) {
+					width = 800;
+				}
+				if ($.common.isEmpty(height)) {
+					height = ($(window).height() - 50);
+				}
+				var index = layer.open({
+					type: 2,
+					area: [width + 'px', height + 'px'],
+					fix: false,
+					//不固定
+					maxmin: true,
+					shade: 0.3,
+					title: title,
+					content: url,
+					// btn: ['确定', '关闭'],
+					// 弹层外区域关闭
+					shadeClose: true,
+					yes: function(index, layero) {
+						var iframeWin = layero.find('iframe')[0];
+						iframeWin.contentWindow.submitHandler(index, layero);
+					},
+					cancel: function(index) {
+						return true;
+					}
+				});
+				layer.full(index);
+			},
+
             // 选卡页方式打开
             openTab: function (title, url) {
             	createMenuItem(url, title);
@@ -1254,8 +1296,26 @@ var table = {
             // 查询发货物料明细 andy
             selectSendMaterialDetail: function(id) {
                  table.set("bootstrap-table2");
-                $.modal.openFull("查看" + table.options.modalName,  table.options.selectSendMaterialDetailUrl.replace("{id}", id));
+                $.modal.openFullNoBtn("查看" + table.options.modalName,  table.options.selectSendMaterialDetailUrl.replace("{id}", id));
             },
+
+			// 查询勘展图片 andy
+			selectProspectImageDetail: function(id) {
+				table.set("bootstrap-table");
+				$.modal.openFullNoBtn("查看" + table.options.modalName + "图片",  table.options.selectProspectImageDetailUrl.replace("{id}", id));
+			},
+
+			// 查询布展图片 andy
+			selectArrangeImageDetail: function(id) {
+				table.set("bootstrap-table");
+				$.modal.openFullNoBtn("查看" + table.options.modalName + "图片",  table.options.selectArrangeImageDetailUrl.replace("{id}", id));
+			},
+
+			// 查询撤展图片 andy
+			selectRevokeImageDetail: function(id) {
+				table.set("bootstrap-table");
+				$.modal.openFullNoBtn("查看" + table.options.modalName + "图片",  table.options.selectRevokeImageDetailUrl.replace("{id}", id));
+			},
 
 			// 查询退还物料明细 andy
 			selectReturnMaterialDetail: function(id) {
@@ -1291,7 +1351,11 @@ var table = {
             // 修改信息
             edit: function(id) {
                 table.set();
-
+				// var status = $.table.selectColumns("status");
+				// if (status != 1 ){
+				// 	$.modal.alertWarning("当前状态不可修改");
+				// 	return;
+				// }
             	if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
             		var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
                 	if ($.common.isEmpty(row)) {
@@ -1305,14 +1369,33 @@ var table = {
             	}
             },
 
-
+			// 修改信息
+			exhibitionEdit: function(id) {
+				table.set();
+				var status = $.table.selectColumns("status");
+				if (status != 1 ){
+					$.modal.alertWarning("当前状态不可修改");
+					return;
+				}
+				if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
+					var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
+					if ($.common.isEmpty(row)) {
+						$.modal.alertWarning("请至少选择一条记录");
+						return;
+					}
+					var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
+					$.modal.open("修改" + table.options.modalName, url);
+				} else {
+					$.modal.open("修改" + table.options.modalName, $.operate.editUrl(id));
+				}
+			},
 
 			//  勘展
 			prospect: function(id) {
                 table.set();
                 var status = $.table.selectColumns("status");
                 if (status != 1 ){
-                    $.modal.alertWarning("当前状态不可勘展");
+                    $.modal.alertWarning("当前展会已勘展");
                     return;
 				}
                 if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
@@ -1322,9 +1405,9 @@ var table = {
                         return;
                     }
                     var url = table.options.prospectUrl.replace("{id}", row[table.options.uniqueId]);
-                    $.modal.open("勘展" + table.options.modalName, url);
+                    $.modal.openFull("勘展" + table.options.modalName, url);
                 } else {
-                    $.modal.open("勘展" + table.options.modalName, $.operate.prospectUrl(id));
+                    $.modal.openFull("勘展" + table.options.modalName, $.operate.prospectUrl(id));
                 }
             },
 
@@ -1384,7 +1467,7 @@ var table = {
 				table.set();
 				var status = $.table.selectColumns("status");
 				if (status != 2 ){
-					$.modal.alertWarning("当前状态不可布展");
+					$.modal.alertWarning("当前展会已布展");
 					return;
 				}
 				if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
@@ -1419,6 +1502,11 @@ var table = {
 			// 撤展
 			uploadRevoke: function(id) {
 				table.set();
+				var status = $.table.selectColumns("status");
+				if (status != 3 ){
+					$.modal.alertWarning("当前展会已撤展");
+					return;
+				}
 				var url = $.common.isEmpty(id) ? table.options.uploadRevokeUrl : table.options.uploadRevokeUrl.replace("{id}", id);
 				var exhibitionId = $.table.selectColumns("exhibitionId");
 				$.modal.openFull("撤展" + table.options.modalName, table.options.uploadRevokeUrl.replace("{exhibitionId}", exhibitionId));

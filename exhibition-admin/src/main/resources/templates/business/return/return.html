@@ -32,16 +32,16 @@
 					</div>
 
 					<div class="btn-group-sm" id="toolbar" role="group">
-						<a class="btn btn-success" onclick="$.operate.addReturn()" shiro:hasPermission="business:exhibition:add">
+						<a class="btn btn-success" onclick="$.operate.addReturn()" shiro:hasPermission="business:return:add">
 							<i class="fa fa-plus"></i> 新增
 						</a>
 <!--						 <a class="btn btn-primary single disabled" onclick="$.operate.sendEditFull()" shiro:hasPermission="business:exhibition:edit">-->
 <!--							<i class="fa fa-edit"></i> 修改-->
 <!--						</a>-->
-						<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:exhibition:remove">
+						<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:return:remove">
 							<i class="fa fa-remove"></i> 删除
 						</a>
-						<a class="btn btn-info single" onclick="$.operate.confirmReturn()" shiro:hasPermission="business:send:send">
+						<a class="btn btn-info single" onclick="$.operate.confirmReturn()" shiro:hasPermission="business:return:send">
 							<i class="fa "></i> 确认退还
 						</a>
 					</div>
@@ -98,7 +98,7 @@
 						{
 							field: 'exhibitionId',
 							title: '展会ID'
-							// ,visible: false
+							,visible: false
 						},
 						{
 							field: 'exhibitionName',
@@ -152,6 +152,23 @@
 						{
 							field: 'receiveAddress',
 							title: '收货地址'
+						},
+						{
+							field: 'remark',
+							title: '备注' ,
+							formatter : function(value, row, index, field){
+								return "<span style='display: block;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;' title='" + value + "'>" + value + "</span>";
+							},
+							cellStyle : function(value, row, index, field){
+								return {
+									css: {
+										"white-space": "nowrap",
+										"text-overflow": "ellipsis",
+										"overflow": "hidden",
+										"max-width":"100px"
+									}
+								};
+							}
 						},
 						{
 						    title: '物料明细',

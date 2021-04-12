@@ -262,6 +262,52 @@
             return_receive_id = #{returnReceiveId}
     </select>
 
+    <update id="deleteReturnReceiveById">
+        UPDATE busi_return_receive
+        SET del = 2
+        WHERE
+            return_receive_id = #{id}
+    </update>
 
+    <select id="seleceReturnReceiveNumberById" resultType="java.lang.String">
+        SELECT
+            return_receive_number
+        FROM
+            busi_return_receive
+        WHERE
+            return_receive_id = #{id}
+    </select>
 
+    <select id="selectReturnMaterialDetail" resultType="com.zel.business.domain.dto.BusiReturnMaterialDto">
+        SELECT
+        bm.material_id AS   materialId,
+        bm.material_name AS  materialName,
+        bm.material_code AS  materialCode,
+        bm.nick_name AS  nickName,
+        bm.specifications AS  specifications,
+        bm.type AS  type,
+        bm.unit AS  unit,
+        bm.package_quantity AS  packageQuantity,
+        bm.create_by AS  createBy,
+        bm.create_time AS  createTime,
+        bm.update_by AS  updateBy,
+        bm.update_time AS  updateTime,
+        bm.remark AS  remark,
+        brmd.return_quantity AS returnQuantity,
+        brmd.return_quantity AS receiveQuantity,
+        IFNULL (brmd.return_receive_quantity,brmd.return_quantity) as returnReceiveQuantity
+        FROM
+        busi_return_material_detail AS brmd
+        LEFT JOIN
+        busi_material as bm ON bm.material_id = brmd.material_id
+        WHERE
+        brmd.return_id = #{returnId}
+        <if test="materialName != null and materialName != ''">
+            AND bm.material_name like concat('%', #{materialName}, '%')
+        </if>
+        <if test="materialCode != null and materialCode != ''">
+            AND bm.material_code like concat('%', #{materialCode}, '%')
+        </if>
+        and bm.del = 1
+    </select>
 </mapper>

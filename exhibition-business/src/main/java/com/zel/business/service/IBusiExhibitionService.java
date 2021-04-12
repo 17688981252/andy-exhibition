@@ -128,7 +128,7 @@ public interface IBusiExhibitionService {
      *
      * 每日23:59 更新流水号
      */
-    Integer updateSerialUnmber();
+    Integer updateSerialNumber();
 
     /**
      * 保存勘展图片
@@ -138,4 +138,28 @@ public interface IBusiExhibitionService {
     boolean saveProspectUrl(MultipartFile[] files, Long exhibitionId);
 
 
+    /**
+     * 更新展会记录
+     * @param number
+     */
+    void updateExhibitionRecordEvent(String number);
+
+    /**
+     * 查看勘展列表
+     * @return
+     * @param exhibition
+     */
+    List<BusiExhibition> selectProspectList(BusiExhibition exhibition);
+
+    /**
+     * 根据ID查询展会信息
+     * @param exhibitionId
+     */
+    BusiExhibition selectExhibitionInfoById(Long exhibitionId);
+
+    /**
+     * 查询勘展图片List
+     * @param exhibitionId
+     */
+    List<BusiExhibition> selectProspectUrlList(Long exhibitionId);
 }

@@ -141,11 +141,26 @@ public interface BusiExhibitionMapper {
      *
      * 每日23:59 更新流水号
      */
-    Integer updateSerialUnmber();
+    Integer updateSerialNumber();
 
     /**
      * 更新展会记录表
      * @param record  展会记录实体
      */
     int updateExhibitionRecord(BusiExhibitionRecord record);
+
+    void updateExhibitionRecordEvent(@Param(value = "number") String number);
+
+    /**
+     * 查看勘展列表
+     * @return
+     * @param exhibition
+     */
+    List<BusiExhibition> selectProspectList(BusiExhibition exhibition);
+
+    /**
+     * 查询勘展图片List
+     * @param exhibitionId
+     */
+    List<BusiExhibition> selectProspectUrlList(@Param(value = "exhibitionId") Long exhibitionId);
 }

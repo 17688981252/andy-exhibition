@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+      xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>展会时间轴</title>
+    <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link href="../static/css/main/animate.min.css" th:href="@{/css/main/animate.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/style.css}" rel="stylesheet"/>
+    <th:block th:include="include :: header('展会时间轴')"/>
+    <th:block th:include="include :: layout-latest-css"/>
+</head>
+<body class="gray-bg">
+<form id="form-returnReceive-add" class="form-horizontal" th:object="${exhibitionRecord}">
+    <div class="row animated fadeInRight">
+        <div class="ibox float-e-margins">
+            <div id="ibox-content">
+                <div id="vertical-timeline" class="vertical-container light-timeline"  >
+                    <div class="vertical-timeline-block" th:each="list:${exhibitionRecord}" >
+                        <div class="vertical-timeline-content">
+                            <h2 th:if="${list.key} ==1" >创展</h2>
+                            <h2 th:if="${list.key} ==2" >勘展</h2>
+                            <h2 th:if="${list.key} ==3" >发货</h2>
+                            <h2 th:if="${list.key} ==4" >收货</h2>
+                            <h2 th:if="${list.key} ==5" >布展</h2>
+                            <h2 th:if="${list.key} ==6" >撤展</h2>
+                            <h2 th:if="${list.key} ==7" >退还</h2>
+                            <h2 th:if="${list.key} ==8" >签收</h2>
+                            <p th:each="record,stat:${list.value}" >
+                                [[${record.event}]]</br>
+                                <img th:src="@{${record.pictureUrl}}"> </br>
+                            </p>
+                            <h2 th:if="${list.key} == 5" >
+                                <a href="#" class="btn btn-sm btn-primary">  [[${exhibitionId}]] [[${list.key}]] 更多信息  </a>
+                            </h2>
+<!--                            <h2 th:if="${list.key} ==8" >-->
+<!--                                <span class="vertical-date"> 今天 <br>-->
+<!--                                </span>-->
+<!--                            </h2>-->
+<!--                            <small>2月3日</small>-->
+                        </div>
+                        <div class="vertical-timeline-icon navy-bg">
+                            <i class="fa fa-briefcase"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<th:block th:include="include :: footer"/>
+</body>
+</html>

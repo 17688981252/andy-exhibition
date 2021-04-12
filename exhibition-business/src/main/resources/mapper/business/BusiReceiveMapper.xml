@@ -212,4 +212,14 @@
         WHERE
             send_id = #{id}
     </update>
+
+    <update id="deleteReceiveById">
+        update busi_receive
+        set del = 2
+        where receive_id = #{id}
+    </update>
+
+    <select id="selectReceiveNumberById" resultType="java.lang.String">
+        select receive_number from busi_receive where receive_id = #{id}
+    </select>
 </mapper>

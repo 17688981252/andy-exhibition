@@ -36,6 +36,7 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
 
     /**
      * 查询收货列表
+     *
      * @param receive
      */
     @Override
@@ -50,7 +51,7 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
     @Override
     public int addSave(BusiReceiveInDto receiveInDto) {
         int count = 0;
-        for(Long id : receiveInDto.getIds()){
+        for (Long id : receiveInDto.getIds()) {
             receiveInDto.setSendId(id);
             String receiveNumber = "";
             BusiSerialNumberInfo receiveSerialNumberInfo = receiveMapper.selectReceiveSerialNumberInfo();
@@ -60,7 +61,7 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
             String date = sdf.format(new Date());  // 格式化日期 年月日 ：20210126
             Long num = receiveSerialNumberInfo.getSerialNumber();
             String number = num.toString();
-            if (number.length()<3) {
+            if (number.length() < 3) {
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < 3 - number.length(); i++) {
                     sb.append('0');
@@ -77,15 +78,15 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
             sendMapper.updateSendStatus(id);
             receiveMapper.updateReceiveSerialNumber();
             // 记录
-            if (count2>0) {
+            if (count2 > 0) {
                 Long receiveId = receiveInDto.getReceiveId();
                 BusiReceive receive = receiveService.selectReceiveInfo(receiveId);
                 BusiExhibitionRecord record = new BusiExhibitionRecord();
                 record.setExhibitionId(receive.getExhibitionId());
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String receiveTime = df.format(receive.getReceiveTime());
-                record.setEvent("展会:"+receive.getExhibitionName()+"、收货单号："+receive.getReceiveNumber()+"、物流名称："+receive.getLogisticsName()
-                        +"、物流单号："+receive.getLogisticsNumber()+"、收货人："+receive.getReceiveName()+"、收货时间："+receiveTime);
+                record.setEvent("展会:" + receive.getExhibitionName() + "、收货单号：" + receive.getReceiveNumber() + "、物流名称：" + receive.getLogisticsName()
+                        + "、物流单号：" + receive.getLogisticsNumber() + "、收货人：" + receive.getReceiveName() + "、收货时间：" + receiveTime);
                 record.setStatus(4);
                 exhibitionService.insertExhibitionRecord(record);
             }
@@ -96,6 +97,7 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
 
     /**
      * 查询收货物料明细
+     *
      * @param sendId 发货id
      */
     @Override
@@ -106,7 +108,7 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
     @Override
     public List<BusiSend> selectLogisticsInfo() {
         List<BusiSend> listInfo = receiveMapper.selectLogisticsInfo();
-        for(BusiSend list : listInfo){
+        for (BusiSend list : listInfo) {
 
         }
         return null;
@@ -114,6 +116,7 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
 
     /**
      * 查询已发货信息
+     *
      * @param receiveId
      * @return
      */
@@ -124,9 +127,9 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
     }
 
 
-
     /**
      * 未收货列表
+     *
      * @param send 发货信息
      */
     @Override
@@ -136,11 +139,19 @@ public class BusiReceiveServiceImpl implements IBusiReceiveService {
 
     /**
      * 删除收货
+     *
      * @param ids 收货ID
      */
     @Override
     public int deleteReceive(Long[] ids) {
-        return receiveMapper.deleteReceive(ids);
+        int count = 0;
+        for (Long id : ids) {
+            receiveMapper.deleteReceiveById(id);
+            count++;
+            String number = receiveMapper.selectReceiveNumberById(id);
+            exhibitionService.updateExhibitionRecordEvent(number);
+        }
+        return count;
     }
 
 

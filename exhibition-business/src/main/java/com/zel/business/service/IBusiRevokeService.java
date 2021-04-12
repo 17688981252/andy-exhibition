@@ -17,13 +17,18 @@ public interface IBusiRevokeService {
      */
     List<BusiRevokeDto> selectRevokeList(BusiRevokeDto revokeDto);
 
-    /**
-     * 撤展
-     * @param ids 展会IDs
-     * @return 撤展数
-     */
+//    /**
+//     * 撤展
+//     * @param ids 展会IDs
+//     * @return 撤展数
+//     */
 //    int revokeExhibition(Long[] ids);
 
+    /**
+     * 查询收货物料明细
+     * @param exhibitionId
+     * @return
+     */
     List<BusiReceiveMaterialDto> selectReceiveMaterialDetial(Long exhibitionId);
 
     /**

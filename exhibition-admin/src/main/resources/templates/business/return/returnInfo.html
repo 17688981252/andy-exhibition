@@ -96,7 +96,9 @@
 						<div class="form-group">
 							<label class="col-xs-2 control-label">备注：</label>
 							<div class="col-xs-10">
-								<textarea name="remark" id="remark" maxlength="500" class="form-control" rows="3"></textarea>
+								<textarea id="remark" name="remark" class="form-control" onKeyUp="keypress(this)"
+										  type="text"  rows = '2'></textarea>
+								<label class="name">50</label><span>/</span><label class="maxleng">50</label>
 							</div>
 						</div>
 					</div>
@@ -217,6 +219,7 @@
 						field: 'returnTime',
 						title: '退还时间'
 					},
+
 					{
 						title: '查看/编辑',
 						align: 'center',
@@ -278,6 +281,17 @@
 							"remark": $("#remark").val()
 						}
 				);
+		}
+	</script>
+	<script type="text/javascript">
+		function keypress(t) {
+			var txt = $(t).val().length;
+			var len = $(t).parent().children('.maxleng').html() - txt;
+			if (len >= 0) {
+				$(t).parent().children('.name').html(len);
+			} else {
+				$(t).val($(t).val().substring(0, $(t).parent().children('.maxleng').text()));
+			}
 		}
 	</script>
 </body>

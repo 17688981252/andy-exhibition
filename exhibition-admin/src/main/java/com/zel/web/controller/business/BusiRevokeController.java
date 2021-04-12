@@ -60,18 +60,18 @@ public class BusiRevokeController extends BaseController {
 //        return toAjax(revokeService.revokeExhibition(ids));
 //    }
 
-    /**
-     * 查看收货物料明细
-     * @param exhibitionId 展会ID
-     * @return 明细列表
-     */
-    @PostMapping("/selectReceiveMaterialDetial")
-    @ResponseBody
-    public TableDataInfo list(@RequestParam(value = "exhibitionId")Long exhibitionId){
-        startPage();
-        List<BusiReceiveMaterialDto> list = revokeService.selectReceiveMaterialDetial(exhibitionId);
-        return getDataTable(list);
-    }
+//    /**
+//     * 查看收货物料明细
+//     * @param exhibitionId 展会ID
+//     * @return 明细列表
+//     */
+//    @PostMapping("/selectReceiveMaterialDetail")
+//    @ResponseBody
+//    public TableDataInfo list(@RequestParam(value = "exhibitionId")Long exhibitionId){
+//        startPage();
+//        List<BusiReceiveMaterialDto> list = revokeService.selectReceiveMaterialDetial(exhibitionId);
+//        return getDataTable(list);
+//    }
 
     /**
      * 加载撤展图片
@@ -86,6 +86,18 @@ public class BusiRevokeController extends BaseController {
         return prefix + "/revokeUrl";
     }
 
+    /**
+     * 查看撤展图片
+     *
+     * @param exhibitionId 展会ID
+     * @param mmap         返回信息
+     * @return 返回前端页面路径
+     */
+    @GetMapping("/revokeImage/{id}")
+    public String image(@PathVariable("id") Long exhibitionId, ModelMap mmap) {
+        mmap.put("revoke", revokeService.selectRevokeExhibitionInfo(exhibitionId));
+        return prefix + "/image";
+    }
     /**
      * 保存撤展图片
      *

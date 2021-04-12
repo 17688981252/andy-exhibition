@@ -104,7 +104,14 @@ public class BusiReturnServiceImpl implements IBusiReturnService {
      */
     @Override
     public int removeReturn(Long[] ids) {
-        return returnMapper.removeReturn(ids);
+        int count = 0;
+        for (Long id : ids) {
+            returnMapper.removeReturnById(id);
+            count++;
+            String number = returnMapper.selectReturnNumberById(id);
+            exhibitionService.updateExhibitionRecordEvent(number);
+        }
+        return count;
     }
 
     /**
@@ -117,6 +124,7 @@ public class BusiReturnServiceImpl implements IBusiReturnService {
 
         return materialMapper.selectRerurnMaterialDetial(returnId);
     }
+
 
     @Override
     public int returnMaterial(Long[] ids) {
@@ -226,6 +234,15 @@ public class BusiReturnServiceImpl implements IBusiReturnService {
     @Override
     public List<BusiReturnMaterialDto> selectReturnMaterialDetail(Long returnId, String materialName, String materialCode) {
         return returnMapper.selectReturnMaterialDetail(returnId,materialName,materialCode);
+    }
+
+    /**
+     * 根据ID查询退还信息
+     * @param returnId
+     */
+    @Override
+    public BusiReturn selectReturnMassageById(Long returnId) {
+        return returnMapper.selectReturnMassageById(returnId);
     }
 
 }

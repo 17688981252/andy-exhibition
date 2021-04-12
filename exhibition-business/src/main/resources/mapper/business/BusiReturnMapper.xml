@@ -371,4 +371,40 @@
         </if>
         and bm.del = 1
     </select>
+
+
+    <select id="selectReturnNumberById" resultType="java.lang.String">
+        SELECT
+            return_number
+        FROM
+            busi_return
+        WHERE
+            return_id = #{id}
+    </select>
+
+    <update id="removeReturnById">
+        UPDATE busi_return
+        SET del = 2
+        WHERE
+            return_id = #{id}
+    </update>
+
+    <select id="selectReturnMassageById" resultMap="ReturnResultMap">
+        SELECT
+             return_number,
+             exhibition_id,
+             logistics_name,
+             logistics_number,
+             STATUS,
+             return_by,
+             return_time ,
+             receive_by,
+             receive_address,
+             dept_id,
+             remark
+        FROM
+            busi_return
+        WHERE
+            return_id = #{returnId};
+    </select>
 </mapper>

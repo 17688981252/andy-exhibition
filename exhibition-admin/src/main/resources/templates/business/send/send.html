@@ -44,7 +44,7 @@
 						<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:exhibition:remove">
 							<i class="fa fa-remove"></i> 删除
 						</a>
-						<a class="btn btn-info single disabled" onclick="$.operate.sendMaterial()" shiro:hasPermission="business:send:send">
+						<a class="btn btn-info single disabled" onclick="$.operate.sendMaterial()" shiro:hasPermission="business:send:confirm">
 							<i class="fa "></i> 发货
 						</a>
 					</div>
@@ -90,6 +90,7 @@
 					columns: [{
 						checkbox: true
 					},
+
                         {
                             field: 'sendId',
                             title: '发货ID',
@@ -98,6 +99,11 @@
 						{
 							field: 'sendNumber',
 							title: '发货单号'
+						},
+						{
+							field: 'exhibitionId',
+							title: '展会ID',
+							visible: false
 						},
 						{
 							field: 'exhibitionName',
@@ -147,6 +153,24 @@
 							field: 'deptName',
 							title: '收货公司'
 						},
+
+						{
+							field: 'remark',
+							title: '备注' ,
+							formatter : function(value, row, index, field){
+								return "<span style='display: block;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;' title='" + value + "'>" + value + "</span>";
+							},
+							cellStyle : function(value, row, index, field){
+								return {
+									css: {
+										"white-space": "nowrap",
+										"text-overflow": "ellipsis",
+										"overflow": "hidden",
+										"max-width":"100px"
+									}
+								};
+							}
+						},
 						{
 							title: '查看',
 							align: 'center',
@@ -155,7 +179,7 @@
 								actions.push('<a class="btn btn-success btn-xs ' + selectSendMaterialDetailFlag + '" href="javascript:void(0)" onclick="$.operate.selectSendMaterialDetail(\'' + row.sendId + '\')"><i class="fa fa-edit"></i>物料明细</a> ');
 								return actions.join('');
 							}
-						}
+						},
 						]
 				};
 				$.table.init(options);

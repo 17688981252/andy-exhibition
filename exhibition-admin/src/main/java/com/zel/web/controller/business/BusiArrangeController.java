@@ -70,6 +70,18 @@ public class BusiArrangeController extends BaseController {
         return prefix + "/arrangeUrl";
     }
 
+    /**
+     * 查看布展图片
+     *
+     * @param exhibitionId 展会ID
+     * @param mmap         返回信息
+     * @return 返回前端页面路径
+     */
+    @GetMapping("/arrangeImage/{id}")
+    public String image(@PathVariable("id") Long exhibitionId, ModelMap mmap) {
+        mmap.put("arrange", arrangeService.selectExhibitionInfo(exhibitionId));
+        return prefix + "/image";
+    }
 
     /**
      * 保存布展图片

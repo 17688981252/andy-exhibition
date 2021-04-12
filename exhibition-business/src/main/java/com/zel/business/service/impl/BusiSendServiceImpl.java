@@ -123,7 +123,16 @@ public class BusiSendServiceImpl implements IBusiSendService {
      */
     @Override
     public int remove(Long ids[]) {
-        return sendMapper.updateDel(ids);
+        int count = 0;
+        for (Long id : ids) {
+            sendMapper.removeSendInfo(id);
+            count++;
+            if (count>0) {
+                String number = sendMapper.selectsendNumberById(id);
+                exhibitionService.updateExhibitionRecordEvent(number);
+            }
+        }
+        return count;
     }
 
     /**
@@ -194,6 +203,15 @@ public class BusiSendServiceImpl implements IBusiSendService {
             count++;
         }
         return count;
+    }
+
+    /**
+     * 查询展会ID
+     * @param id
+     */
+    @Override
+    public Long selectExhibitionId(Long id) {
+        return sendMapper.selectExhibitionId(id);
     }
 
 

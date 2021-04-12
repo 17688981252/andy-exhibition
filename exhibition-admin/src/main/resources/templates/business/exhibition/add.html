@@ -38,14 +38,15 @@
                     <input class="form-control" type="date" name="endTime" id="endTime" required>
                 </div>
             </div>
-
             <div class="form-group">
-                <label class="col-sm-3 control-label">备注：</label>
+                <label class="col-sm-3 control-label">备注： </label>
                 <div class="col-sm-8">
-                    <textarea id="remark" name="remark" class="form-control"></textarea>
+                    <textarea id="remark" name="remark" class="form-control"  onKeyUp="keypress(this)" ></textarea>
+                    <label class="name">剩余可输入 50</label><span>/</span><label class="maxleng">50</label>
                 </div>
             </div>
         </form>
+
     </div>
 
     <th:block th:include="include :: footer" />
@@ -86,5 +87,20 @@
             }
         }
     </script>
+
+    <!--剩余可输入字数监控-->
+    <script type="text/javascript">
+        function keypress(t) {
+            var txt=$(t).val().length;
+            var len=$(t).parent().children('.maxleng').html()-txt;
+            // var len=txt - $(t).parent().children('.maxleng').html();
+            if(len>=0){
+                $(t).parent().children('.name').html(len);
+            }else{
+                $(t).val($(t).val().substring(0,$(t).parent().children('.maxleng').text()));
+            }
+        }
+    </script>
+
 </body>
 </html>
