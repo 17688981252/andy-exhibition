@@ -1,7 +1,5 @@
 package com.zel.web.controller.business;
 
-import cn.hutool.core.collection.CollectionUtil;
-import com.github.tobato.fastdfs.domain.fdfs.StorePath;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.zel.business.domain.BusiExhibition;
 import com.zel.business.domain.BusiExhibitionRecord;
@@ -20,9 +18,7 @@ import com.zel.common.enums.ExhibitionStatus;
 import com.zel.common.utils.file.FileUploadUtils;
 import com.zel.common.utils.poi.ExcelUtil;
 import com.zel.framework.util.ShiroUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +28,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -342,7 +333,8 @@ public class BusiExhibitionController extends BaseController
      * 每日23:59 更新流水号
      */
     @GetMapping("/updateSerialNumber")
-    public Integer updateSerialNumber(){
+    public int updateSerialNumber(){
+//        System.out.println("执行定时任务：更新流水号");
         return exhibitionService.updateSerialNumber();
     }
 

@@ -287,9 +287,10 @@ public class BusiExhibitionServiceImpl implements IBusiExhibitionService {
      * 定时任务
      * <p>
      * 每日23:59 更新流水号
+     * @return
      */
     @Override
-    public Integer updateSerialNumber() {
+    public int updateSerialNumber() {
         return exhibitionMapper.updateSerialNumber();
     }
 

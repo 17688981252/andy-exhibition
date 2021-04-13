@@ -141,7 +141,7 @@ public interface BusiExhibitionMapper {
      *
      * 每日23:59 更新流水号
      */
-    Integer updateSerialNumber();
+    int updateSerialNumber();
 
     /**
      * 更新展会记录表

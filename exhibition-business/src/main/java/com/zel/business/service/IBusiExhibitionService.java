@@ -127,8 +127,9 @@ public interface IBusiExhibitionService {
      * 定时任务
      *
      * 每日23:59 更新流水号
+     * @return
      */
-    Integer updateSerialNumber();
+    int updateSerialNumber();
 
     /**
      * 保存勘展图片
