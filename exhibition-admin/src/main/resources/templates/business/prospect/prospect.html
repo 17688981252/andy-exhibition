@@ -37,7 +37,7 @@
 
 		        <div class="btn-group-sm" id="toolbar" role="group">
 					<a class="btn btn-primary single disabled" onclick="$.operate.prospect()" shiro:hasPermission="business:exhibition:prospect">
-						<i class="fa fa-upload"></i> 上传图片
+						<i class="fa fa-upload"></i> 勘展图片
 					</a>
 <!--					<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:exhibition:remove">-->
 <!--						<i class="fa fa-remove"></i> 查看布展-->
@@ -143,15 +143,15 @@
 							};
 						}
 					},
-					{
-						title: '操作',
-						align: 'center',
-						formatter: function(value, row, index) {
-							var actions = [];
-							actions.push('<a class="btn btn-success btn-xs ' + selectImageFlag + '" href="javascript:void(0)" onclick="$.operate.selectProspectImageDetail(\'' + row.exhibitionId + '\')"><i class="fa fa-edit"></i>查看图片</a> ');
-							return actions.join('');
-						}
-					},
+					// {
+					// 	title: '操作',
+					// 	align: 'center',
+					// 	formatter: function(value, row, index) {
+					// 		var actions = [];
+					// 		actions.push('<a class="btn btn-success btn-xs ' + selectImageFlag + '" href="javascript:void(0)" onclick="$.operate.selectProspectImageDetail(\'' + row.exhibitionId + '\')"><i class="fa fa-edit"></i>查看图片</a> ');
+					// 		return actions.join('');
+					// 	}
+					// },
 
                    ]
             };
