@@ -58,7 +58,7 @@ public class BusiSendController extends BaseController {
      *
      * @param send 发货信息
      */
-    @RequiresPermissions("business:send:list")
+//    @RequiresPermissions("business:send:list")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(BusiSend send) {

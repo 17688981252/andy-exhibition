@@ -87,9 +87,22 @@
 					// sortName: "sendTime",
 					// sortOrder: "desc",
 					modalName: "发货信息",
-					columns: [{
-						checkbox: true
-					},
+					rememberSelected: true,
+					columns: [
+						{
+							field: 'state',
+							checkbox: true
+						},
+						{
+							field: '',
+							title: '序号',
+							align: 'center',
+							width: '5%',
+							formatter: function (value, row, index) {
+								var options = $('#bootstrap-table').bootstrapTable('getOptions');
+								return options.pageSize * (options.pageNumber - 1) + index + 1;
+							}
+						},
 
                         {
                             field: 'sendId',

@@ -96,7 +96,7 @@ public class BusiExhibitionController extends BaseController
      * 获取展会列表
      * @param exhibition 展会信息
      */
-    @RequiresPermissions("business:exhibition:list")
+//    @RequiresPermissions("business:exhibition:list")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(BusiExhibition exhibition) {

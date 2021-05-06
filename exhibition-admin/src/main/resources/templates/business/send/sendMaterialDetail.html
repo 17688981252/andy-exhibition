@@ -29,45 +29,59 @@
 							</div>
 						</form>
 					</div>
+
+					<input type="button" value="打印此页面" onclick="printpage()" />
+
 					<div class="col-sm-12 search-collapse">
-						<form id="form-exhibition-info" class="form-horizontal" th:object="${exhibitionInfo}">
-							<div class="col-sm-4" >
-								<div class="form-group">
-									<label class="col-sm-4 control-label">展会名称：</label>
-									<div class="col-sm-8">
-										<input class="form-control" type="text" disabled="disabled" name="exhibitionName"
-											   id="exhibitionName" th:value="${exhibitionInfo.exhibitionName}" required>
+
+						<!--startprint-->
+						<div id="printContent">
+							<form id="form-send-info" class="form-horizontal" th:object="${exhibitionInfo}" >
+
+
+									<h4 class="form-header h4" data-show-print="true">发货信息</h4>
+									<div class="col-sm-4" >
+										<div class="form-group">
+											<label class="col-sm-4 control-label">展会名称：</label>
+											<div class="col-sm-8">
+												<input class="form-control" type="text" disabled="disabled" name="exhibitionName"
+													   id="exhibitionName" th:value="${exhibitionInfo.exhibitionName}" required>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							<div class="col-sm-4">
-								<div class="form-group">
-									<label class="col-sm-4 control-label">展会地址：</label>
-									<div class="col-sm-8">
-										<input class="form-control" type="text" disabled="disabled" name="address"
-											   id="address" th:value="${exhibitionInfo.address}" required>
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-sm-4 control-label">展会地址：</label>
+											<div class="col-sm-8">
+												<input class="form-control" type="text" disabled="disabled" name="address"
+													   id="address" th:value="${exhibitionInfo.address}" required>
+											</div>
+										</div>
 									</div>
-								</div>
-							</div>
-							<div class="col-sm-4">
-								<div class="form-group">
-									<label class="col-sm-4 control-label">办展方：</label>
-									<div class="col-sm-8">
-										<input class="form-control" type="text" disabled="disabled" name="organizer"
-											   id="organizer" th:value="${exhibitionInfo.organizer}" required>
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-sm-4 control-label">办展方：</label>
+											<div class="col-sm-8">
+												<input class="form-control" type="text" disabled="disabled" name="organizer"
+													   id="organizer" th:value="${exhibitionInfo.organizer}" required>
+											</div>
+										</div>
 									</div>
+
+
+								<div class="col-sm-12 select-table table-striped">
+									<h4 class="form-header h4">物料明细</h4>
+									<table id="bootstrap-table"  data-show-print="false"></table>
 								</div>
-							</div>
-						</form>
+							</form>
+						</div>
+						<!--endprint-->
 					</div>
+<!--					</div>-->
+<!--					<div>-->
+<!--						<input type="button" id="printButton" value="打印" />-->
+<!--					</div>-->
 
-
-					<div class="col-sm-12 select-table table-striped">
-<!--						<table id="bootstrap-table"></table>-->
-
-						<table id="bootstrap-table"  data-show-print="true"></table>
-
-					</div>
 				</div>
 			</div>
 		</div>
@@ -76,6 +90,7 @@
 		<th:block th:include="include :: layout-latest-js" />
 		<th:block th:include="include :: ztree-js" />
 		<th:block th:include="include :: bootstrap-table-print-js" />
+<!--		<script src="js/jquery-1.11.1.js"></script>-->
 		<script th:inline="javascript">
 		var prefix = ctx + "business/send";
 		var dataType = [[${@dict.getType('busi_material_type')}]];
@@ -96,73 +111,84 @@
 			var options = {
 				url: prefix + "/selectSendMaterialDetail",
                 queryParams: queryParams,
-				// createUrl: prefix + "/add",
-				// sortName: "createTime",
-				// sortOrder: "desc",
-				// modalName: "物料",
-				// data: [[${sendMaterialDetail}]],//接收后端查询返回数据
 				showSearch: false,
 				showRefresh: false,
 				showToggle: false,
 				showColumns: false,
 				detailView: false,// 是否显示+-
+				printPageBuilder: printPageBuilder,                 // 自定义打印页面模板
 				columns: [
-					// {
-					// checkbox: false
-					// },
-					{
-						field: 'materialId',
-						title: '物料ID'
-					},
-					{
-						field: 'materialName',
-						title: '物料名称'
-					},
-					{
-						field: 'materialCode',
-						title: '物料代码'
-					},
-					{
-						field: 'nickName',
-						title: '物料简称'
-					},  {
+					// [
+					// 	{
+					// 		field: [[${id}]],
+					// 		title: '展会信息',
+					// 		align : 'center',
+					// 		printIgnore:false,
+					// 		colspan: 10
+					// 	}
+					// ],
+					[
+						{
+							field: '',
+							title: '序号',
+							align: 'center',
+							width: '5%',
+							formatter: function (value, row, index) {
+								var options = $('#bootstrap-table').bootstrapTable('getOptions');
+								return options.pageSize * (options.pageNumber - 1) + index + 1;
+							},
+							printIgnore:true
+						},
+						{
+							field: 'materialId',
+							title: '物料ID',
+							printIgnore:true,
+							visible: false
+						},
+						{
+							field: 'materialName',
+							title: '物料名称'
+						},
+						{
+							field: 'materialCode',
+							title: '物料代码'
+						},
+						{
+							field: 'nickName',
+							title: '物料简称'
+						},
+						{
 						field: 'specifications',
 						title: '规格型号'
-					},
+						},
+						{
+							field: 'type',
+							title: '类型',
+							formatter: function(value, row, index) {
 
-					{
-						field: 'type',
-						title: '类型',
-						formatter: function(value, row, index) {
+								return $.table.selectDictLabel(dataType, row.type);
+							}
+						},
+						{
+							field: 'unit',
+							title: '计量单位',
+							formatter: function(value, row, index) {
 
-							return $.table.selectDictLabel(dataType, row.type);
+								return $.table.selectDictLabel(dataUnit, row.unit);
+							}
+						},
+						{
+							field: 'packageQuantity',
+							title: '标包数量'
+							// visible: false
+						},
+						{
+							field: 'sendQuantity',
+							title: '发货数量'
 						}
-					},{
-						field: 'unit',
-						title: '计量单位',
-						formatter: function(value, row, index) {
+					],
 
-							return $.table.selectDictLabel(dataUnit, row.unit);
-						}
-					},
-					{
-						field: 'packageQuantity',
-						title: '标包数量'
-						// visible: false
-					},
-					// {
-					// 	field: 'createBy',
-					// 	title: '创建人'
-					// },
-					// {
-					// 	field: 'createTime',
-					// 	title: '创建时间'
-					// 	// sortable: true
-					// },
-                    {
-                        field: 'sendQuantity',
-                        title: '发货数量'
-                    }]
+				]
 			};
 			$.table.init(options);
 		}
@@ -174,7 +200,73 @@
             return search;
         }
 
+        //打印方法2
+		function printpage() {
+			let oldStr = window.document.body.innerHTML; // 获取body的内容
+			let start = "<!--startprint-->"; // 开始打印标识, 17个字符
+			let end = "<!--endprint-->"; // 结束打印标识
+			let newStr = oldStr.substr(oldStr.indexOf(start) + 17); // 截取开始打印标识之后的内容
+			newStr = newStr.substring(0, newStr.indexOf(end)); // 截取开始打印标识和结束打印标识之间的内容
+			window.document.body.innerHTML = newStr; // 把需要打印的指定内容赋给body
+			window.print(); // 调用浏览器的打印功能打印指定区域
+			window.document.body.innerHTML = oldStr; // body替换为原来的内容
+		}
 
+
+        //打印 方法1
+		// $("#printButton").click(function(){
+		// 			var bodyContent = $('body').html();
+		// 			var printContent = $('#printContent').html();
+		// 			//将body内容替换后进行打印操作，再把body内容还原
+		// 			$('body').html(printContent);
+		// 			window.print();
+		// 			$('body').html(bodyContent);
+		// 		}
+		// );
+
+		// 自定义打印页面模板
+		function printPageBuilder(table){
+			return `
+        	<html>
+        	  <head>
+        	  <style type="text/css" media="print">
+        	  @page {
+        	    size: auto;
+        	    margin: 25px 0 25px 0;
+        	  }
+        	  </style>
+        	  <style type="text/css" media="all">
+        	  table {
+        	    border-collapse: collapse;
+        	    font-size: 12px;
+        	  }
+        	  table, th, td {
+        	    border: 1px solid grey;
+        	  }
+        	  th, td {
+        	    text-align: center;
+        	    vertical-align: middle;
+        	  }
+        	  p {
+        	    font-weight: bold;
+        	    margin-left:20px;
+        	  }
+        	  table {
+        	    width:94%;
+        	    margin-left:3%;
+        	    margin-right:3%;
+        	  }
+        	  div.bs-table-print {
+        	    text-align:center;
+        	  }
+        	  </style>
+        	  </head>
+        	  <title>Print Table</title>
+        	  <body>
+        	  <div class="bs-table-print">${table}</div>
+        	  </body>
+        	</html>`
+		}
 		</script>
 	</body>
 

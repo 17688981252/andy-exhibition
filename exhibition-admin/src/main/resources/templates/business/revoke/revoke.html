@@ -89,6 +89,16 @@
                 columns: [{
                     checkbox: true
                 },
+					{
+						field: '',
+						title: '序号',
+						align: 'center',
+						width: '5%',
+						formatter: function (value, row, index) {
+							var options = $('#bootstrap-table').bootstrapTable('getOptions');
+							return options.pageSize * (options.pageNumber - 1) + index + 1;
+						}
+					},
                     {
                         field: 'exhibitionId',
                         title: '展会ID',

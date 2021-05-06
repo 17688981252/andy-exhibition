@@ -34,7 +34,7 @@
 					</div>
 
 					<div class="btn-group-sm" id="toolbar" role="group">
-						<a class="btn btn-info" onclick="$.operate.addTab()" shiro:hasPermission="business:receive:add">
+						<a class="btn btn-info" onclick="$.operate.addTab()" shiro:hasPermission="business:receive:waiting">
 							<i class="fa"></i> 待收货
 						</a>
 						<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:receive:remove">
@@ -82,6 +82,16 @@
 					columns: [
 					    {
 							checkbox: true
+						},
+						{
+							field: '',
+							title: '序号',
+							align: 'center',
+							width: '5%',
+							formatter: function (value, row, index) {
+								var options = $('#bootstrap-table').bootstrapTable('getOptions');
+								return options.pageSize * (options.pageNumber - 1) + index + 1;
+							}
 						},
                         {
                             field: 'receiveId',

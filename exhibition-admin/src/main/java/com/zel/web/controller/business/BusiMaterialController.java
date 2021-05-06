@@ -91,7 +91,7 @@ public class BusiMaterialController extends BaseController {
      *
      * @param material 物料信息
      */
-    @RequiresPermissions("business:material:list")
+//    @RequiresPermissions("business:material:list")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(BusiMaterial material) {

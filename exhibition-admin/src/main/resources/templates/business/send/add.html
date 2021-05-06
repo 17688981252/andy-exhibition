@@ -14,120 +14,120 @@
 </style>
 
 <body class="gray-bg">
-<div class="ui-layout-center">
-    <div class="main-content">
-        <form id="form-send-add" class="form-horizontal" th:object="${exhibitionInfo}">
-            <input id="deptId" name="deptId" type="hidden"/>
-            <input id="treeId" name="treeId" type="hidden"/>
-            <h4 class="form-header h4">发货单</h4>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">发货单号：</label>
-                        <div class="col-sm-8">
-                            <input class="form-control" type="text" disabled="disabled" name="sendNumber"
-                                   id="sendNumber" th:value="${sendNumber}" required>
+    <div class="ui-layout-center">
+        <div class="main-content">
+            <form id="form-send-add" class="form-horizontal" th:object="${exhibitionInfo}">
+                <input id="deptId" name="deptId" type="hidden"/>
+                <input id="treeId" name="treeId" type="hidden"/>
+                <h4 class="form-header h4">发货单</h4>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label is-required">发货单号：</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" disabled="disabled" name="sendNumber"
+                                       id="sendNumber" th:value="${sendNumber}" required>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">展会信息：</label>
-                        <div class="col-sm-8">
-                            <select id="exhibitionId" name="exhibitionId" class="form-control ">
-                                <option th:each="name:${exhibitionInfo}" th:value="${name.exhibitionId}"
-                                        th:text="${name.exhibitionName}"></option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">物流名称：</label>
-                        <div class="col-sm-8">
-                            <input class="form-control" type="text" id="logisticsName" name="logisticsName" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">物流单号：</label>
-                        <div class="col-sm-8">
-                            <input class="form-control" type="text" id="logisticsNumber" name="logisticsNumber"
-                                   required/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">收货人：</label>
-                        <div class="col-sm-8">
-                            <div class="input-group search">
-                                <input name="receiveBy" onclick="selectDeptTree()" id="receiveBy" type="text"
-                                       placeholder="请选择收货人信息" class="form-control" required>
-                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label is-required">展会信息：</label>
+                            <div class="col-sm-8">
+                                <select id="exhibitionId" name="exhibitionId" class="form-control ">
+                                    <option th:each="name:${exhibitionInfo}" th:value="${name.exhibitionId}"
+                                            th:text="${name.exhibitionName}"></option>
+                                </select>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">收货公司：</label>
-                        <div class="col-sm-8">
-                            <input class="form-control" type="text" id="deptName" name="deptName" required/>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label is-required">物流名称：</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" id="logisticsName" name="logisticsName" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label is-required">物流单号：</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" id="logisticsNumber" name="logisticsNumber"
+                                       required/>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">收货地址：</label>
-                        <div class="col-sm-8">
-                            <input class="form-control" type="text" id="receiveAddress" name="receiveAddress" required/>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label is-required">收货人：</label>
+                            <div class="col-sm-8">
+                                <div class="input-group search">
+                                    <input name="receiveBy" onclick="selectDeptTree()" id="receiveBy" type="text"
+                                           placeholder="请选择收货人信息" class="form-control" required>
+                                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label is-required">收货公司：</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" id="deptName" name="deptName" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label is-required">收货地址：</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="text" id="receiveAddress" name="receiveAddress" required/>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <label class="col-xs-2 control-label">备注：</label>
-                        <div class="col-xs-10">
-                            <textarea id="remark" name="remark" class="form-control" onKeyUp="keypress(this)"
-                                      type="text" rows='2'></textarea>
-                            <label class="name">50</label><span>/</span><label class="maxleng">50</label>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">备注：</label>
+                            <div class="col-xs-10">
+                                <textarea id="remark" name="remark" class="form-control" onKeyUp="keypress(this)"
+                                          type="text" rows='2'></textarea>
+                                <label class="name">50</label><span>/</span><label class="maxleng">50</label>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <h4 class="form-header h4">发货明细</h4>
-            <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="$.operate.addMaterial()"
-                   shiro:hasPermission="business:exhibition:add">
-                    <i class="fa fa-plus"></i> 新增物料
-                </a>
-                <a class="btn btn-danger"  onclick="del_()" shiro:hasPermission="business:exhibition:remove">
-                    <i class="fa fa-remove"></i> 移除
+                <h4 class="form-header h4">发货明细</h4>
+                <div class="btn-group-sm" id="toolbar" role="group">
+                    <a class="btn btn-success" onclick="$.operate.addMaterial()"
+                       shiro:hasPermission="business:exhibition:add">
+                        <i class="fa fa-plus"></i> 新增物料
+                    </a>
+                    <a class="btn btn-danger" onclick="del_()" shiro:hasPermission="business:exhibition:remove">
+                        <i class="fa fa-remove"></i> 移除
 
-                </a>
-            </div>
+                    </a>
+                </div>
 
 
-            <div class="row">
-                <div class="col-sm-12">
-                    <!--<button type="button" class="btn btn-white btn-sm" onclick="addColumn()"><i class="fa fa-plus"> 增加</i></button>-->
-                    <!--<button type="button" class="btn btn-white btn-sm" onclick="sub.delColumn()"><i class="fa fa-minus"> 删除</i></button>-->
-                    <div class="col-sm-12 select-table table-striped">
-                        <table id="bootstrap-table1"></table>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <!--<button type="button" class="btn btn-white btn-sm" onclick="addColumn()"><i class="fa fa-plus"> 增加</i></button>-->
+                        <!--<button type="button" class="btn btn-white btn-sm" onclick="sub.delColumn()"><i class="fa fa-minus"> 删除</i></button>-->
+                        <div class="col-sm-12 select-table table-striped">
+                            <table id="bootstrap-table1"></table>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-</div>
 <th:block th:include="include :: footer"/>
 <th:block th:include="include :: layout-latest-js"/>
 <th:block th:include="include :: ztree-js"/>
@@ -264,8 +264,6 @@
     }
 
 
-
-
     //保存输入
     function saveData(index, field, value) {
 
@@ -341,24 +339,20 @@
     }
 
 
-
     //删除表格的某行
-    function del_(){
-        var ids = $.map($('#bootstrap-table1').bootstrapTable('getSelections'),function(row){
+    function del_() {
+        var ids = $.map($('#bootstrap-table1').bootstrapTable('getSelections'), function (row) {
             return row.materialId;
         });
         alert(ids)
-        $('#bootstrap-table1').bootstrapTable('remove',{
-            field : 'materialId',
-            values : ids
+        $('#bootstrap-table1').bootstrapTable('remove', {
+            field: 'materialId',
+            values: ids
         });
         //在执行完remove操作之后，接着调用getData方法获取到表格所有的数据，然后通过bootstrap table的 “load”方法，将获取到数据重新加载一次
-        $("#bootstrap-table1").bootstrapTable('load',$("#bootstrap-table1").bootstrapTable('getData'));
+        $("#bootstrap-table1").bootstrapTable('load', $("#bootstrap-table1").bootstrapTable('getData'));
         $.table.refresh();
     }
-
-
-
 
 
 </script>

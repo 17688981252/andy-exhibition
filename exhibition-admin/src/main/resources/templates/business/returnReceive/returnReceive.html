@@ -34,7 +34,7 @@
 					</div>
 
 					<div class="btn-group-sm" id="toolbar" role="group">
-						<a class="btn btn-success" onclick="$.operate.addFull()" shiro:hasPermission="business:returnReceive:add">
+						<a class="btn btn-success" onclick="$.operate.addTab()" shiro:hasPermission="business:returnReceive:add">
 							<i class="fa fa-plus"></i> 新增
 						</a>
 						<a class="btn btn-danger multiple" onclick="$.operate.removeAll()" shiro:hasPermission="business:returnReceive:remove">
@@ -43,7 +43,7 @@
 <!--						<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:exhibition:remove">-->
 <!--							<i class="fa fa-remove"></i> 删除-->
 <!--						</a>-->
-						<a class="btn btn-info single" onclick="$.operate.confirmReturnReceive()" shiro:hasPermission="business:returnReceive:send">
+						<a class="btn btn-info single" onclick="$.operate.confirmReturnReceive()" shiro:hasPermission="business:returnReceive:confirm">
 							<i class="fa "></i> 确认签收
 						</a>
 					</div>
@@ -87,6 +87,16 @@
 					columns: [
 					    {
 							checkbox: true
+						},
+						{
+							field: '',
+							title: '序号',
+							align: 'center',
+							width: '5%',
+							formatter: function (value, row, index) {
+								var options = $('#bootstrap-table').bootstrapTable('getOptions');
+								return options.pageSize * (options.pageNumber - 1) + index + 1;
+							}
 						},
                         {
                             field: 'returnReceiveId',

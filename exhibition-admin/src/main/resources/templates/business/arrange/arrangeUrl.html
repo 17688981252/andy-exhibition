@@ -171,29 +171,44 @@
     });
 
     function submitHandler() {
+
+        var filesCount = $('#fileinput-demo-1').fileinput('getFilesCount'); //返回文件数（待上传）
+        // alert("未上传文件数" + filesCount)
+        if (filesCount > 0) {
+            $.modal.confirm("您有"+filesCount+"张图片未上传，请确认是否继续",function (){
+                $.modal.confirm("布展图片保存后不可修改，是否确定保存？", function(){
+                    $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});
+                })})
+        }
+        else{
+            $.modal.confirm("布展图片保存后不可修改，是否确定保存？", function () {
+                $.operate.save(prefix + "/updateStatus", {"exhibitionId": $("#exhibitionId").val()});
+            })
+        }
+    }
         // $.modal.confirm("勘展图片保存后不可修改，是否确定保存？", function(){
         // 	        $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
         // 	    })
-        var filesCount = $('#fileinput-demo-1').fileinput('getFilesCount'); //返回文件数（待上传）
-        alert("未上传文件数"+filesCount)
+        // var filesCount = $('#fileinput-demo-1').fileinput('getFilesCount'); //返回文件数（待上传）
+        // alert("未上传文件数"+filesCount)
 
-        var totalFilesCount = $('#fileinput-demo-1').fileinput('getFilesCount',true); //返回文件数（待上传的文件以及已经上传并通过初始预览设置的文件）
-        alert("总文件数"+totalFilesCount)
+        // var totalFilesCount = $('#fileinput-demo-1').fileinput('getFilesCount',true); //返回文件数（待上传的文件以及已经上传并通过初始预览设置的文件）
+        // alert("总文件数"+totalFilesCount)
 
-        if (totalFilesCount > 0 && filesCount == 0) {
-            $.modal.confirm("勘展图片保存后不可修改，是否确定保存？", function(){
-                $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
-            })
-        }
-        else if ( filesCount > 0) {
-            $.modal.confirm("有 "+filesCount+" 张图片未上传，是否确定保存？", function(){
-                $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
-            })
-        }
-        else if ( totalFilesCount == 0) {
-            $.modal.alertWarning("您尚未上传图片")
-        }
-    }
+        // if (totalFilesCount > 0 && filesCount == 0) {
+        //     $.modal.confirm("勘展图片保存后不可修改，是否确定保存？", function(){
+        //         $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
+        //     })
+        // }
+        // else if ( filesCount > 0) {
+        //     $.modal.confirm("有 "+filesCount+" 张图片未上传，是否确定保存？", function(){
+        //         $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
+        //     })
+        // }
+        // else if ( totalFilesCount == 0) {
+        //     $.modal.alertWarning("您尚未上传图片")
+        // }
+
 
 </script>
 </body>

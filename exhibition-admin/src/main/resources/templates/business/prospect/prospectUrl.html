@@ -1,125 +1,128 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<th:block th:include="include :: header('勘展')" />
-	<th:block th:include="include :: bootstrap-fileinput-css" />
+    <th:block th:include="include :: header('勘展')"/>
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
 </head>
 <body class="white-bg">
 <div class="col-sm-12 search-collapse">
-	<form id="form-exhibition-info" class="form-horizontal" th:object="${prospect}">
-<!--		<input id="status" name="status" type="show" th:field="${prospect.status}" th:value="${prospect.status}"/>-->
-		<div class="col-sm-4" >
-			<div class="form-group">
-				<label class="col-sm-4 control-label is-required" >展会名称：</label>
-				<div class="col-sm-8" >
-					<input class="form-control" type="text" disabled="disabled" name="exhibitionName"
-						   id="exhibitionName" th:value="${prospect.exhibitionName}" required>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm-4">
-			<div class="form-group">
-				<label class="col-sm-4 control-label is-required">展会地址：</label>
-				<div class="col-sm-8">
-					<input class="form-control" type="text" disabled="disabled" name="address"
-						   id="address" th:value="${prospect.address}" required>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm-4">
-			<div class="form-group">
-				<label class="col-sm-4 control-label is-required">办展方：</label>
-				<div class="col-sm-8">
-					<input class="form-control" type="text" disabled="disabled" name="organizer"
-						   id="organizer" th:value="${prospect.organizer}" required>
-				</div>
-			</div>
-		</div>
-	</form>
+    <form id="form-exhibition-info" class="form-horizontal" th:object="${prospect}">
+        <!--		<input id="status" name="status" type="show" th:field="${prospect.status}" th:value="${prospect.status}"/>-->
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label class="col-sm-4 control-label is-required">展会名称：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" disabled="disabled" name="exhibitionName"
+                           id="exhibitionName" th:value="${prospect.exhibitionName}" required>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label class="col-sm-4 control-label is-required">展会地址：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" disabled="disabled" name="address"
+                           id="address" th:value="${prospect.address}" required>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label class="col-sm-4 control-label is-required">办展方：</label>
+                <div class="col-sm-8">
+                    <input class="form-control" type="text" disabled="disabled" name="organizer"
+                           id="organizer" th:value="${prospect.organizer}" required>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-	<form class="form-horizontal" id="form-exhibition-prospect" th:object="${prospect}">
-		<input id="exhibitionId" name="exhibitionId" type="hidden" th:field="*{exhibitionId}"/>
+    <form class="form-horizontal" id="form-exhibition-prospect" th:object="${prospect}">
+        <input id="exhibitionId" name="exhibitionId" type="hidden" th:field="*{exhibitionId}"/>
 
-		<!--上传控件-->
-		<div class="wrapper wrapper-content animated fadeInRight">
-			<div class="row">
-				<div class="col-sm-12">
-					<div class="ibox float-e-margins">
-						<div class="ibox-content">
+        <!--上传控件-->
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-content">
 
-							<div class="form-group">
-								<label class="font-noraml">勘展图片上传</label>
-								<div class="file-loading">
-									<input id="fileinput-demo-1" type="file" multiple>
-								</div>
-							</div>
-							<hr>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</form>
+                            <div class="form-group">
+                                <label class="font-noraml">勘展图片上传</label>
+                                <div class="file-loading">
+                                    <input id="fileinput-demo-1" type="file" multiple>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 
 
-<th:block th:include="include :: footer" />
-<th:block th:include="include :: bootstrap-fileinput-js" />
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: bootstrap-fileinput-js"/>
 <script type="text/javascript" th:inline="javascript">
-	var prefix = ctx + "business/exhibition";
+    var prefix = ctx + "business/exhibition";
 
-	$(document).ready(function () {
+    $(document).ready(function () {
 
         var obj = [[${prospect.prospectUrlList}]];
-		var arrayObj = new Array();　//创建一个数组
-		var arrayDetail = new Array();
-		for (var i = 0; i < obj.length; i++) {
+        var arrayObj = new Array();　//创建一个数组
+        var arrayDetail = new Array();
+        for (var i = 0; i < obj.length; i++) {
 
-			var map = obj[i];
-            console.log(i+"//prospectId="+map['prospectId']+
-                "&&prospectUrl="+map['prospectUrl']);
-			arrayObj. push("/exhibition"+map['prospectUrl']);
-			var detail = {
-				caption: map['fileName'], // 文件名
-				url: prefix + '/deleteProspectUrl', // 删除url
-				key: map['prospectId'], // 删除是Ajax向后台传递的参数post请求
+            var map = obj[i];
+            console.log(i + "//prospectId=" + map['prospectId'] +
+                "&&prospectUrl=" + map['prospectUrl']);
+            arrayObj.push("/exhibition" + map['prospectUrl']);
+            var detail = {
+                caption: map['fileName'], // 文件名
+                url: prefix + '/deleteProspectUrl', // 删除url
+                key: map['prospectId'], // 删除是Ajax向后台传递的参数post请求
                 // previewAsData: true,
-				extra: function() { //删除时向后台传递参数，可以是json对象
-					return {
-                        "exhibitionId":$("#exhibitionId").val()
+                extra: function () { //删除时向后台传递参数，可以是json对象
+                    return {
+                        "exhibitionId": $("#exhibitionId").val()
                     };
-				}
-			}
-			arrayDetail.push(detail);
-		}
+                }
+            }
+            arrayDetail.push(detail);
+        }
 
         $("#fileinput-demo-1").fileinput({
             language: 'zh',
             uploadUrl: prefix + '/saveProspectUrl', //上传的地址
-            uploadExtraData:{"exhibitionId":$("#exhibitionId").val()},
+            uploadExtraData: {"exhibitionId": $("#exhibitionId").val()},
             showPreview: true,              //展前预览
             showUpload: true,              //显示上传按钮
             showCaption: false,             //显示文字表述
-			showRemove: false,				//显示删除按钮
-            uploadAsync:false,   			//是否为异步上传
-			showBrowse:true,              //是否显示浏览
+            showRemove: false,				//显示删除按钮
+            uploadAsync: false,   			//是否为异步上传
+            showBrowse: true,              //是否显示浏览
 
-			fileActionSettings : {
-				showUpload: false,//是否显示上传小图标
-				showRemove: true//是否显示删除小图标
-			},
-
-            removeFromPreviewOnError:true,
+            fileActionSettings: {
+                showUpload: false,//是否显示上传小图标
+                showRemove: true//是否显示删除小图标
+            },
+            //显示图片大小
+            // previewSettings: {
+            //     image: {width: "100px", height: "100px"},
+            // },
+            removeFromPreviewOnError: true,
             maxFileCount: 5,
-            maxFileSize: 1024*10,           //单位为kb，如果为0表示不限制文件大小
-            allowedFileExtensions: ["jpg", "jpeg", "gif", "png","bmp"],
+            maxFileSize: 1024 * 10,           //单位为kb，如果为0表示不限制文件大小
+            allowedFileExtensions: ["jpg", "jpeg", "gif", "png", "bmp"],
             previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
             overwriteInitial: false,
             initialPreviewAsData: true,
             // dropZoneEnabled:false,
             initialPreview: arrayObj,
-            initialPreviewConfig:arrayDetail,
+            initialPreviewConfig: arrayDetail,
             enctype: 'multipart/form-data',
             msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
         }).on("fileuploaded", function (event, data, previewId, index) {
@@ -128,31 +131,31 @@
             alert("执行上传方法，对于未上传的文件上传=");
             $('#fileinput-demo-1').fileinput('addToStack', data); // `fileObj`是文件blob对象实例
             // $.table.refresh();
-			$("#fileinput-demo-1").fileinput('refresh', {
-				initialPreview: arrayObj,
-				initialPreviewConfig: arrayDetail
-			});
+            $("#fileinput-demo-1").fileinput('refresh', {
+                initialPreview: arrayObj,
+                initialPreviewConfig: arrayDetail
+            });
 
 
             var filesCount = $('#fileinput-demo-1').fileinput('getFilesCount'); //返回文件数（待上传）
-            console.info("执行上传方法  ---> 未上传文件数"+filesCount)
+            console.info("执行上传方法  ---> 未上传文件数" + filesCount)
 
-            var totalFilesCount = $('#fileinput-demo-1').fileinput('getFilesCount',true); //返回文件数（待上传的文件以及已经上传并通过初始预览设置的文件）
-            console.info("执行上传方法  --->  上传的文件总数"+totalFilesCount)
+            var totalFilesCount = $('#fileinput-demo-1').fileinput('getFilesCount', true); //返回文件数（待上传的文件以及已经上传并通过初始预览设置的文件）
+            console.info("执行上传方法  --->  上传的文件总数" + totalFilesCount)
 
         }).on('filesuccessremove', function (event, previewId) {
             alert("点击删除预览框中的删除按钮前触发( 已上传成功的文件 )");
             // delete(($('#' + previewId).attr('fileid')));
-        }).on('filepreremove', function (event, previewId,index) {
+        }).on('filepreremove', function (event, previewId, index) {
             alert("点击删除预览框中的删除按钮前触发( initialPreview中的文件除外,只针对于还未上传的文件 )");
-        }).on("filedeleted", function (event, key,data) {
+        }).on("filedeleted", function (event, key, data) {
             var result = data.responseJSON;
             console.log(result);
         });
         // $('#fileinput-demo-1').fileinput('refresh');
 
 
-        $("#fileinput-demo-1").on("fileuploaded", function(event, data, proviewId, index) {
+        $("#fileinput-demo-1").on("fileuploaded", function (event, data, proviewId, index) {
             //1、数组下标 有问题  ： 上传1个图片 ；但是提示信息为 未上传文件数 ： 2
             //2、table.refresh 未生效 ; 手动编写JS使新增加的 图片的信息得到维护
             console.info(event);
@@ -161,45 +164,59 @@
             console.info(index);
 
 
-            console.log( "////"+data.response.data['prospectUrl']);
+            console.log("////" + data.response.data['prospectUrl']);
 
             var filesCount = $('#fileinput-demo-1').fileinput('getFilesCount'); //返回文件数（待上传）
-            console.info("fileuploaded  ---> 未上传文件数"+filesCount)
+            console.info("fileuploaded  ---> 未上传文件数" + filesCount)
 
-            var totalFilesCount = $('#fileinput-demo-1').fileinput('getFilesCount',true); //返回文件数（待上传的文件以及已经上传并通过初始预览设置的文件）
-            console.info("fileuploaded  --->  上传的文件总数"+totalFilesCount)
+            var totalFilesCount = $('#fileinput-demo-1').fileinput('getFilesCount', true); //返回文件数（待上传的文件以及已经上传并通过初始预览设置的文件）
+            console.info("fileuploaded  --->  上传的文件总数" + totalFilesCount)
+            $("#bootstrap-table1").bootstrapTable('load', $("#bootstrap-table1").bootstrapTable('getData'));
+            $.table.refresh();
         });
 
-	});
+    });
 
     function submitHandler() {
-		// $.modal.confirm("勘展图片保存后不可修改，是否确定保存？", function(){
-		// 	        $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
-		// 	    })
-		if (status == 2) {
-			$.modal.alertWarning("当前展会已勘展");
-			throw Error;
-		}
+
         var filesCount = $('#fileinput-demo-1').fileinput('getFilesCount'); //返回文件数（待上传）
-		alert("未上传文件数"+filesCount)
-
-        var totalFilesCount = $('#fileinput-demo-1').fileinput('getFilesCount',true); //返回文件数（待上传的文件以及已经上传并通过初始预览设置的文件）
-        alert("总文件数"+totalFilesCount)
-
-        if (totalFilesCount > 0 && filesCount == 0) {
-            $.modal.confirm("勘展图片保存后不可修改，是否确定保存？", function(){
-                $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
+        // alert("未上传文件数" + filesCount)
+        // var totalFilesCount = $('#fileinput-demo-1').fileinput('getFilesCount',true); //返回文件数（待上传的文件以及已经上传并通过初始预览设置的文件）
+        // alert("总文件数"+totalFilesCount)
+        if (filesCount > 0) {
+             $.modal.confirm("您有"+filesCount+"张图片未上传，请确认是否继续",function (){
+                 $.modal.confirm("勘展图片保存后不可修改，是否确定保存？", function(){
+                 $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});
+             })})
+        }
+        else{
+            $.modal.confirm("勘展图片保存后不可修改，是否确定保存？", function () {
+                $.operate.save(prefix + "/updateStatus", {"exhibitionId": $("#exhibitionId").val()});
             })
         }
-        else if ( filesCount > 0) {
-                $.modal.confirm("有 "+filesCount+" 张图片未上传，是否确定保存？", function(){
-                    $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
-                })
-            }
-        else if ( totalFilesCount == 0) {
-            $.modal.alertWarning("您尚未上传图片")
-        }
     }
+
+    // if (status == 2) {
+    // 	$.modal.alertWarning("当前展会已勘展");
+    // 	throw Error;
+    // }
+    // var totalFilesCount = $('#fileinput-demo-1').fileinput('getFilesCount',true); //返回文件数（待上传的文件以及已经上传并通过初始预览设置的文件）
+    // alert("总文件数"+totalFilesCount)
+    //
+    // if (totalFilesCount > 0 && filesCount == 0) {
+    //     $.modal.confirm("勘展图片保存后不可修改，是否确定保存？", function(){
+    //         $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
+    //     })
+    // }
+    // else if ( filesCount > 0) {
+    //         $.modal.confirm("有 "+filesCount+" 张图片未上传，是否确定保存？", function(){
+    //             $.operate.save(prefix + "/updateStatus",{"exhibitionId":$("#exhibitionId").val()});//serialize序列化表单传入数据
+    //         })
+    //     }
+    // else if ( totalFilesCount == 0) {
+    //     $.modal.alertWarning("您尚未上传图片")
+    // }
+
 
 </script>
 </body>

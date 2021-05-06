@@ -138,6 +138,7 @@ var table = {
                     onLoadSuccess: $.table.onLoadSuccess,               // 当所有数据被加载时触发处理函数
                     exportOptions: options.exportOptions,               // 前端导出忽略列索引
                     detailFormatter: options.detailFormatter,           // 在行下面展示其他数据列表
+					printPageBuilder: options.printPageBuilder                 // 自定义打印页面模板
                 });
             },
             // 获取实例ID，如存在多个返回#id1,#id2 delimeter分隔符
@@ -939,7 +940,7 @@ var table = {
             		shade: 0.3,
             		title: title,
             		content: url,
-            		btn: ['确定', '关闭'],
+            		btn: ['保存', '关闭'],
             		// 弹层外区域关闭
             		shadeClose: true,
             		yes: function(index, layero) {
@@ -1296,7 +1297,7 @@ var table = {
             // 查询发货物料明细 andy
             selectSendMaterialDetail: function(id) {
                  table.set("bootstrap-table2");
-                $.modal.openFullNoBtn("查看" + table.options.modalName,  table.options.selectSendMaterialDetailUrl.replace("{id}", id));
+                $.modal.openTab("查看" + table.options.modalName,  table.options.selectSendMaterialDetailUrl.replace("{id}", id));
             },
 
 			// 查询勘展图片 andy

@@ -41,7 +41,7 @@
 						<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:return:remove">
 							<i class="fa fa-remove"></i> 删除
 						</a>
-						<a class="btn btn-info single" onclick="$.operate.confirmReturn()" shiro:hasPermission="business:return:send">
+						<a class="btn btn-info single" onclick="$.operate.confirmReturn()" shiro:hasPermission="business:return:confirm">
 							<i class="fa "></i> 确认退还
 						</a>
 					</div>
@@ -90,6 +90,16 @@
 					columns: [{
 						checkbox: true
 					},
+						{
+							field: '',
+							title: '序号',
+							align: 'center',
+							width: '5%',
+							formatter: function (value, row, index) {
+								var options = $('#bootstrap-table').bootstrapTable('getOptions');
+								return options.pageSize * (options.pageNumber - 1) + index + 1;
+							}
+						},
                         {
                             field: 'returnId',
                             title: '退还ID',

@@ -43,7 +43,7 @@
 		            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:material:remove">
 		                <i class="fa fa-remove"></i> 删除
 		            </a>
-		            <a class="btn btn-info" onclick="$.table.importExcel()" shiro:hasPermission="business:material:import">
+		            <a class="btn btn-info" onclick="$.table.importExcel()" shiro:hasPermission="bussiness:material:import">
 			            <i class="fa fa-upload"></i> 导入
 			        </a>
 		            <a class="btn btn-warning multiple disabled" onclick="$.table.exportExcel()" shiro:hasPermission="business:material:export">
@@ -88,12 +88,25 @@
 		        exportUrl: prefix + "/export",
 		        importUrl: prefix + "/importData",
 		        importTemplateUrl: prefix + "/importTemplate",
-		        sortName: "createTime",
-		        sortOrder: "desc",
+		        // sortName: "createTime",
+		        // sortOrder: "desc",
 		        modalName: "物料",
-		        columns: [{
-		            checkbox: true
-		        },
+				rememberSelected: true,
+		        columns: [
+					{
+						field: 'state',
+		            	checkbox: true
+		        	},
+					{
+						field: '',
+						title: '序号',
+						align: 'center',
+						width: '5%',
+						formatter: function (value, row, index) {
+							var options = $('#bootstrap-table').bootstrapTable('getOptions');
+							return options.pageSize * (options.pageNumber - 1) + index + 1;
+						}
+					},
                     {
                         field: 'materialId',
                         title: 'ID',
